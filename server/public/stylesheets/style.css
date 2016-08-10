@@ -1,4 +1,9 @@
-body {
+body {  
+  background-image: url("../images/background-image1.jpg");
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: cover;
+  transition: background-image 1s linear;
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
@@ -6,3 +11,22 @@ body {
 a {
   color: #00B7FF;
 }
+
+.main-color {
+	background-color: #912584;
+	opacity: 1;
+}
+
+.main-text {
+	background-color: rgba(138, 65, 156, 0.701961);
+	padding: 3px 10px 3px;
+	margin-top: 10px;
+	border: 0.1em solid #ffd500;
+	color: #ffd500!important;
+	font-family: 'Ubuntu', sans-serif;
+}
+
+.text-color-yellow{
+	color: #ffd500!important;
+}
+
