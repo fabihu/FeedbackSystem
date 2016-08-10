@@ -4,7 +4,7 @@ FeedbackSystem.MainController = (function() {
 	//Initialisiert alle anderen notwendigen Controller 
 	init = function() {				
 		FeedbackSystem.LoginController.init();	
-		FeedbackSystem.IndexController.init();					
+					
 	};
 
 	that.init = init;	
