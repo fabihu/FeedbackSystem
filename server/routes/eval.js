@@ -2,7 +2,9 @@ var express = require('express');
 var router = express.Router();
 
 router.get('/', function(req, res, next) {
-   res.send('endpoint for the evaluation');
+	console.log('redirecting to eval');
+  
+   return res.render('eval.ejs');
 });
 
 module.exports = router;
