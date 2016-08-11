@@ -1,6 +1,8 @@
 FeedbackSystem.LoginController = (function() {
 	var that = {},
 	$submitButton = null,
+	$txtUserTravelID = null,
+	$txtUserPassword = null,
 
 
 //Initialisierung der Logins
@@ -10,8 +12,7 @@ FeedbackSystem.LoginController = (function() {
 	},
 
 	initControls = function(){
-		$submitButton = $('#button-submit');
-		console.log($submitButton);
+		$submitButton = $('#button-submit');		
 		onClickButtonSubmit();
 	},
 
@@ -31,7 +32,17 @@ FeedbackSystem.LoginController = (function() {
 	},
 
 	checkLoginCredentials = function(){
-		return true;		
+		$txtUserTravelID = $('#InputTravelId');
+		$txtUserPassword = $('#InputTravelPass');
+
+		var travelID = "1";
+		var passID = "1";
+
+		if($txtUserTravelID.val() == travelID && $txtUserPassword.val() == passID){
+			return true;	
+		}
+		window.alert("Reise-ID oder Passwort ungültig");
+		return false;
 	};
 
 
