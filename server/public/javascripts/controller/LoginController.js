@@ -17,36 +17,34 @@ FeedbackSystem.LoginController = (function() {
 	},
 
 	onClickButtonSubmit = function(){
-		$submitButton.on('click', function(e){
-			e.preventDefault();
-			if(checkLoginCredentials()){
-				$(location).attr('href', '/eval');
-	
-					$.get("/eval", function(data){
-							
-						});
-					
-			}
-		});
-
-	},
-
-	checkLoginCredentials = function(){
 		$txtUserTravelID = $('#InputTravelId');
 		$txtUserPassword = $('#InputTravelPass');
+		
+		$submitButton.on('click', function(e){
+			e.preventDefault();
+			var user_id = $txtUserTravelID.val();
+			var user_password = $txtUserPassword.val()
+			
+			$.post("/check-login/", { id: user_id, password: user_password }, function(data){							
+     			console.log('Server responded with : ', data);
+      			var credentials_ok = data;
+				if(credentials_ok){
+					$.get('/get-questions/', function( data ) {
 
-		var travelID = "1";
-		var passID = "1";
+						$('#main-container').empty();
+						$('#main-container').append(data);
+						$(document).trigger('initEval');
+						
+						console.log('Server responded with : ', data);
+					});
+				} else {
+					window.alert("Reise-ID oder Passwort ungültig");
+				}
+      		});					
+			
+		});
 
-		if($txtUserTravelID.val() == travelID && $txtUserPassword.val() == passID){
-			return true;	
-		}
-		window.alert("Reise-ID oder Passwort ungültig");
-		return false;
 	};
-
-
-
 
 	that.init = init;
   return that;
