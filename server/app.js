@@ -35,6 +35,10 @@ app.use(function(req, res, next) {
 });
 
 // error handlers
+app.use(function(err, req, res, next) {
+  console.error(err.stack);
+  
+});
 
 // development error handler
 // will print stacktrace
