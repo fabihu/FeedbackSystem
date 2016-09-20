@@ -26,12 +26,12 @@ checkLoginCredentials = function(user_id, user_password, callback){
   pool.getConnection(function(err, connection) {
     
   var sql = 'SELECT * FROM trip WHERE id = ' + connection.escape(user_id) + ' AND password = ' + connection.escape(user_password);
-  connection.query(sql, function(err, results) {
+  connection.query(sql, function(err, dbResponse) {
   if(err) {
     console.log(err);    
     return;
   }
-    if(results.length > 0){
+    if(dbResponse.length > 0){
       callback(true);
     } else {
       callback(false);
@@ -47,38 +47,49 @@ getQuestions = function(callback){
     
   if (err) console.log(err);
   var sql = 'SELECT * FROM questions';
-  connection.query(sql, function(err, results) {
+  connection.query(sql, function(err, dbResponse) {
   if(err) {
-    console.log(err);    
+    console.log(err);
+    callback(err, null);    
     return;
   }
-      console.log("results: ", results);
-    if(results.length > 0){
-      callback(results);
+  if(dbResponse.length > 0){
+      callback(null, dbResponse);
     } 
+    connection.release();
 
   });
 
-   connection.release();
   });
 }
 
+getAnswers = function(callback){
+ 
+pool.getConnection(function(err, connection) {
 
-
-loadQuestions = function(){
- connection.query('SELECT * FROM questions', function(err, rows, fields) {
-    if (!err) {
-      console.log('The solution is: ', rows);
-    } else{
-      console.log('Error while performing Query.');
-    }
-  });
+var sql = 'SELECT * FROM answer_options';
   
-  connection.end();
-}
+connection.query(sql, function(err, dbResponse) {
+    
+  if(err) {
+    console.log(err);
+    callback(err, null);    
+    return;
+  }
+  if(dbResponse.length > 0){    
+    callback(null, dbResponse);    
+  }
+  connection.release();
+  
+});
 
+ 
+});
+
+}
 
 
 exports.init = init;
 exports.checkLoginCredentials = checkLoginCredentials;
 exports.getQuestions = getQuestions;
+exports.getAnswers = getAnswers;
