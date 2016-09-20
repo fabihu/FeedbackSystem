@@ -26,6 +26,18 @@ a {
 	font-family: 'Ubuntu', sans-serif;
 }
 
+.question-header {
+    display: inline-block;
+    max-width: 100%;
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+.question-answer-option {
+    font-weight: 300;
+    line-height: 1.4;
+}
+
 .login-controls-padding-top{
 	padding-top: 20px;
 }
