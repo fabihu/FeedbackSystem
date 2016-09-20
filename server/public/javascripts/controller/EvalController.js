@@ -16,7 +16,7 @@ FeedbackSystem.EvalController = (function() {
   loadQuestions = function(){
     console.log("load questions");
     $.post("/get-questions/", function(data){
-      console.log('Server responded with : ', data);
+     
     });
   
 },
