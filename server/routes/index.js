@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var dbhandler = require('../db/dbhandler');
+var async = require('async');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -21,16 +22,29 @@ router.post('/check-login/', function(req, res, next) {
 })
 
 router.get('/get-questions/', function(req, res, next) {
- 
-  console.log("endpoint questions")
-  
-  dbhandler.getQuestions(user_id, user_password, function(result){
-      //res.send(result);
-      res.render('eval', {option1: "dies ist ein test"});
-  });
-
-
-
+  async.parallel({
+      questions: function(callback) {
+          dbhandler.getQuestions(function(err, dbQuestions){
+          if(err) {callback(err, null); return;}
+          callback(null, dbQuestions);
+          });
+      },
+      answers: function(callback) {
+          dbhandler.getAnswers(function(err, dbAnswers){
+          if(err) {callback(err, null); return;}
+          callback(null, dbAnswers);
+          });   
+      }
+  },
+  // optional callback
+  function(err, result) {
+  console.log(result);
+    if(err) {
+      console.log("Error: " + err);      
+    } else {
+      res.render('eval', {questions: result.questions, answers: result.answers});     
+    }    
+  });  
 });
 
 
