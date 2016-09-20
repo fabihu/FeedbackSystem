@@ -1,50 +1,65 @@
 
     <div class="container main-text">
-   
+    <% for(var i=0; i<questions.length; i++) { %>
+    <% var question = questions[i]; %>
      <div class="container" id='container-questions'>
-        <h2> Frage 1: Wie sind sie auf Ihre Thürauf-Reise aufmerksam geworden?<h2>
+        <h2 class="question-header"> Frage <%=questions[i].id%>: <%=question.question%></h2>
+          
           <form class="form-horizontal">
           <fieldset>
-          
-          <div class="form-group">
-            <label class="col-md-4 control-label" for="answer-options-radio"></label>
-            <div class="col-md-4">
-            <div class="radio">
-              <label for="answer-options-radio-0">
-                <input type="radio" name="answer-options-radio" id="answer-options-radio-0" value="1" checked="checked">
-                <%= option1 %>
-              </label>
+          <% for(var index in answers) { %>
+          <%  var answer = answers[index]; %>
+            <% if(question.type == 0) {%>
+            <% if(question.id == answer.question_id){ %>
+    
+                  <div class="form-group">
+                    <div class="col-md-3">
+                    </div>           
+                    <div class="col-md-9">             
+                    <div class="checkbox">  
+                     <input type="checkbox" name="answer-check-radio" id="answer-options-check-<%=i%>" value="1">             
+                      <label class="question-answer-option" for="answer-options-check-<%=i%>"> <%=answer.text%> </label>
+                    </div>
+                    
+    
+                    </div>
+                  </div>
+              <% } %>
+              <% } else { %>
+              <% if(question.id == answer.question_id){ %>
+              <div class="form-group">
+              <label class="col-md-4" for="answer-options-check-<%=i%>"> <%=answer.text%> </label>            
+              <div class="col-md-8"> 
+                <label class="radio-inline" for="radios-0">
+                  <input type="radio" name="radios" id="radio-question-<=%question.id>-answer-<%=i%>" value="1" checked="checked">
+                  sehr gut
+                </label> 
+                <label class="radio-inline" for="radios-1">
+                  <input type="radio" name="radios" id="radio-question-<=%question.id>-answer-<%=i%>" value="2">
+                  gut
+                </label> 
+                <label class="radio-inline" for="radios-2">
+                  <input type="radio" name="radios" id="radio-question-<=%question.id>-answer-<%=i%>" value="3">
+                  mäßig
+                </label> 
+                <label class="radio-inline" for="radios-3">
+                  <input type="radio" name="radios" id="radio-question-<=%question.id>-answer-<%=i%>" value="4">
+                  schlecht
+                </label>
+                <label class="radio-inline" for="radios-4">
+                  <input type="radio" name="radios" id="radio-question-<=%question.id>-answer-<%=i%>" value="5">
+                  sehr schlecht
+                </label>
+              </div>
+              
             </div>
-            <div class="radio">
-              <label for="answer-options-radio-1">
-                <input type="radio" name="answer-options-radio" id="answer-options-radio-1" value="2">
-                Option two
-              </label>
-            </div>
-            <div class="radio">
-              <label for="answer-options-radio-2">
-                <input type="radio" name="answer-options-radio" id="answer-options-radio-2" value="3">
-                Option three
-              </label>
-            </div>
-            <div class="radio">
-              <label for="answer-options-radio-3">
-                <input type="radio" name="answer-options-radio" id="answer-options-radio-3" value="4">
-                Option four
-              </label>
-            </div>
-            <div class="radio">
-              <label for="answer-options-radio-4">
-                <input type="radio" name="answer-options-radio" id="answer-options-radio-4" value="5">
-                Option five
-              </label>
-            </div>
-            </div>
-          </div>
-          
+            <% } %>
+              <% } %>
+          <% } %>
           </fieldset>
           </form>
 
     </div>
+     <% } %>
    </div>
 
