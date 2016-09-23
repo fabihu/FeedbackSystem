@@ -47,5 +47,10 @@ router.get('/get-questions/', function(req, res, next) {
   });  
 });
 
+router.get('/receive-answers/', function(req, res, next) {
+
+
+})
+
 
 module.exports = router;
