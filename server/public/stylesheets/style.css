@@ -12,6 +12,33 @@ a {
   color: #00B7FF;
 }
 
+.invis {
+  visibility: hidden;
+}
+
+.button-next {
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 400!important;
+    color: #ffd500!important;
+    font-size: 20px!important;
+    padding: 5px 20px 5px 20px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    border: 0.1em solid #ffd500;
+    text-decoration: none!important;
+    background: #912584;
+    letter-spacing: 1px;
+    text-align: center;
+    float: right;
+  }
+
+.container {
+padding-left: 0px;
+padding-right: 0px;
+}
+  
+
 .main-color {
 	background-color: #912584;
 	opacity: 1;
