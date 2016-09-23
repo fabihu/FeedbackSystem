@@ -33,9 +33,8 @@ FeedbackSystem.LoginController = (function() {
 
 						$('#main-container').empty();
 						$('#main-container').append(data);
-						$(document).trigger('initEval');
-						
-						console.log('Server responded with : ', data);
+						$(document).trigger('initControls');
+						$(document).trigger('fadeInContainer');						
 					});
 				} else {
 					window.alert("Reise-ID oder Passwort ungültig");
