@@ -1,0 +1,23 @@
+	<div class="col-md-12 panel panel-default" id="question-details-<%=question_id%>">
+		<div class="panel-body">
+		<table class="table">
+		<thead>
+			<th></th>       	
+	    	<th>Antwort-ID</th>
+	     	<th>Antwort-Option</th>
+	    </thead>
+	    <tb>
+		<% for (var index in answers) {%>
+		<% var answer = answers[index]; %>			
+		  <tr>
+		  	<td><input type="checkbox" class="checkthis" /></td>
+		  	<td><%=answer.id%></td>
+			<td><%=answer.text%></td>				
+		  </tr>
+	
+		<% } %> 
+		</tb>
+		</table>
+		</div>  
+	
+</div>
