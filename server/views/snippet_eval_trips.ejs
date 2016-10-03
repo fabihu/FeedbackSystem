@@ -1,0 +1,89 @@
+   <h2>Reisen verwalten</h2>
+  <div class="col-md-10 container">
+  	<div class="row col-md-6">
+  		<button href="#" class='btn btn-info btn-s btn-modal-new-trip' data-toggle="modal" data-target="modal-new-trip"><span class="glyphicon glyphicon-plus"></span> Neue Reise anlegen</button>
+	</div>
+    <div class="row col-md-10 custyle">
+    <table class="table table-striped custab">
+    <thead>   
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Typ</th>
+            <th>Status</th>
+            <th>Anzahl Reisende</th>
+            <th>Passwort</th>
+            <th class="text-center"></th>
+        </tr>
+    </thead>
+    	<% for (var index in trips) {%>
+    	<% var trip = trips[index]; %>
+            <tr id="trip-row-<%=trip.id%>">
+                <td><%=trip.id%></td>
+                <td><%=trip.name%></td>
+                <td><%=trip.type%></td>
+                <td><%=trip.status%></td>
+                <td><%=trip.count_travellers%></td>
+                <td><%=trip.password%></td>
+              
+                <td class="text-center">
+                  <a href="#" class='btn btn-info   btn-xs btn-edit-trip'   id="btn-edit-trip-<%=trip.id%>" data-trip-id="<%=trip.id%>"><span class="glyphicon glyphicon-edit"></span></a>
+                  <a href="#" class="btn btn-danger btn-xs btn-delete-trip" id="btn-delete-trip-<%=trip.id%>" data-trip-id="<%=trip.id%>"><span class="glyphicon glyphicon-remove"></span></a>
+                </td>
+
+            </tr>
+        <% } %>             
+    </table>
+    </div>
+</div>
+
+<div id="modal-new-trip" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Neue Reise anlegen</h4>
+      </div>
+      <div class="modal-body">
+        
+        <form>
+          <div class="form-group">
+            <label for="new-trip-id">ID</label>
+            <input type="text" class="form-control" id="new-trip-id" disabled >
+          </div>
+
+          <div class="form-group">
+            <label for="new-trip-name">Name</label>
+            <input type="text" class="form-control" id="new-trip-name">
+          </div>
+
+          <div class="form-group">  
+           <div class="form-group">
+              <label for="new-trip-type">Kategorie</label>
+              <select class="form-control" id="new-trip-type">
+                
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+           <label for="new-trip-count-travellers">Anzahl Reisende</label>
+            <input type="number" class="form-control" id="new-trip-count-travellers">
+          </div>
+
+          <div class="form-group">
+           <label for="new-trip-password">Passwort</label>
+            <input type="text" class="form-control" id="new-trip-password">
+          </div>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-modal-cancel" id="btn-modal-cancel-new-trip" data-dismiss="modal">Abbrechen</button>
+        <button type="button" class="btn btn-default btn-modal-save" id="btn-modal-save-new-trip" data-dismiss="modal">Speichern</button>
+      </div>
+    </div>
+
+  </div>
+</div>  
