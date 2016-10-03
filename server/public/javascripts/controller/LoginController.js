@@ -26,7 +26,7 @@ FeedbackSystem.LoginController = (function() {
 			var user_password = $txtUserPassword.val()
 			
 			$.post("/check-login/", { id: user_id, password: user_password }, function(data){							
-     			console.log('Server responded with : ', data);
+     			
       			var credentials_ok = data;
 				if(credentials_ok){
 					$.get('/get-questions/', function( data ) {
@@ -34,7 +34,8 @@ FeedbackSystem.LoginController = (function() {
 						$('#main-container').empty();
 						$('#main-container').append(data);
 						$(document).trigger('initControls');
-						$(document).trigger('fadeInContainer');						
+						$(document).trigger('fadeInContainer');
+						$(document).trigger('getTripId', user_id);						
 					});
 				} else {
 					window.alert("Reise-ID oder Passwort ungültig");
