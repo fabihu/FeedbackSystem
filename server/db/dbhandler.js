@@ -55,7 +55,7 @@ getQuestions = function(callback){
   }
   if(dbResponse.length > 0){
       callback(null, dbResponse);
-    } 
+  } 
     connection.release();
 
   });
@@ -88,8 +88,139 @@ connection.query(sql, function(err, dbResponse) {
 
 }
 
+getTrips = function(callback){
+pool.getConnection(function(err, connection) {
+
+var sql = 'SELECT * FROM trip';
+  
+connection.query(sql, function(err, dbResponse) {
+    
+  if(err) {
+    console.log(err);
+    callback(err, null);    
+    return;
+  }
+  if(dbResponse.length > 0){    
+    callback(null, dbResponse);    
+  }
+  connection.release();
+  
+});
+
+ 
+});
+
+}
+
+insertAnswers = function(answers){   
+  pool.getConnection(function(err, connection) {
+    for(var index in answers){ 
+      var answer = answers[index];     
+      var query = connection.query('INSERT INTO answer SET ?', answer, function(err, result) {
+      if(err){
+        console.log(err);
+      }
+    });
+   
+   
+    }
+    connection.release();
+  }); 
+}
+
+insertNewTrip = function(trip, callback){  
+pool.getConnection(function(err, connection) {           
+  var query = connection.query('INSERT INTO trip SET ?', trip, function(err, result) {
+    if(err){
+      console.log(err);
+    }
+    callback(err);
+  });
+  connection.release();
+}); 
+
+}
+
+getAnswersForQuestion = function(question_id, callback){
+  pool.getConnection(function(err, connection) {
+    
+  if (err) console.log(err);
+  var sql = 'SELECT * FROM answer_options WHERE question_id = ' + question_id;
+  connection.query(sql, function(err, dbResponse) {
+  if(err) {
+    console.log(err);
+    callback(err, null);    
+    return;
+  }
+  if(dbResponse.length > 0){
+      callback(null, dbResponse);
+  } 
+    connection.release();
+
+  });
+
+  });
+}
+
+getTravelTypes = function(callback){
+  pool.getConnection(function(err, connection) {
+    
+  if (err) console.log(err);
+  var sql = 'SELECT * FROM travel_type';
+  connection.query(sql, function(err, dbResponse) {
+  if(err) {
+    console.log(err);
+    callback(err, null);    
+    return;
+  }
+  if(dbResponse.length > 0){
+      callback(null, dbResponse);
+  } 
+    connection.release();
+
+  });
+
+  });
+}
+
+deleteTrip = function(trip_id, callback){
+  pool.getConnection(function(err, connection) {    
+
+  var query = connection.query('DELETE FROM trip WHERE id = ?', trip_id, function(err, result) {
+    if(err){
+      console.log(err);
+    }
+    callback();
+  });
+  connection.release();
+
+  });
+}
+
+updateTrip = function(trip_id, data, callback){
+   pool.getConnection(function(err, connection) {
+     
+  var query = connection.query('UPDATE trip SET ? WHERE id=?' , [data, trip_id], function(err, result) {
+  
+    if(err){
+      console.log(err);
+    }
+  });
+  callback(err);
+  console.log(query.sql);
+  connection.release();
+
+  });
+}
 
 exports.init = init;
 exports.checkLoginCredentials = checkLoginCredentials;
 exports.getQuestions = getQuestions;
 exports.getAnswers = getAnswers;
+exports.getTrips = getTrips;
+exports.insertAnswers = insertAnswers;
+exports.insertNewTrip = insertNewTrip;
+exports.getAnswersForQuestion = getAnswersForQuestion;
+exports.getTravelTypes = getTravelTypes;
+exports.deleteTrip = deleteTrip;
+exports.updateTrip = updateTrip;
