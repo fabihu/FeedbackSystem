@@ -4,9 +4,15 @@ FeedbackSystem.MainController = (function() {
 	//Initialisiert alle anderen notwendigen Controller 
 	init = function() {				
 		FeedbackSystem.LoginController.init();
-		FeedbackSystem.EvalController.init();					
+		FeedbackSystem.SurveyController.init();
+								
+	},
+
+	initEval = function() {
+		FeedbackSystem.EvalController.init();
 	};
 
+	that.initEval = initEval;
 	that.init = init;	
 	return that;
 }());
