@@ -6,8 +6,7 @@ var async = require('async');
 /* GET home page. */
 router.get('/', function(req, res, next) {
   dbhandler.init();
-  res.render('login', { title: 'Express' });
-  
+  res.render('login', { title: 'Express' });  
 })
 
 router.post('/check-login/', function(req, res, next) {
@@ -38,18 +37,23 @@ router.get('/get-questions/', function(req, res, next) {
   },
   // optional callback
   function(err, result) {
-  console.log(result);
+  
     if(err) {
       console.log("Error: " + err);      
     } else {
-      res.render('eval', {questions: result.questions, answers: result.answers});     
+      res.render('survey', {questions: result.questions, answers: result.answers});     
     }    
   });  
 });
 
-router.get('/receive-answers/', function(req, res, next) {
+router.post('/receive-answers/', function(req, res, next) {
+  var answers = req.body.data;  
+  dbhandler.insertAnswers(answers);
+  res.send("jup");
+})
 
-
+router.get('/eval/', function(req, res, next) {
+  res.render('eval');  
 })
 
 
