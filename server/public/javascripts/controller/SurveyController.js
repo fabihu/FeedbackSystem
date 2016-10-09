@@ -37,8 +37,9 @@ FeedbackSystem.SurveyController = (function() {
 
   var question_id =  $(this).data("question-id");
   var question_type = $(this).data("question-type");
-     
-  onFadeInContainer(question_id+1);
+  
+  var next_question_id = $(this).parent().next('.container').data('question-id');    
+  onFadeInContainer(next_question_id);
 
   if(question_type == 0) {
     var $checkboxAnswer = $("input[name=answer-check-radio-"+ question_id+"]");  
@@ -92,8 +93,7 @@ FeedbackSystem.SurveyController = (function() {
         console.log("server received answers");
     });      
   }
-
-  console.log(collection_answers);
+ 
   $('#container-questions-' + question_id).remove();
   });
   
