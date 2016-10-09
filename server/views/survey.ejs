@@ -4,9 +4,9 @@
       <% var question = questions[i]; %>
      
       <% if (i==0){ %>
-        <div class="container main-text" id='container-questions-<%=question.id%>'>
+        <div class="container main-text" id='container-questions-<%=question.id%>' data-question-id='<%=question.id%>'>
       <% } else { %>
-        <div class="container main-text invis" id='container-questions-<%=question.id%>'>
+        <div class="container main-text invis" id='container-questions-<%=question.id%>' data-question-id='<%=question.id%>'>
       <% } %>
       
       <% if (question.type != 3){ %>
