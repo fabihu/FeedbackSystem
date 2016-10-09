@@ -1,27 +1,191 @@
  <h2>Fragen verwalten</h2>
  <div class="col-md-10 container">
-    <div class="row col-md-10 custyle">
+    <div class="col-md-10 container">
+    <div class="row col-md-6">
+        <button class='btn btn-info btn-s btn-modal-new-question' data-toggle="modal" data-target="modal-new-question"><span class="glyphicon glyphicon-plus"></span>  Neue Frage anlegen</button>
+    </div>
+    <div class="row custyle">
     <table class="table table-striped custab">
     <thead>   
         <tr>
             <th>ID</th>
             <th>Frage</th>
             <th>Typ</th>
-            <th class="text-center">Action</th>
+            <th>Aktiv</th>
+            <th class="text-center">Action</th>            
         </tr>
     </thead>
+    <tbody>
     	<% for (var index in questions) {%>
     	<% var question = questions[index]; %>
+      <% if(question.type != 3){ %>
             <tr id="question-row-<%=question.id%>" data-question-id="<%=question.id%>">
                 <td><%=question.id%></td>
                 <td><%=question.question%></td>
                 <td><%=question.type%> </td>
+                <% if(question.active == 1){%>
+                <td><input class="btn-question-active" type="checkbox" name="btn-question-active-<%=question.id%>" data-question-id="<%=question.id%>" checked></td>
+                 <% } else { %>
+                <td><input class="btn-question-active" type="checkbox" name="btn-question-active-<%=question.id%>" data-question-id="<%=question.id%>"></td>
+                 <% } %>
                 <td class="text-center">
-                    <a href="#" class='btn btn-info btn-xs'><span class="glyphicon glyphicon-edit"></span></a>
-                    <a href="#" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
-                    <a href="#" class='btn btn-info btn-xs btn-detail' id="btn-detail-question-<%=question.id%>" data-question-id="<%=question.id%>" data-detail-active="false"><span class="glyphicon glyphicon-chevron-down"></span></a></td>
+                    <a class='btn btn-info btn-xs btn-modal-edit-question' data-toggle="modal" data-target="modal-edit-question" data-question-id="<%=question.id%>"><span class="glyphicon glyphicon-edit"></span></a>
+                    <a class="btn btn-danger btn-xs btn-delete-question" id="btn-delete-question-<%=question.id%>" data-question-id="<%=question.id%>"><span class="glyphicon glyphicon-remove"></span></a>
+                    <a class='btn btn-info btn-xs btn-detail' id="btn-detail-question-<%=question.id%>" data-question-id="<%=question.id%>" data-detail-loaded="false" data-toggle="collapse"
+                    data-target="#collapse-detail-question-<%=question.id%>"><span class="glyphicon glyphicon-chevron-down"></span></a>
+                </td>
+                
             </tr>
-        <% } %>             
+            <tr class="row-no-border-top">
+              <td colspan="6">
+                <div id="collapse-detail-question-<%=question.id%>" class="collapse"> </div>
+              </td>
+           </tr>
+           <% } %>
+        <% } %>
+    </tbody>             
     </table>
     </div>
+</div>
+
+<div id="modal-new-question" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    
+    <div class="modal-content" id="modal-content-question">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 id="modal-text-header" class="modal-title">Neue Frage anlegen</h4>
+      </div>
+      <div class="modal-body" id="modal-body-new-question">
+        
+        <form id="form-new-question" class="modal-body-new-question">
+          <div class="form-group">
+            <label for="new-question-id">ID</label>
+            <input type="text" class="form-control" id="new-question-id" disabled >
+          </div>
+
+          <div class="form-group">
+            <label for="new-question-text">Fragetext</label>
+            <input type="text" class="form-control" id="new-question-text">
+          </div>           
+          <div class="form-group">
+              <label for="new-question-answer-id">Antwortoption-ID</label>
+              <input type="text" class="form-control" id="new-question-answer-id" disabled >
+          </div>
+                 
+
+          <div class="form-group">
+           <label for="new-question-type">Fragetyp</label>
+            <select class="form-control" id="new-question-type">
+                <option value="0">nominal</option>
+                <option value="1">ordinal</option>
+                <option value="3">Freitext</option>
+              </select>
+          </div>
+        </form>
+
+       
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-modal-cancel" id="btn-modal-cancel-new-question" data-dismiss="modal">Abbrechen</button>
+        <button type="button" class="btn btn-default btn-modal-next-new-question" id="btn-modal-next-new-question">Weiter</button>
+      </div>
+    </div>
+
+    <div class="modal-content hidden" id="modal-content-answer">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 id="modal-text-header" class="modal-title">Neue Frage anlegen</h4>
+      </div>
+      <div class="modal-body" id="modal-body-new-answer">
+     <form id="form-new-answer-option">
+            <div class="container">
+              <p>Bitte geben Sie jetzt die vom Nutzer auszuwählenden Frageoptionen für folgende Frage an: </p>
+              <h4 id="new-question-text"></h4>
+
+            </div>
+            <table id="table-new-answer-option" class="table table-answer-options">
+            <thead>
+                <tr>                    
+                    <td>ID</td>
+                    <td>Text</td>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>
+                        <input type="text" name="input-new-answer-option-id"  class="form-control" disabled/>
+                    </td>
+                    <td>
+                        <input type="text" name="input-new-answer-option-text" class="form-control input-new-answer-option-text" />
+                    </td>                   
+                    <td><a class="deleteRow"></a>
+        
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2">
+                        <input type="button" class="btn btn-default btn-block button-add-row-answer-option" id="button-add-row-answer-option" value="Antwortoption hinzufügen" />
+                    </td>
+                </tr>
+                <tr>
+                </tr>
+                
+            </tfoot>
+            
+        </table>
+        
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-modal-cancel" id="btn-modal-cancel-new-answer-option" data-dismiss="modal">Abbrechen</button>
+        <button type="button" class="btn btn-default btn-modal-save-new-answer-option" id="btn-modal-save-new-answer-option" data-dismiss="modal">Speichern</button>
+      </div>
+    </div>
+
+  </div>
 </div>  
+
+<div id="modal-edit-question" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    
+    <div class="modal-content" id="modal-content-edit-question">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 id="modal-edit-text-header" class="modal-title">Frage bearbeiten</h4>
+      </div>
+      <div class="modal-body" id="modal-body-edit-question">
+      <div class="form-group">
+            <label for="edit-question-id">ID</label>
+            <input type="text" class="form-control" id="edit-question-id" disabled>
+     </div>
+      <div class="form-group">
+            <label for="edit-question-text">Fragetext</label>
+            <input type="text" class="form-control" id="edit-question-text">
+     </div>
+     <div class="form-group">
+           <label for="edit-question-type">Fragetyp</label>
+            <select class="form-control" id="edit-question-type">
+                <option value="0">nominal</option>
+                <option value="1">ordinal</option>
+                <option value="3">Freitext</option>
+            </select>
+     </div>
+
+
+     </div>
+     <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-modal-edit-cancel-question" id="btn-modal-cancel-edit-option-question" data-dismiss="modal">Abbrechen</button>
+        <button type="button" class="btn btn-default btn-modal-save-edit-question" id="btn-modal-save-edit-question" data-dismiss="modal">Speichern</button>
+      </div>
+    </div>
+    </div>
+
+  </div>
+</div> 

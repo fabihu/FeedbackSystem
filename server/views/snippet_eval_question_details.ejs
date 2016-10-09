@@ -1,19 +1,23 @@
-	<div class="col-md-12 panel panel-default" id="question-details-<%=question_id%>">
+	<div class="row panel background-light-yellow" id="question-details-<%=question_id%>">
 		<div class="panel-body">
-		<table class="table">
+		<table class="table background-light-yellow">
 		<thead>
-			<th></th>       	
-	    	<th>Antwort-ID</th>
 	     	<th>Antwort-Option</th>
+	     	<th class="text-center">Action</th>
 	    </thead>
 	    <tb>
 		<% for (var index in answers) {%>
 		<% var answer = answers[index]; %>			
-		  <tr>
-		  	<td><input type="checkbox" class="checkthis" /></td>
-		  	<td><%=answer.id%></td>
-			<td><%=answer.text%></td>				
+		  <tr id="answer-row-<%=answer.id%>">
+			<td><%=answer.text%></td>
+			 <td class="text-center">
+		   		<a class='btn btn-info btn-xs btn-modal-edit-answer' data-toggle="modal" data-target="modal-edit-answer" data-answer-id='<%=answer.id%>' data-question-id='<%=answer.question_id%>'><span class="glyphicon glyphicon-edit"></span></a>
+		   		<a class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+		   	</td>				
 		  </tr>
+		 
+		  
+		 
 	
 		<% } %> 
 		</tb>
@@ -21,3 +25,36 @@
 		</div>  
 	
 </div>
+
+<div id="modal-edit-answer" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    
+    <div class="modal-content" id="modal-content-edit-answer">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 id="modal-edit-text-header" class="modal-title">Antwort bearbeiten</h4>
+      </div>
+      <div class="modal-body" id="modal-body-edit-answer">
+      <div class="form-group">
+            <label for="edit-answer-id">ID</label>
+            <input type="text" class="form-control" id="edit-answer-id" disabled>
+     </div>
+     <div class="form-group" hidden>
+            <label for="edit-question-id">Frage-ID</label>
+            <input type="text" class="form-control" id="edit-question-id" disabled>
+     </div>
+      <div class="form-group">
+            <label for="edit-answer-text">Antworttext</label>
+            <input type="text" class="form-control" id="edit-answer-text">
+     </div>
+
+     </div>
+     <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-modal-edit-cancel-answer" id="btn-modal-cancel-edit-option-answer" data-dismiss="modal">Abbrechen</button>
+        <button type="button" class="btn btn-default btn-modal-save-edit-answer" id="btn-modal-save-edit-answer" data-dismiss="modal">Speichern</button>
+      </div>
+    </div>
+    </div>
+
+  </div>
