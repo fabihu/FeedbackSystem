@@ -26,6 +26,28 @@ router.get('/answers/', function(req, res, next) {
   }); 
 });
 
+router.get('/assignment/', function(req, res, next) {
+  dbhandler.getTrips(function(err, dbTrips){
+    dbhandler.getQuestionsForTrips(dbTrips, function(err, dbQuestions){ 
+      dbhandler.getAllActiveQuestions(function(err, dbActiveQuestions){
+        //TODO: change response format of db methods
+        for (var index in dbQuestions){
+          var question_set = dbQuestions[index];
+          //console.log("set:", question_set[0][0]);
+          for(var index in question_set){
+            var question_row = question_set[index];
+            var cleared_array = removeDuplicates(question_row, dbActiveQuestions);
+
+          }
+          console.log("clear:", cleared_array);
+        }
+
+        res.render('snippet_eval_assignment',  {trips: dbTrips, questions: dbQuestions, active_questions: cleared_array});
+      });       
+    }); 
+  });   
+});
+
 router.post('/detail-questions/', function(req, res, next) {
   var question_id = req.body.id;  
   dbhandler.getAnswersForQuestion(question_id, function(err, dbAnswer){  	 
@@ -76,6 +98,13 @@ router.post('/delete-question/', function(req, res, next) {
   }); 
 });
 
+router.post('/delete-answer/', function(req, res, next) {
+  var answer_id = req.body.id;
+  dbhandler.deleteAnswer(answer_id, function(err){     
+     res.send('answer deleted');
+  }); 
+});
+
 router.post('/update-trip/', function(req, res, next) {
   var trip_id = req.body.id;
   var data = req.body.data;
@@ -119,7 +148,17 @@ router.post('/change-active-question/', function(req, res, next) {
   }); 
 });
 
-
+removeDuplicates = function(a, b){
+ for (var i = 0, len = a.length; i < len; i++) { 
+        for (var j = 0, len2 = b.length; j < len2; j++) { 
+            if (a[i].question_id === b[j].question_id) {
+                b.splice(j, 1);
+                len2=b.length;
+            }
+        }
+    }
+ return b;
+}
 
 
 module.exports = router;
