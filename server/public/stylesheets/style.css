@@ -12,6 +12,23 @@ a {
 
   color: #3c3c3e;
 }
+
+.list-group-item {
+    text-align: left!important;
+}
+
+.dual-list .list-group {
+    margin-top: 8px;
+}
+.list-left li, .list-right li {
+    cursor: pointer;
+}
+.list-arrows {
+    padding-top: 100px;
+}
+.list-arrows button {
+    margin-bottom: 20px;
+}
  
 tr.row-no-border-top td{
    border: 0!important;
