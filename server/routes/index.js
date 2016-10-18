@@ -23,13 +23,13 @@ router.post('/check-login/', function(req, res, next) {
 router.get('/get-questions/', function(req, res, next) {
   async.parallel({
       questions: function(callback) {
-          dbhandler.getQuestions(function(err, dbQuestions){
+          dbhandler.getQuestionsForTrip(trip_id, function(err, dbQuestions){
           if(err) {callback(err, null); return;}
           callback(null, dbQuestions);
           });
       },
       answers: function(callback) {
-          dbhandler.getAnswers(function(err, dbAnswers){
+          dbhandler.getAnswersForTrip(trip_id, function(err, dbAnswers){
           if(err) {callback(err, null); return;}
           callback(null, dbAnswers);
           });   
@@ -49,7 +49,7 @@ router.get('/get-questions/', function(req, res, next) {
 
 router.post('/receive-answers/', function(req, res, next) {
   var answers = req.body.data;  
-  dbhandler.insertAnswers(answers);
+  dbhandler.insertUserAnswers(answers);
   res.send("jup");
 })
 
