@@ -1,10 +1,21 @@
-  var mysql      = require('mysql');
-  var pool   = mysql.createPool({ 
+var async = require('async');
+var mysql      = require('mysql');
+var pool   = mysql.createPool({ 
     host     : 'localhost',
     user     : 'root',
     password : '',
     database : 'database'
-  });
+});
+
+var TABLE_QUESTIONS = 'questions';
+var TABLE_ANSWERS = 'answers';
+var TABLE_USER_ANSWERS = 'user_answers';
+var TABLE_ANSWER_COLLECTION = 'answer_collection';
+var TABLE_QUESTION_COLLECTION = 'question_collection';
+var TABLE_ANSWER_SET = 'answer_set';
+var TABLE_QUESTION_SET = 'question_set';
+var TABLE_TRIPS = 'trip';
+var TABLE_TRAVEL_TYPE = 'travel_type';
 
 init = function(){ 
   console.log('DB init');  
@@ -25,7 +36,7 @@ checkLoginCredentials = function(user_id, user_password, callback){
  
   pool.getConnection(function(err, connection) {
     
-  var sql = 'SELECT * FROM trip WHERE id = ' + connection.escape(user_id) + ' AND password = ' + connection.escape(user_password);
+  var sql = 'SELECT * FROM ' + TABLE_TRIPS + ' WHERE id = ' + connection.escape(user_id) + ' AND password = ' + connection.escape(user_password);
   connection.query(sql, function(err, dbResponse) {
   if(err) {
     console.log(err);    
@@ -46,7 +57,7 @@ getQuestions = function(callback){
   pool.getConnection(function(err, connection) {
     
   if (err) console.log(err);
-  var sql = 'SELECT * FROM questions';
+  var sql = 'SELECT * FROM ' + TABLE_QUESTIONS;
   connection.query(sql, function(err, dbResponse) {
   if(err) {
     console.log(err);
@@ -63,11 +74,81 @@ getQuestions = function(callback){
   });
 }
 
+getAllActiveQuestions = function(callback){
+ pool.getConnection(function(err, connection) {   
+ 
+  connection.query('SELECT * FROM ' + TABLE_QUESTION_COLLECTION +' WHERE flag_history="active"', function(err, dbResponse) {
+  if(err) {
+    console.log(err);
+    callback(err, null);    
+    return;
+  } 
+  callback(null, dbResponse);
+  
+  connection.release();
+
+  });
+
+  });
+} 
+
+
+getQuestionsForTrips = function(trips, callback){
+  async.mapSeries(trips, function(trip, callback){
+    getQuestionsForTrip(trip.id, function(err, dbResponse){
+      if (err) console.log(err);              
+      callback(err, dbResponse);
+    }); 
+  }, function (err, result){
+    if (err) console.log(err);    
+    callback(null, result);
+  });
+}
+
+getQuestionsForTrip  = function(trip_id, callback){
+  pool.getConnection(function(err, connection) {     
+  async.waterfall([function (callback){    
+    connection.query('SELECT * FROM ' + TABLE_QUESTION_SET + ' WHERE trip_id = ' + trip_id, function(err, dbResponse) {
+      if(err) {
+        console.log(err);       
+      }
+      callback(null, dbResponse);    
+    });
+
+  }, function (result, callback){
+    
+    async.mapSeries(result, function(question_row, callback){
+     connection.query('SELECT * FROM ' + TABLE_QUESTION_COLLECTION + ' WHERE question_id = ? AND question_version = ?',[question_row.question_id, question_row.question_version],  function(err, dbResponse) {
+      if (err) console.log(err);     
+      callback(err, dbResponse);
+     });
+
+    }, function(err, dbQuestions){      
+      if (err) console.log("Error: ", err);          
+      callback(null, dbQuestions);
+    });
+
+  }], function (err, result){
+    if(err) console.log(err);      
+    callback(null,result);
+  });
+  
+  connection.release();
+
+  });
+
+ 
+}
+
+getAnswersForTrip  = function(trip_id, callback){
+
+}
+
 getAnswers = function(callback){
  
 pool.getConnection(function(err, connection) {
 
-var sql = 'SELECT * FROM answer_options';
+var sql = 'SELECT * FROM ' + TABLE_ANSWERS;
   
 connection.query(sql, function(err, dbResponse) {
     
@@ -91,7 +172,7 @@ connection.query(sql, function(err, dbResponse) {
 getTrips = function(callback){
 pool.getConnection(function(err, connection) {
 
-var sql = 'SELECT * FROM trip';
+var sql = 'SELECT * FROM ' + TABLE_TRIPS;
   
 connection.query(sql, function(err, dbResponse) {
     
@@ -112,11 +193,11 @@ connection.query(sql, function(err, dbResponse) {
 
 }
 
-insertAnswers = function(answers){   
+insertUserAnswers = function(answers){   
   pool.getConnection(function(err, connection) {
     for(var index in answers){ 
     var answer = answers[index];     
-    var query = connection.query('INSERT INTO answer SET ?', answer, function(err, result) {
+    var query = connection.query('INSERT INTO ' + TABLE_USER_ANSWERS + ' SET ?', answer, function(err, result) {
       if(err){
         console.log(err);
       }
@@ -129,24 +210,101 @@ insertAnswers = function(answers){
 
 insertNewTrip = function(trip, callback){  
 pool.getConnection(function(err, connection) {           
-  var query = connection.query('INSERT INTO trip SET ?', trip, function(err, result) {
+  var query = connection.query('INSERT INTO ' + TABLE_TRIPS + ' SET ?', trip, function(err, result) {
     if(err){
       console.log(err);
     }
-    callback(err);
+
+    async.parallel({
+      questions: function(callback) {
+         insertStandardQuestionsIntoSet(function(){
+           callback(err);
+         });
+      },
+      answers: function(callback) {
+         insertStandardAnswersIntoSet(function(){
+          callback(err);
+        });
+      }  
+      
+  },  
+  function(err, results) {
+     callback();
   });
   connection.release();
+  }); 
 }); 
+}
 
+insertStandardQuestionsIntoSet = function(callback){
+    async.timesSeries(6, function(n, next) {
+      insertQuestionsIntoSet(n, function(err) {
+        next(err);
+      });
+    }, function(err) {
+       callback(err);
+    });
+} 
+insertStandardAnswersIntoSet = function(outerCallback){
+
+  async.timesSeries(6, function(n, callback) {
+
+    getAnswersForQuestion(n+1, function(err, dbResponse) {
+        
+    var answer_ids = [];
+    for (var index in dbResponse){
+      var temp_id = dbResponse[index].id;
+      answer_ids.push(temp_id);          
+    }
+    console.log("Answer ID Array: " + answer_ids);
+    
+    async.eachSeries(answer_ids, function(id, innerCallback){
+          insertAnswersIntoSet(id, function(err){
+            console.log(id + " inserted into database");
+            innerCallback(err);
+          });
+      }, function(err) {
+       console.log("Error: " + err);       
+       callback(err);
+      });        
+    });
+  
+  }, function(err) {
+    outerCallback(err);
+  });
+
+}
+
+
+insertQuestionsIntoSet = function(id, callback){
+  pool.getConnection(function(err, connection) {
+   var query = connection.query('INSERT INTO ' + TABLE_QUESTION_SET + ' (trip_id, question_id, question_version) VALUES ((SELECT max(id) FROM trip), ' + (id + 1) + ', (SELECT max(question_version) FROM '+TABLE_QUESTION_COLLECTION + ' WHERE question_id=' + (id + 1) +'))', function(err) {    
+           if(err)console.log(err);
+           callback(err);
+   });
+  }); 
+}
+
+insertAnswersIntoSet = function(id, callback){
+  pool.getConnection(function(err, connection) {
+   var query = connection.query('INSERT INTO ' + TABLE_ANSWER_SET + ' (trip_id, answer_id, answer_version) VALUES ((SELECT max(id) FROM trip), ' + id + ', (SELECT max(answer_version) FROM '+TABLE_ANSWER_COLLECTION + ' WHERE answer_id=' + id +'))', function(err) {
+    if(err)console.log(err);
+    callback(err);
+   });
+   connection.release();      
+  }); 
 }
 
 insertNewQuestion = function(question, callback){
 pool.getConnection(function(err, connection) {           
-  var query = connection.query('INSERT INTO questions SET ?', question, function(err, result) {
+  var query = connection.query('INSERT INTO ' + TABLE_QUESTIONS + ' SET ?', question, function(err, result) {    
     if(err){
       console.log(err);
     }
-    callback(err, result.insertId);
+    var question_id = result.insertId;
+    connection.query('INSERT INTO ' + TABLE_QUESTION_COLLECTION + ' (question_id, question_version, text, type, flag_active, flag_history) VALUES (?, 1, ?, ?, 1, "active")', [question_id, question.text, question.type], function(err, result) {
+      callback(err, question_id);
+    });
   });
   connection.release();
 }); 
@@ -156,24 +314,50 @@ pool.getConnection(function(err, connection) {
 
 insertNewAnswerOptions = function(answer_options, callback){
 pool.getConnection(function(err, connection) {
-  for(var index in answer_options){
-  var option = answer_options[index];               
-  var query = connection.query('INSERT INTO answer_options SET ?', option, function(err, result) {
-  if(err){
-    console.log(err);
-  }
+ 
+  async.eachSeries(answer_options, function(option, callback){   
+   async.waterfall([ 
+      function(callback) {    
+      var query = connection.query('INSERT INTO ' + TABLE_ANSWERS + ' SET ?', option, function(err, result) {
+        if(err){
+          console.log(err);
+        }
+        var answer_id = result.insertId;
+        callback(null, answer_id, option) 
+      })   
+    },
+      function(answer_id, option, callback){
+      insertAnswerIntoCollection(answer_id, option, function(err){
+        callback(null);
+      });
+    }], function(err, result){
+      callback(err);
+    });
+  }, function(err){
+    if( err ){ console.log(err);}
+    callback();
   });
-  }
-  callback(err);
+  
   connection.release();
 });   
+}
+
+
+insertAnswerIntoCollection = function(id, option, callback){
+  console.log(option);
+   pool.getConnection(function(err, connection) {
+   var second_query = connection.query('INSERT INTO ' + TABLE_ANSWER_COLLECTION + ' (answer_id, answer_version, question_id, text, flag_history) VALUES (?, 1, ?, ?, "active")', [id, option.question_id, option.text], function(err) {
+         callback(err);
+       });
+   connection.release();
+  }); 
 }
 
 getAnswersForQuestion = function(question_id, callback){
   pool.getConnection(function(err, connection) {
     
   if (err) console.log(err);
-  var sql = 'SELECT * FROM answer_options WHERE question_id = ' + question_id;
+  var sql = 'SELECT * FROM ' + TABLE_ANSWERS + ' WHERE question_id = ' + question_id;
   connection.query(sql, function(err, dbResponse) {
   if(err) {
     console.log(err);
@@ -194,7 +378,7 @@ getTravelTypes = function(callback){
   pool.getConnection(function(err, connection) {
     
   if (err) console.log(err);
-  var sql = 'SELECT * FROM travel_type';
+  var sql = 'SELECT * FROM ' + TABLE_TRAVEL_TYPE;
   connection.query(sql, function(err, dbResponse) {
   if(err) {
     console.log(err);
@@ -214,24 +398,59 @@ getTravelTypes = function(callback){
 deleteTrip = function(trip_id, callback){
   pool.getConnection(function(err, connection) {    
 
-  var query = connection.query('DELETE FROM trip WHERE id = ?', trip_id, function(err, result) {
+  var query = connection.query('DELETE FROM ' + TABLE_TRIPS + ' WHERE id = ?', trip_id, function(err, result) {
     if(err){
       console.log(err);
     }
-    callback();
+    var second_query = connection.query('DELETE FROM ' + TABLE_QUESTION_SET + ' WHERE trip_id = ?', trip_id, function(err, result) {
+
+      var third_query = connection.query('DELETE FROM ' + TABLE_ANSWER_SET + ' WHERE trip_id = ?', trip_id, function(err, result) {
+        callback();
+      });
+    });
   });
   connection.release();
 
   });
 }
+
 deleteQuestion = function(question_id, callback){
   pool.getConnection(function(err, connection) {    
 
-  var query = connection.query('DELETE FROM questions WHERE id = ?', question_id, function(err, result) {
+  var query = connection.query('DELETE FROM ' + TABLE_QUESTIONS + ' WHERE id = ?', question_id, function(err, result) {
     if(err){
       console.log(err);
     }
-    connection.query('DELETE FROM answer_options WHERE question_id = ?', question_id, function(err, result) {
+    connection.query('DELETE FROM ' + TABLE_ANSWERS + ' WHERE question_id = ?', question_id, function(err, result) {
+      if(err){
+        console.log(err);
+      }
+      connection.query('UPDATE ' + TABLE_QUESTION_COLLECTION + ' SET flag_history = "history" WHERE question_id = ?', question_id, function(err, result) {
+      if(err){
+        console.log(err);
+      }
+      connection.query('UPDATE ' + TABLE_ANSWER_COLLECTION + ' SET flag_history = "history" WHERE question_id = ?', question_id, function(err, result) {
+      if(err){
+        console.log(err);
+      }
+      callback();
+      });
+      });
+    });
+  });
+  connection.release();
+
+  });
+}
+
+deleteAnswer = function(answer_id, callback){
+  pool.getConnection(function(err, connection) {    
+
+  var query = connection.query('DELETE FROM ' + TABLE_ANSWERS + ' WHERE id = ?', answer_id, function(err, result) {
+    if(err){
+      console.log(err);
+    }
+    connection.query('UPDATE ' + TABLE_ANSWER_COLLECTION + ' SET flag_history = "history" WHERE answer_id = ?', answer_id, function(err, result) {
       if(err){
         console.log(err);
       }
@@ -243,10 +462,11 @@ deleteQuestion = function(question_id, callback){
   });
 }
 
+
 updateTrip = function(trip_id, data, callback){
   pool.getConnection(function(err, connection) {
      
-  var query = connection.query('UPDATE trip SET ? WHERE id=?' , [data, trip_id], function(err, result) {
+  var query = connection.query('UPDATE ' + TABLE_TRIPS + ' SET ? WHERE id=?' , [data, trip_id], function(err, result) {
   
     if(err){
       console.log(err);
@@ -260,13 +480,19 @@ updateTrip = function(trip_id, data, callback){
 
 updateQuestion = function(question_id, data, callback){
   pool.getConnection(function(err, connection) {     
-  var query = connection.query('UPDATE questions SET ? WHERE id=?' , [data, question_id], function(err, result) {
-  
+  var query = connection.query('UPDATE ' + TABLE_QUESTIONS +' SET ? WHERE id=?' , [data, question_id], function(err, result) {    
     if(err){
       console.log(err);
     }
+    var second_query = connection.query('UPDATE ' + TABLE_QUESTION_COLLECTION +' AS Q SET flag_history = "history" WHERE question_id=? AND question_version=(SELECT max(question_version) FROM (SELECT * FROM ' + TABLE_QUESTION_COLLECTION +' AS Q1) AS Q2 WHERE question_id=?)' , [question_id, question_id], function(err, result) {
+     
+      var third_query = connection.query('INSERT INTO '+ TABLE_QUESTION_COLLECTION + ' (question_id, question_version, text, type, flag_active, flag_history) VALUES (?, (SELECT MAX(QC.question_version) FROM '+ TABLE_QUESTION_COLLECTION + ' QC WHERE question_id = ?)+1, ?, ?, 1, "active")',
+      [question_id, question_id, data.text, data.type], function(err, result) { 
+      
+        callback(err);   
+      });
+    });
   });  
-  callback(err); 
   connection.release();
 
   });
@@ -274,12 +500,19 @@ updateQuestion = function(question_id, data, callback){
 
 updateAnswer = function(answer_id, data, callback){
   pool.getConnection(function(err, connection) {     
-  var query = connection.query('UPDATE answer_options SET ? WHERE id=?' , [data, answer_id], function(err, result) {
+  var query = connection.query('UPDATE ' + TABLE_ANSWERS + ' SET ? WHERE id=?' , [data, answer_id], function(err, result) {
   
     if(err){
       console.log(err);
     }
-    callback(err); 
+  var second_query = connection.query('UPDATE ' + TABLE_ANSWER_COLLECTION +' AS A SET flag_history = "history" WHERE answer_id=? AND answer_version=(SELECT max(answer_version) FROM (SELECT * FROM ' + TABLE_ANSWER_COLLECTION +' AS A1) AS A2 WHERE answer_id=?)' , [answer_id, answer_id], function(err, result) {
+    console.log(err);
+    var third_query = connection.query('INSERT INTO '+ TABLE_ANSWER_COLLECTION + ' (answer_id, answer_version, question_id, text, flag_history) VALUES (?, (SELECT MAX(AC.answer_version) FROM '+ TABLE_ANSWER_COLLECTION + ' AC WHERE answer_id = ?)+1, ?, ?, "active")',
+      [answer_id, answer_id, data.question_id, data.text], function(err, result) { 
+        console.log(err);
+        callback(err);   
+    });
+  });
   });  
   connection.release();
 
@@ -290,7 +523,7 @@ changeActiveQuestion = function(question_id, question_status, callback){
   pool.getConnection(function(err, connection) {
   var active = (question_status == "true") ? 1:0;
   
-  var query = connection.query('UPDATE questions SET active=? WHERE id=?' , [active, question_id], function(err, result) {
+  var query = connection.query('UPDATE ' + TABLE_QUESTIONS + ' SET flag_active=? WHERE id=?' , [active, question_id], function(err, result) {
   
     if(err){
       console.log(err);
@@ -305,9 +538,11 @@ changeActiveQuestion = function(question_id, question_status, callback){
 exports.init = init;
 exports.checkLoginCredentials = checkLoginCredentials;
 exports.getQuestions = getQuestions;
+exports.getQuestionsForTrips = getQuestionsForTrips;
+exports.getAllActiveQuestions = getAllActiveQuestions;
 exports.getAnswers = getAnswers;
 exports.getTrips = getTrips;
-exports.insertAnswers = insertAnswers;
+exports.insertUserAnswers = insertUserAnswers;
 exports.insertNewTrip = insertNewTrip;
 exports.insertNewQuestion = insertNewQuestion;
 exports.getAnswersForQuestion = getAnswersForQuestion;
@@ -319,3 +554,4 @@ exports.insertNewAnswerOptions = insertNewAnswerOptions;
 exports.deleteQuestion = deleteQuestion;
 exports.updateQuestion = updateQuestion;
 exports.updateAnswer = updateAnswer;
+exports.deleteAnswer = deleteAnswer;
