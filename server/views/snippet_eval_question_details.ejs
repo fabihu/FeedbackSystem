@@ -12,7 +12,7 @@
 			<td><%=answer.text%></td>
 			 <td class="text-center">
 		   		<a class='btn btn-info btn-xs btn-modal-edit-answer' data-toggle="modal" data-target="modal-edit-answer" data-answer-id='<%=answer.id%>' data-question-id='<%=answer.question_id%>'><span class="glyphicon glyphicon-edit"></span></a>
-		   		<a class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+		   		<a class="btn btn-danger btn-xs btn-delete-answer" data-answer-id="<%=answer.id%>"><span class="glyphicon glyphicon-remove"></span></a>
 		   	</td>				
 		  </tr>
 		 

@@ -21,9 +21,9 @@
       <% if(question.type != 3){ %>
             <tr id="question-row-<%=question.id%>" data-question-id="<%=question.id%>">
                 <td><%=question.id%></td>
-                <td><%=question.question%></td>
+                <td><%=question.text%></td>
                 <td><%=question.type%> </td>
-                <% if(question.active == 1){%>
+                <% if(question.flag_active == 1){%>
                 <td><input class="btn-question-active" type="checkbox" name="btn-question-active-<%=question.id%>" data-question-id="<%=question.id%>" checked></td>
                  <% } else { %>
                 <td><input class="btn-question-active" type="checkbox" name="btn-question-active-<%=question.id%>" data-question-id="<%=question.id%>"></td>
