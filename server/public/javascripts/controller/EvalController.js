@@ -7,7 +7,7 @@ FeedbackSystem.EvalController = (function() {
 	
 	init = function() {				
 	 console.log("EvalController init");
-	 getPageContent('questions');				
+	 getPageContent('trip');				
 	 getTravelCategories();
 	 setClickListener();
 
@@ -115,7 +115,50 @@ FeedbackSystem.EvalController = (function() {
 			onSaveEditAnswer(e, this);						
 		});
 
-		
+		$('#dashboard-content').on('click', ".btn-delete-answer", function( e ){			
+			onDeleteAnswer(e, this);						
+		});
+
+		//Buttons for assignment
+		$('#dashboard-content').on('click', '.list-group .list-group-item', function () {
+            $(this).toggleClass('active');
+       	});
+
+        $('#dashboard-content').on('click','.list-arrows button', function () {
+                var $button = $(this), actives = '';
+                if ($button.hasClass('move-left')) {                	
+                    actives = $('.list-right ul li.active');
+                    actives.appendTo('.list-left ul');                    
+                    actives.remove();                   
+                } else if ($button.hasClass('move-right')) {
+                    actives = $('.list-left ul li.active');
+                    actives.appendTo('.list-right ul');                  
+                    actives.remove();                    
+                }
+        });
+
+         $('#dashboard-content').on('click','.dual-list .selector', function () {
+            var $checkBox = $(this);
+            if (!$checkBox.hasClass('selected')) {
+                $checkBox.addClass('selected').closest('.well').find('ul li:not(.active)').addClass('active');
+                $checkBox.children('i').removeClass('glyphicon-unchecked').addClass('glyphicon-check');
+            } else {
+                $checkBox.removeClass('selected').closest('.well').find('ul li.active').removeClass('active');
+                $checkBox.children('i').removeClass('glyphicon-check').addClass('glyphicon-unchecked');
+            }
+        });
+
+        $('#dashboard-content').on('keyup', '[name="SearchDualList"]', function (e) {
+            var code = e.keyCode || e.which;
+            if (code == '9') return;
+            if (code == '27') $(this).val(null);
+            var $rows = $(this).closest('.dual-list').find('.list-group li');
+            var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+            $rows.show().filter(function () {
+                var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+                return !~text.indexOf(val);
+            }).hide();
+        });		
 		
 	},
 
@@ -129,7 +172,7 @@ FeedbackSystem.EvalController = (function() {
 		}
 		
 		var url = 'change-active-question'
-		$.post(url, {id: question_id, active: active_state}, function( data ){
+		$.post(url, {id: question_id, flag_active: active_state}, function( data ){
 			
 		});
 
@@ -183,7 +226,8 @@ FeedbackSystem.EvalController = (function() {
 		var new_text = $('#edit-answer-text').val();
 
 		var answer = {
-			text: new_text			
+			text: new_text,
+			question_id: question_id			
 		}
 		
 		var url = 'update-answer'
@@ -201,7 +245,7 @@ FeedbackSystem.EvalController = (function() {
 		var new_text = $('#edit-question-text').val();
 		var new_type = $('#edit-question-type').val();
 		var question = {
-			question: new_text,
+			text: new_text,
 			type: new_type
 		}
 		
@@ -305,7 +349,7 @@ FeedbackSystem.EvalController = (function() {
 		var new_question_answer_id = $('#new-question-answer-id').val();
 
 		new_question = {
-				question: new_text,
+				text: new_text,
 				type: new_type,				
 		}
 		
@@ -315,11 +359,7 @@ FeedbackSystem.EvalController = (function() {
 		
 		
 		$('#modal-text-header').text('Antwortoptionen anlegen')
-		$('#new-question-text').text(new_text);
-		
-		
-
-		
+		$('#new-question-text').text(new_text);	
 		
 	},
 
@@ -327,7 +367,7 @@ FeedbackSystem.EvalController = (function() {
 		var new_answer_options = [];
 		var url = 'save-new-question';
 		$.post(url, {data: new_question}, function( data ){	
-			console.log(data.questionID);		
+				
 			var question_id = data.questionID;
 			$('.table-answer-options').find('.input-new-answer-option-text').each(function(i, obj) {
     			
@@ -350,11 +390,21 @@ FeedbackSystem.EvalController = (function() {
 	},
 
 	onDeleteQuestion = function(e, element){
-		var question_id = $(element).data('question-id');
-		console.log(question_id);
+		var question_id = $(element).data('question-id');		
 		var url = 'delete-question';
 		$.post(url, {id: question_id}, function( data ){							
 			$('#question-row-'+ question_id).fadeOut().delay(800).queue(function(){
+				$(this).remove();
+			});
+		});
+	},
+
+	onDeleteAnswer = function(e, element){
+		var answer_id = $(element).data('answer-id');
+		
+		var url = 'delete-answer';
+		$.post(url, {id: answer_id}, function( data ){							
+			$('#answer-row-'+ answer_id).fadeOut().delay(800).queue(function(){
 				$(this).remove();
 			});
 		});
