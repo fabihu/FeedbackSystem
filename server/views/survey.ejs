@@ -10,9 +10,9 @@
       <% } %>
       
       <% if (question.type != 3){ %>
-        <h2 class="question-header"> Frage <%=questions[i].id%>: <%=question.question%></h2>
+        <h2 class="question-header"> Frage <%=questions[i].id%>: <%=question.text%></h2>
       <% } else { %>
-        <h2 class="question-header"><%=question.question%></h2>
+        <h2 class="question-header"><%=question.text%></h2>
       <% } %>          
       
       <form class="form-horizontal">
@@ -74,7 +74,7 @@
               <% if(question.id == answer.question_id){ %>
                 <label for="text-suggestion">In diesem Textfeld können Sie uns die Eindrücke und Erlebnisse auf Ihrer Reise zukommen lassen. Für Verbesserungsvorschläge und Kritik jeder Art sind wir Ihnen sehr dankbar. Aus technischen und    organisatorischen Gründen können wir keine persönliche Antwort auf Ihre Anmerkungen geben. </label>          
                 <div class="col-md-2"></div>          
-    ​            <textarea class="col-md-7 txtarea-suggestions" id="text-suggestions" data-answer-id="<%=answer.id%>"  data-question-id=<%=question.id%> name="text-suggestion" rows="10" cols="70"></textarea>              
+    ​            <textarea class="col-md-7 txtarea-suggestions" id="text-suggestions" data-answer-id="<%=answer.id%>"  data-question-id="<%=question.id%>" name="text-suggestion" rows="10" cols="70"></textarea>              
               <% } %>
         <% } %>         
       <% } %>
@@ -84,10 +84,10 @@
 
     <% if (question.type == 3){ %>
       <div class="col-md-12">    
-        <button class="button-next" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id=<%=question.id%>>Absenden</button>    
+        <button class="button-next" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>">Absenden</button>    
       </div>
     <% } else { %>  
-      <button class="button-next" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id=<%=question.id%>>Weiter ></button>
+      <button class="button-next" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>">Weiter ></button>
     <% } %>
    
 </div>
