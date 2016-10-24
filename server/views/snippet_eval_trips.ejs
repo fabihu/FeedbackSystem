@@ -22,7 +22,11 @@
                 <td><%=trip.id%></td>
                 <td><%=trip.name%></td>
                 <td><%=trip.type%></td>
-                <td><%=trip.status%></td>
+                <% if(trip.flag_active == 1){%>
+                  <td><input class="btn-trip-active" type="checkbox" name="btn-trip-active-<%=trip.id%>" data-trip-id="<%=trip.id%>" checked></td>
+                 <% } else { %>
+                  <td><input class="btn-trip-active" type="checkbox" name="btn-trip-active-<%=trip.id%>" data-trip-id="<%=trip.id%>"></td>
+                 <% } %>
                 <td><%=trip.count_travellers%></td>
                 <td><%=trip.password%></td>
               
