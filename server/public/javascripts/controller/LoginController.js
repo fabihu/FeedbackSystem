@@ -29,7 +29,7 @@ FeedbackSystem.LoginController = (function() {
      			
       			var credentials_ok = data;
 				if(credentials_ok){
-					$.get('/get-questions/', function( data ) {
+					$.post('/get-questions/',{id: user_id}, function( data ) {
 
 						$('#main-container').empty();
 						$('#main-container').append(data);
