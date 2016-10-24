@@ -10,38 +10,31 @@
         <tr>
             <th>ID</th>
             <th>Frage</th>
-            <th>Typ</th>
-            <th>Aktiv</th>
+            <th>Typ</th>            
             <th class="text-center">Action</th>            
         </tr>
     </thead>
     <tbody>
     	<% for (var index in questions) {%>
     	<% var question = questions[index]; %>
-      <% if(question.type != 3){ %>
+      
             <tr id="question-row-<%=question.id%>" data-question-id="<%=question.id%>">
                 <td><%=question.id%></td>
                 <td><%=question.text%></td>
                 <td><%=question.type%> </td>
-                <% if(question.flag_active == 1){%>
-                <td><input class="btn-question-active" type="checkbox" name="btn-question-active-<%=question.id%>" data-question-id="<%=question.id%>" checked></td>
-                 <% } else { %>
-                <td><input class="btn-question-active" type="checkbox" name="btn-question-active-<%=question.id%>" data-question-id="<%=question.id%>"></td>
-                 <% } %>
                 <td class="text-center">
                     <a class='btn btn-info btn-xs btn-modal-edit-question' data-toggle="modal" data-target="modal-edit-question" data-question-id="<%=question.id%>"><span class="glyphicon glyphicon-edit"></span></a>
                     <a class="btn btn-danger btn-xs btn-delete-question" id="btn-delete-question-<%=question.id%>" data-question-id="<%=question.id%>"><span class="glyphicon glyphicon-remove"></span></a>
                     <a class='btn btn-info btn-xs btn-detail' id="btn-detail-question-<%=question.id%>" data-question-id="<%=question.id%>" data-detail-loaded="false" data-toggle="collapse"
                     data-target="#collapse-detail-question-<%=question.id%>"><span class="glyphicon glyphicon-chevron-down"></span></a>
-                </td>
-                
+                </td>                
             </tr>
             <tr class="row-no-border-top">
               <td colspan="6">
                 <div id="collapse-detail-question-<%=question.id%>" class="collapse"> </div>
               </td>
            </tr>
-           <% } %>
+          
         <% } %>
     </tbody>             
     </table>
