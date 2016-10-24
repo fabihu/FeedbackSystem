@@ -1,8 +1,9 @@
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 <% var i = 0; %>
-<% for (var index in trips) {%>
-<% var trip = trips[index]; %>
-<% var questionset = questions[index]; %> 
+<% for (var index in data) {%>
+<% var trip = data[index].trip; %>
+<% var questionset = data[index].trip.questions; %>
+<% var active_questions = data[index].trip.active_questions; %>
 
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="heading-<%=trip.id%>">
@@ -29,40 +30,53 @@
         <div class="dual-list list-left col-md-5">
             <div class="well text-right">
                 <div class="row">
-                    <div class="col-md-10">
+                    <div class="col-md-8">
                         <div class="input-group">
                             <span class="input-group-addon glyphicon glyphicon-search"></span>
                             <input type="text" name="SearchDualList" class="form-control" placeholder="Suche..." />
                         </div>
                     </div>
+
+                    <div class="cold-md-2">
+                        <div class="list-order-arrows col-md-1 text-center">
+                            <button class="btn btn-default btn-sm move-up"  data-trip-id="<%=trip.id%>" >
+                                <span class="glyphicon glyphicon-chevron-up"></span>
+                            </button>
+                            <button class="btn btn-default btn-sm move-down"  data-trip-id="<%=trip.id%>" >
+                                <span class="glyphicon glyphicon-chevron-down"></span>
+                            </button>
+                        </div>
+                    </div>
+
                     <div class="col-md-2">
                         <div class="btn-group">
                             <a class="btn btn-default selector" title="select all"><i class="glyphicon glyphicon-unchecked"></i></a>
                         </div>
                     </div>
                 </div>
-                <ul class="list-group">
+
+                <ul class="list-group <%=trip.id%>">
 
       
-    <% for (var j = 0; j<questionset.length; j++) {%>
-    <% var questionrow = questionset[j]; %>
-        <% for (var second_index in questionrow) {%>
-        <% var question = questionrow[second_index]; %>                    
-                  <li class="list-group-item"><%=question.text%></li>
-        <%  } %>  
-    <%  } %>     
+        <% for (var index in questionset) {%>
+        <% var question = questionset[index][0]; %>                                
+                  <li class="list-group-item trip-<%=trip.id%>" data-trip-id="<%=trip.id%>" data-question-id="<%=question.question_id%>" data-question-version="<%=question.question_version%>"><%=question.text%></li>
+        <% } %>  
+    
                   
 
                 </ul>
             </div>
         </div>
 
+
+
         <div class="list-arrows col-md-1 text-center">
-            <button class="btn btn-default btn-sm move-left">
+            <button class="btn btn-default btn-sm move-left"  data-trip-id="<%=trip.id%>" >
                 <span class="glyphicon glyphicon-chevron-left"></span>
             </button>
 
-            <button class="btn btn-default btn-sm move-right">
+            <button class="btn btn-default btn-sm move-right"  data-trip-id="<%=trip.id%>" >
                 <span class="glyphicon glyphicon-chevron-right"></span>
             </button>
         </div>
@@ -82,14 +96,14 @@
                         </div>
                     </div>
                 </div>
-                <ul class="list-group">  
+                <ul class="list-group <%=trip.id%>">  
                  
-              <% for (var k = 0; k<active_questions.length; k++) {%>
-                <% var active_question = active_questions[k]; %>               
-                       
-                         <li class="list-group-item"><%=active_question.text%></li>
+               <% for (var index in active_questions) {%>              
+               <% var active_question = active_questions[index]; %>               
+                        
+               <li class="list-group-item" data-trip-id="<%=trip.id%>" data-question-id="<%=active_question.question_id%>" data-question-version="<%=active_question.question_version%>"><%=active_question.text%></li>
                     
-                  <%  } %>
+               <% } %>
                 </ul>
             </div>
         </div>
