@@ -20,7 +20,8 @@ router.post('/check-login/', function(req, res, next) {
 	
 })
 
-router.get('/get-questions/', function(req, res, next) {
+router.post('/get-questions/', function(req, res, next) {
+  var trip_id = req.body.id;
   async.parallel({
       questions: function(callback) {
           dbhandler.getQuestionsForTrip(trip_id, function(err, dbQuestions){
@@ -34,10 +35,8 @@ router.get('/get-questions/', function(req, res, next) {
           callback(null, dbAnswers);
           });   
       }
-  },
-  // optional callback
-  function(err, result) {
-  
+  },  
+  function(err, result) {  
     if(err) {
       console.log("Error: " + err);      
     } else {
