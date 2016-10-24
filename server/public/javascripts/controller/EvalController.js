@@ -20,11 +20,11 @@ FeedbackSystem.EvalController = (function() {
 		$.get(url, function( data ){						
     		$('#dashboard-content').empty();
     		$('#dashboard-content').append(data);
-    		$(".btn-question-active").bootstrapSwitch({size: 'mini',
+    		$(".btn-trip-active").bootstrapSwitch({size: 'mini',
     													onColor: 'success',
     													offColor: 'danger',
     													onSwitchChange: function(){
-    														onChangeQuestionStatus(this);
+    														onChangeTripStatus(this);
     													}});
     	});
 	},
@@ -125,20 +125,41 @@ FeedbackSystem.EvalController = (function() {
        	});
 
         $('#dashboard-content').on('click','.list-arrows button', function () {
-                var $button = $(this), actives = '';
-                if ($button.hasClass('move-left')) {                	
-                    actives = $('.list-right ul li.active');
-                    actives.appendTo('.list-left ul');                    
-                    actives.remove();                   
-                } else if ($button.hasClass('move-right')) {
-                    actives = $('.list-left ul li.active');
-                    actives.appendTo('.list-right ul');                  
-                    actives.remove();                    
-                }
+        	onArrowLeftRightClick(this);                
         });
 
          $('#dashboard-content').on('click','.dual-list .selector', function () {
-            var $checkBox = $(this);
+         	onSelectListItem(this);
+           
+        });
+
+        $('#dashboard-content').on('keyup', '[name="SearchDualList"]', function (e) {        	
+        	onSearchInput(e, this);            
+        });
+
+		$('#dashboard-content').on('click','.list-order-arrows button', function (e) {        	
+        	onArrowUpDownClick(this);            
+        });
+        		
+		
+	},
+
+	onSearchInput = function(e, element){			
+			var code = e.keyCode || e.which;
+            if (code == '9') return;
+            if (code == '27') $(element).val(null);
+            var $rows = $(element).closest('.dual-list').find('.list-group li');
+           
+            var val = $.trim($(element).val()).replace(/ +/g, ' ').toLowerCase();
+           
+            $rows.show().filter(function () {
+                var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+                return !~text.indexOf(val);
+            }).hide();
+	},
+
+	onSelectListItem = function(element){
+		 var $checkBox = $(element);
             if (!$checkBox.hasClass('selected')) {
                 $checkBox.addClass('selected').closest('.well').find('ul li:not(.active)').addClass('active');
                 $checkBox.children('i').removeClass('glyphicon-unchecked').addClass('glyphicon-check');
@@ -146,24 +167,71 @@ FeedbackSystem.EvalController = (function() {
                 $checkBox.removeClass('selected').closest('.well').find('ul li.active').removeClass('active');
                 $checkBox.children('i').removeClass('glyphicon-check').addClass('glyphicon-unchecked');
             }
-        });
-
-        $('#dashboard-content').on('keyup', '[name="SearchDualList"]', function (e) {
-            var code = e.keyCode || e.which;
-            if (code == '9') return;
-            if (code == '27') $(this).val(null);
-            var $rows = $(this).closest('.dual-list').find('.list-group li');
-            var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
-            $rows.show().filter(function () {
-                var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
-                return !~text.indexOf(val);
-            }).hide();
-        });		
-		
 	},
 
-	onChangeQuestionStatus = function(element){		
-		var question_id = $(element).data('question-id');
+	onArrowLeftRightClick = function(element){
+		var $button = $(element), actives = '', url = '';
+				trip_id = $(element).data('trip-id');
+                if ($button.hasClass('move-left')) {                	
+                    actives = $('.list-right ul li.active');
+                    actives.appendTo($('.list-left ul.'+trip_id)); 
+                    url = 'add-question-set'                   
+                    
+
+                } else if ($button.hasClass('move-right')) {
+
+                    actives = $('.list-left ul li.active');
+                    actives.appendTo($('.list-right ul.'+trip_id));
+                    url = 'remove-question-set';
+				                      
+                }
+                
+                for (var i = 0; i<actives.length;i++){
+                    	var $item = $(actives[i]);                    	
+                    	var trip_id = $item.data('trip-id');
+                    	var question_id =  $item.data('question-id');
+                    	var question_version =  $item.data('question-version');
+                    	                    	
+				    	$.post(url, {trip_id: trip_id, question_id: question_id, question_version: question_version}, function( data ){
+							
+						});	
+                }
+	},
+
+	onArrowUpDownClick = function(element){
+		
+		var $button = $(element), $actives = '', url = '';
+                if ($button.hasClass('move-up')) {  
+                	              	
+                    $actives = $('.list-left ul li.active');
+                    $before = $actives.first().prev();
+                    $actives.insertBefore($before);
+                  
+                } else if ($button.hasClass('move-down')) {
+                 	
+                   $actives = $('.list-left ul li.active'); 
+                   $next = $actives.last().next();                  
+                   $actives.insertAfter($next);                  
+				                      
+                }
+        var trip_id = $(element).data('trip-id');     
+        var question_entries = $('.list-left ul li.trip-'+trip_id);
+        
+        for (var i = 0; i<question_entries.length;i++){
+        	
+        	var question = $(question_entries[i]);
+        	var question_id = $(question).data('question-id');
+        	var position = i+1;
+        	var url = 'change-order-question-set'
+			$.post(url, {trip_id: trip_id, question_id: question_id, position: position}, function( data ){
+				
+			});        	       	
+        }
+        
+	},
+
+	onChangeTripStatus = function(element){		
+		var trip_id = $(element).data('trip-id');
 		var active_state;
 		if ($(element).is(":checked")){
  			active_state = true; 			
@@ -171,8 +239,8 @@ FeedbackSystem.EvalController = (function() {
 			active_state = false;
 		}
 		
-		var url = 'change-active-question'
-		$.post(url, {id: question_id, flag_active: active_state}, function( data ){
+		var url = 'update-active-trip'
+		$.post(url, {trip_id: trip_id, flag_active: active_state}, function( data ){
 			
 		});
 
