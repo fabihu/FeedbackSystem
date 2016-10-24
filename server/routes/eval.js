@@ -29,20 +29,10 @@ router.get('/answers/', function(req, res, next) {
 router.get('/assignment/', function(req, res, next) {
   dbhandler.getTrips(function(err, dbTrips){
     dbhandler.getQuestionsForTrips(dbTrips, function(err, dbQuestions){ 
-      dbhandler.getAllActiveQuestions(function(err, dbActiveQuestions){
-        //TODO: change response format of db methods
-        for (var index in dbQuestions){
-          var question_set = dbQuestions[index];
-          //console.log("set:", question_set[0][0]);
-          for(var index in question_set){
-            var question_row = question_set[index];
-            var cleared_array = removeDuplicates(question_row, dbActiveQuestions);
-
-          }
-          console.log("clear:", cleared_array);
-        }
-
-        res.render('snippet_eval_assignment',  {trips: dbTrips, questions: dbQuestions, active_questions: cleared_array});
+      dbhandler.getAllActiveQuestions(function(err, dbActiveQuestions){       
+        var data = toObject(dbTrips, dbQuestions, dbActiveQuestions);     
+       
+        res.render('snippet_eval_assignment',  {data: data});
       });       
     }); 
   });   
@@ -140,23 +130,67 @@ router.post('/update-answer/', function(req, res, next) {
   }); 
 });
 
-router.post('/change-active-question/', function(req, res, next) {
-  var question_id = req.body.id; 
-  var state = req.body.active;     
-  dbhandler.changeActiveQuestion(question_id, state, function(err){    
+router.post('/update-active-trip/', function(req, res, next) {
+  var trip_id = req.body.trip_id; 
+  var state = req.body.flag_active;     
+  dbhandler.updateActiveFlagTrip(trip_id, state, function(err){    
    res.send("state changed");
   }); 
 });
 
+router.post('/add-question-set/', function(req, res, next) {
+ var question_id = req.body.question_id; 
+ var trip_id = req.body.trip_id; 
+ var question_version = req.body.question_version;      
+  dbhandler.insertIntoQuestionSet(trip_id, question_id, question_version, function(err){    
+   res.send("updated");
+  }); 
+});
+
+router.post('/remove-question-set/', function(req, res, next) {
+ var trip_id = req.body.trip_id; 
+ var question_id = req.body.question_id; 
+ var question_version = req.body.question_version;      
+  dbhandler.deleteFromQuestionSet(trip_id, question_id, question_version, function(err){    
+   res.send("removed");
+  }); 
+});
+
+router.post('/change-order-question-set/', function(req, res, next) {
+ var trip_id = req.body.trip_id; 
+ var question_id = req.body.question_id; 
+ var position = req.body.position;      
+  dbhandler.updateOrderQuestionSet(trip_id, question_id, position, function(err){    
+   res.send("updated");
+  }); 
+});
+
+toObject = function(arr1, arr2, allActives) {
+  var result = [];  
+
+  for (var i = 0; i < arr1.length; i++){    
+    var arr3 = allActives.slice(0);
+    var item = {};
+
+    item.trip = arr1[i];    
+    item.trip.questions = arr2[i];
+    item.trip.active_questions = removeDuplicates(arr2[i], arr3);
+
+    result.push(item);
+  }
+ 
+  return result;
+}
+
 removeDuplicates = function(a, b){
  for (var i = 0, len = a.length; i < len; i++) { 
-        for (var j = 0, len2 = b.length; j < len2; j++) { 
-            if (a[i].question_id === b[j].question_id) {
+        for (var j = 0, len2 = b.length; j < len2; j++) {        
+            if (a[i][0].question_id === b[j].question_id) {
                 b.splice(j, 1);
                 len2=b.length;
             }
         }
-    }
+    }    
  return b;
 }
 
