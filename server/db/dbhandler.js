@@ -33,7 +33,7 @@ init = function(){
 }
 
 checkLoginCredentials = function(user_id, user_password, callback){
- 
+  
   pool.getConnection(function(err, connection) {
     
   var sql = 'SELECT * FROM ' + TABLE_TRIPS + ' WHERE id = ' + connection.escape(user_id) + ' AND password = ' + connection.escape(user_password);
@@ -92,6 +92,54 @@ getAllActiveQuestions = function(callback){
   });
 } 
 
+getAnswersForTrips = function(trips, callback){
+  async.mapSeries(trips, function(trip, callback){
+     getAnswersForTrip(trip.id, function(err, result){
+      callback(null, result);
+     });  
+  }, function(err, result){
+    if (err) console.log(err);    
+    callback(null, result);
+  })
+ 
+}
+
+
+getAnswersForTrip  = function(trip_id, callback){
+  pool.getConnection(function(err, connection) {     
+  async.waterfall([function (callback){    
+   connection.query('SELECT * FROM ' + TABLE_ANSWER_SET + ' WHERE trip_id = ?' , [trip_id], function(err, dbResponse) {      
+      if(err) {
+        console.log(err);       
+      }    
+      callback(null, dbResponse);    
+    });
+   
+
+  }, function (result, callback){
+    
+    async.mapSeries(result, function(answer_row, callback){
+     connection.query('SELECT * FROM ' + TABLE_ANSWER_COLLECTION + ' WHERE answer_id = ? AND answer_version = ?',[answer_row.answer_id, answer_row.answer_version],  function(err, dbResponse) {
+      if (err) console.log(err);     
+      callback(err, dbResponse);
+     });
+
+    }, function(err, dbQuestions){      
+      if (err) console.log("Error: ", err);          
+      callback(null, dbQuestions);
+    });
+
+  }], function (err, result){
+    if(err) console.log(err);      
+    callback(null,result);
+  });
+  
+  connection.release();
+
+  });
+
+ 
+}
 
 getQuestionsForTrips = function(trips, callback){
   async.mapSeries(trips, function(trip, callback){
@@ -617,7 +665,7 @@ updateOrderQuestionSet = function(trip_id, question_id, position, callback){
 
 insertIntoQuestionSet = function(trip_id, question_id, question_version, callback){
   pool.getConnection(function(err, connection) {  
-  var query = connection.query('INSERT INTO ' + TABLE_QUESTION_SET + ' (trip_id, position, question_id, question_version) VALUES (?, (SELECT max(QS.position) FROM '+TABLE_QUESTION_SET+' QS WHERE QS.trip_id=?), ?,?)' , [trip_id, trip_id, question_id, question_version], function(err, result) {  
+  var query = connection.query('INSERT INTO ' + TABLE_QUESTION_SET + ' (trip_id, position, question_id, question_version) VALUES (?, (SELECT max(QS.position) FROM '+TABLE_QUESTION_SET+' QS WHERE QS.trip_id=?)+1, ?,?)' , [trip_id, trip_id, question_id, question_version], function(err, result) {  
     if(err){
       console.log(err);
     }
@@ -655,6 +703,8 @@ exports.getQuestionsForTrip = getQuestionsForTrip;
 exports.getAllActiveQuestions = getAllActiveQuestions;
 //exports.getActiveAnswersFromCollection = getActiveAnswersFromCollection;
 exports.getAnswers = getAnswers;
+exports.getAnswersForTrip = getAnswersForTrip;
+exports.getAnswersForTrips = getAnswersForTrips;
 exports.getTrips = getTrips;
 exports.insertUserAnswers = insertUserAnswers;
 exports.insertNewTrip = insertNewTrip;
