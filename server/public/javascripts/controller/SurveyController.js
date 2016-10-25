@@ -36,9 +36,9 @@ FeedbackSystem.SurveyController = (function() {
   
 
   var question_id =  $(this).data("question-id");
-  var question_type = $(this).data("question-type");
-  
-  var next_question_id = $(this).parent().next('.container').data('question-id');    
+  var question_type = $(this).data("question-type");  
+  var next_question_id = $(this).parent().next('.container').data('question-id'); 
+  var last_question = $(this).data("last-question");
   onFadeInContainer(next_question_id);
 
   if(question_type == 0) {
@@ -87,12 +87,16 @@ FeedbackSystem.SurveyController = (function() {
           trip_id: tripId          
         
         };
-    collection_answers.push(answer);
-    
-    $.post('/receive-answers/', {data: collection_answers}, function( data ) {
-        console.log("server received answers");
-    });      
+    collection_answers.push(answer);  
+ 
   }
+
+if(last_question){
+  $.post('/receive-answers/', {data: collection_answers}, function( data ) {
+      console.log("server received answers");
+  }); 
+}
+
  
   $('#container-questions-' + question_id).remove();
   });
