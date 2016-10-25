@@ -40,8 +40,9 @@ router.post('/get-questions/', function(req, res, next) {
     if(err) {
       console.log("Error: " + err);      
     } else {
-      var sortedQuestions = sortQuestions(result.questions);      
-      res.render('survey', {questions: sortedQuestions, answers: result.answers});     
+     
+      var sortedQuestions = formatArr(result.questions, result.answers);     
+      res.render('survey', {data: sortedQuestions});     
     }    
   });  
 });
@@ -56,16 +57,33 @@ router.get('/eval/', function(req, res, next) {
   res.render('eval');  
 })
 
-sortQuestions = function(questions){
-  var array = questions;
-  for (var index in array){
-    var question = array[index];
-    if(question.type == 3 || question.type == '3'){
-      array.push(array.splice(index, 1)[0]);
+filterAnswers = function(id, arr){
+  
+ var arr2 = [];
+  for (var index in arr){
+    var answer = arr[index][0];   
+
+    if(answer.question_id == id){
+      arr2.push(arr[index]);
     }
   }
-  return array;
+  return arr2;
 
+}
+
+formatArr = function(arr1, arr2) {
+  var result = []; 
+
+  for (var i = 0; i < arr1.length; i++){    
+  
+    var item = {};
+         
+    item.question = arr1[i][0];    
+    item.question.answers = filterAnswers(item.question.id, arr2);
+    result.push(item);
+}
+ 
+  return result;
 }
 
 module.exports = router;
