@@ -1,26 +1,22 @@
     <div class="container">    
 
-    <% for(var i=0; i<questions.length; i++) { %>
-      <% var question = questions[i]; %>
+    <% for(var i=0; i<data.length; i++) { %>
+      <% var question = data[i].question; %>
      
       <% if (i==0){ %>
         <div class="container main-text" id='container-questions-<%=question.id%>' data-question-id='<%=question.id%>'>
       <% } else { %>
         <div class="container main-text invis" id='container-questions-<%=question.id%>' data-question-id='<%=question.id%>'>
-      <% } %>
-      
-      <% if (question.type != 3){ %>
-        <h2 class="question-header"> Frage <%=questions[i].id%>: <%=question.text%></h2>
-      <% } else { %>
+      <% } %>    
+
         <h2 class="question-header"><%=question.text%></h2>
-      <% } %>          
+            
       
       <form class="form-horizontal">
         
-      <% for(var index in answers) { %>
-      <%  var answer = answers[index]; %>
-        <% if(question.type == 0) {%>
-            <% if(question.id == answer.question_id){ %>
+      <% for(var index in question.answers) { %>
+      <%  var answer = question.answers[index][0]; %>      
+      <% if(question.type == 0) {%>            
                   <fieldset>
                   <div class="form-group">
                     <div class="col-md-3">
@@ -34,12 +30,11 @@
     
                     </div>
                   </div>
-                  </fieldset>
-            <% } %>      
+                  </fieldset>               
         <% } %>
 
         <% if(question.type == 1) { %>
-          <% if(question.id == answer.question_id){ %>
+        
               <fieldset>
               <label class="col-md-4" for="radio-question-<%=question.id%>-answer-<%=answer.id%>"> <%=answer.text%> </label>            
               <div class="col-md-8 form-group"> 
@@ -65,29 +60,25 @@
                 </label>
               </div>
               </fieldset>
-        <% } %>     
+        
       <% } %>
              
-      <% if(question.type == 3){ %>
-        <% if(question.id == answer.question_id){ %>
-               
-              <% if(question.id == answer.question_id){ %>
+      <% if(question.type == 3){ %>        
                 <label for="text-suggestion">In diesem Textfeld können Sie uns die Eindrücke und Erlebnisse auf Ihrer Reise zukommen lassen. Für Verbesserungsvorschläge und Kritik jeder Art sind wir Ihnen sehr dankbar. Aus technischen und    organisatorischen Gründen können wir keine persönliche Antwort auf Ihre Anmerkungen geben. </label>          
                 <div class="col-md-2"></div>          
     ​            <textarea class="col-md-7 txtarea-suggestions" id="text-suggestions" data-answer-id="<%=answer.id%>"  data-question-id="<%=question.id%>" name="text-suggestion" rows="10" cols="70"></textarea>              
-              <% } %>
-        <% } %>         
+        
       <% } %>
     
     <% } %>
     </form>    
 
-    <% if (question.type == 3){ %>
+    <% if (i == data.length-1){ %>
       <div class="col-md-12">    
-        <button class="button-next" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>">Absenden</button>    
+        <button class="button-next" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="true">Absenden</button>    
       </div>
     <% } else { %>  
-      <button class="button-next" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>">Weiter ></button>
+      <button class="button-next" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="false">Weiter ></button>
     <% } %>
    
 </div>
