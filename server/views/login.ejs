@@ -29,7 +29,7 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>           
+            <li class="active"><a href="/">Home</a></li>           
             <li><a href="#contact">Kontakt</a></li>
             <li><a href="/eval/">Anmelden</a></li>
 
@@ -40,32 +40,38 @@
 
     <div class="container">
 
-      <div class="main-text">
-        <h1>Wilkommen bei der Umfrage zu Ihrer Thürauf Reise!</h1>
-        <p class="lead">Die Thürauf Reisen GmbH bietet Ihnen mit diesem innovativem und umfangreichem<br> Feedback-System die Möglichkeit Ihre Busreise zu bewerten.</p>
+      <div class="col-md-11 main-text">
+        <h1 class="text-center text-bold">Wilkommen bei der Umfrage zu Ihrer Thürauf Reise!</h1>
+        <p class="lead text-center">Die Thürauf Reisen GmbH bietet Ihnen mit diesem innovativem<br> Feedback-System die Möglichkeit Ihre Busreise zu bewerten.</p>
       </div>
 
     </div>
-    <div class="container login-controls-padding-top" id="main-container">
+    <div class="col-md-3 col-md-offset-4 container login-controls-padding-top" id="main-container">
 
       <form class="form">
-        <div class="form-group">
-           <label for="InputTravelId" class="text-color-yellow">Reise-ID</label>
-           <input type="text" class="form-control" id="InputTravelId" placeholder="Bitte geben Sie die Reise-ID ein...">
+        <div class="form-group">        
+           <div class="inner-addon left-addon">
+            <span class="glyphicon glyphicon-user"></span> 
+            <input type="text" class="form-control" id="InputTravelId" placeholder="Bitte geben Sie die Reise-ID ein"  onfocus="this.placeholder = ''" onblur="this.placeholder = 'Bitte geben Sie die Reise-ID ein'"/>
+           </div> 
       </div>
         <div class="form-group">
-             <label for="InputTravelPass" class="text-color-yellow">Passwort</label>
-             <input type="text" class="form-control" id="InputTravelPass" placeholder="Bitte geben Sie das Passwort ein...">
+          <div class="inner-addon left-addon">
+              <span class="glyphicon glyphicon-lock"></span>       
+              <input type="text" class="form-control" id="InputTravelPass" placeholder="Bitte geben Sie das Passwort ein"  onfocus="this.placeholder = ''" onblur="this.placeholder = 'Bitte geben Sie das Passwort ein'"/>
+             </div> 
+         
+        
         </div>
         <button type="submit" class="btn btn-default" id="button-submit">Weiter</button>
       </form>
 
     </div>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    
     <script src="/javascripts/libs/jquery-2.1.3.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
-     <!--JS-Files-->
+   
     <script src="/javascripts/FeedbackSystem.js"></script>
     <script src="/javascripts/controller/MainController.js"></script>
     <script src="/javascripts/controller/LoginController.js"></script>
