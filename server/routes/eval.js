@@ -30,12 +30,23 @@ router.get('/assignment/', function(req, res, next) {
   dbhandler.getTrips(function(err, dbTrips){
     dbhandler.getQuestionsForTrips(dbTrips, function(err, dbQuestions){ 
       dbhandler.getAllActiveQuestions(function(err, dbActiveQuestions){       
-        var data = toObject(dbTrips, dbQuestions, dbActiveQuestions);     
-       
+        var data = formatAssignmentData(dbTrips, dbQuestions, dbActiveQuestions);        
         res.render('snippet_eval_assignment',  {data: data});
       });       
     }); 
   });   
+});
+
+router.get('/score/', function(req, res, next) {
+ dbhandler.getTrips(function(err, dbTrips){
+  dbhandler.getQuestionsForTrips(dbTrips, function(err, dbQuestions){  
+    dbhandler.getAnswersForTrips(dbTrips, function(err, dbAnswers){
+
+      var data = formatScoreData(dbTrips, dbQuestions, dbAnswers);              
+      res.render('snippet_eval_score',  {data: data});
+    });
+  });
+ });
 });
 
 router.post('/detail-questions/', function(req, res, next) {
@@ -165,7 +176,7 @@ router.post('/change-order-question-set/', function(req, res, next) {
   }); 
 });
 
-toObject = function(arr1, arr2, allActives) {
+formatAssignmentData = function(arr1, arr2, allActives) {
   var result = [];  
 
   for (var i = 0; i < arr1.length; i++){    
@@ -180,6 +191,40 @@ toObject = function(arr1, arr2, allActives) {
   }
  
   return result;
+}
+
+formatScoreData = function(arr1, arr2, arr3) {
+var result = [];
+
+for (var trip_index in arr1) {
+  var item = {}
+  var trip = arr1[trip_index];
+  item.trip = trip;
+
+  for (var question_index in arr2){
+    var question_collection = arr2[question_index];
+    item.trip.questions = question_collection.slice(0);
+    
+
+    for (var question_collection_index in question_collection) {
+
+      var question = question_collection[question_collection_index];
+      item.trip.questions[question_collection_index].answers = [];
+     
+      for (var answer_collection_index in arr3) {
+        var answer_collection = arr3[answer_collection_index];
+        item.trip.questions[question_collection_index].answers = answer_collection.filter(function (el) {               
+                                                                                            return el[0].question_id == question[0].question_id;                                                                                                  
+                                                                                          });
+
+       
+      } 
+    }
+  }
+  result.push(item)
+}
+
+return result;
 }
 
 removeDuplicates = function(a, b){
