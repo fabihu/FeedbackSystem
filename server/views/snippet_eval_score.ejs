@@ -3,8 +3,6 @@
 <% for (var index in data) {%>
 <% //console.log() %>
 <% var trip = data[index].trip; %>
-<% console.log(trip) %>
-
 
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="heading-<%=trip.id%>">
@@ -25,7 +23,18 @@
     <%  } %>  
     <div class="panel-body">
       <div class="container">
-    
+        <% for (var index in trip.questions) {%>
+        <% var question = trip.questions[index][0]; %>
+        <% //console.log(question) %>
+         <h4 class="main-text-header">Auswertung: <%=question.text%></h4>
+         <% if (question.type == 0) { %> 
+          <div class="ct-chart ct-fixed-height ct-golden-section <%=question.question_id%>" data-trip-id="<%=trip.id%>" data-question-id="<%=question.question_id%>"></div>
+
+        <%  } %>
+         <% if (question.type == 1) { %>
+          <div class="ct-chart ct-fixed-height ct-golden-section <%=question.question_id%>" data-trip-id="<%=trip.id%>" data-question-id="<%=question.question_id%>"></div>
+        <%  } %>   
+        <%  } %>
       </div>
     </div>
   </div>
