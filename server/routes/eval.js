@@ -49,6 +49,17 @@ router.get('/score/', function(req, res, next) {
  });
 });
 
+router.post('/get-chart-data/', function(req, res, next) {
+ dbhandler.getTrips(function(err, dbTrips){
+  dbhandler.getQuestionsForTrips(dbTrips, function(err, dbQuestions){  
+    dbhandler.getAnswersForTrips(dbTrips, function(err, dbAnswers){
+      var data = formatScoreData(dbTrips, dbQuestions, dbAnswers);              
+      res.send(data);
+    });
+  });
+ });
+});
+
 router.post('/detail-questions/', function(req, res, next) {
   var question_id = req.body.id;  
   dbhandler.getAnswersForQuestion(question_id, function(err, dbAnswer){  	 
