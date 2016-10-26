@@ -37,6 +37,47 @@ a {
   text-align: center;
 }
 
+
+/* chartist plugin labels*/
+
+.ct-legend {
+    position: relative;
+    z-index: 10;
+
+    li {
+        position: relative;
+        padding-left: 23px;
+        margin-bottom: 3px;
+    }
+
+    li:before {
+        width: 12px;
+        height: 12px;
+        position: absolute;
+        left: 0;
+        content: '';
+        border: 3px solid transparent;
+        border-radius: 2px;
+    }
+
+    li.inactive:before {
+        background: transparent;
+    }
+
+    &.ct-legend-inside {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    @for $i from 0 to length($ct-series-colors) {
+        .ct-series-#{$i}:before {
+            background-color: nth($ct-series-colors, $i + 1);
+            border-color: nth($ct-series-colors, $i + 1);
+        }
+    }
+}
+
 .text-bold {
     font-weight: 900!important;
 }
@@ -148,6 +189,10 @@ tr.row-no-border-top td{
     right: 0;
 }
 
+.ct-fixed-height{
+  height: 250px;
+}
+
 .container {
 padding-left: 0px;
 padding-right: 0px;
@@ -157,6 +202,11 @@ padding-right: 0px;
 .main-color {
 	background-color: #912584;
 	opacity: 1;
+}
+
+.main-text-header {
+  font-family: 'Ubuntu', sans-serif;
+  color: #912584!important;
 }
 
 .main-text {
