@@ -20,12 +20,25 @@ FeedbackSystem.EvalController = (function() {
 		$.get(url, function( data ){						
     		$('#dashboard-content').empty();
     		$('#dashboard-content').append(data);
-    		$(".btn-trip-active").bootstrapSwitch({size: 'mini',
+
+    		switch(url){
+    			case('trip'):{
+    				$(".btn-trip-active").bootstrapSwitch({size: 'mini',
     													onColor: 'success',
     													offColor: 'danger',
     													onSwitchChange: function(){
     														onChangeTripStatus(this);
     													}});
+    			break;
+    			}
+    			case('score'):{
+    			 onLoadCharts();
+
+    			 break;
+    			}
+    		}
+
+    		
     	});
 	},
 
@@ -485,6 +498,77 @@ FeedbackSystem.EvalController = (function() {
     	var url = $(item).data('url'); 
     	getPageContent(url);
     		
+	},
+
+	onLoadCharts = function(){
+ 	var url = 'get-chart-data';
+
+	$.post(url, function(result){
+	console.log('received', result); 	
+	$('.ct-chart').each(function(){
+
+
+
+		var trip_id = $(this).data('trip-id');
+		var question_id =  $(this).data('question-id');
+
+
+
+		for(var index in result){
+			var trip = result[index].trip;
+			var res = $.grep(trip.questions, function(e){ return e[0].question_id == question_id; });
+			var question = res[0][0];						
+			if(question.type==0){
+					console.log("pie")
+					var data = {
+						labels: ["Banana", "Apple", "CHerry"],	  
+		  				series: [10, 10, 10]
+						};
+					createNewPieChart(this, data);
+				} else if(question.type==1){					
+					var data = {
+ 								labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+  								series: [[5, 4, 3, 7, 5, 10, 3],[3, 2, 9, 5, 4, 6, 4]]
+								}
+					createNewHorziontalBarChart(this, data);
+				}
+			}
+		
+		});			
+		
+		
+	});	
+	},
+
+	createNewHorziontalBarChart = function(element, data){
+		var options = {
+  						seriesBarDistance: 10,
+  						reverseData: true,
+  						horizontalBars: true,
+  						axisY: {
+  						  offset: 70
+  						}
+  					}
+  		//sconsole.log(element)
+		new Chartist.Bar(element, data, options);
+	}
+
+	createNewPieChart = function(element, data){
+
+	var sum = function(a, b) { return a + b };
+	var options = {
+	  width: 300,
+	  height: 200,
+	  showLabel: false,
+      plugins: [
+        Chartist.plugins.legend()
+      ],
+	  labelInterpolationFnc: function(value) {
+	    return Math.round(value / data.series.reduce(sum) * 100) + '%';
+	  }
+	};
+	new Chartist.Pie(element, data, options);
+
 	},
 
 	getTravelCategories = function(){
