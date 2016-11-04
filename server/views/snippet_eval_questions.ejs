@@ -1,15 +1,15 @@
  <h2>Fragen verwalten</h2>
- <div class="col-md-10 container">
-    <div class="col-md-10 container">
-    <div class="row col-md-6">
-        <button class='btn btn-info btn-s btn-modal-new-question' data-toggle="modal" data-target="modal-new-question"><span class="glyphicon glyphicon-plus"></span>  Neue Frage anlegen</button>
+ <div class="col-md-12 container">
+    <div class="col-md-12 container">
+    <div class="row col-md-2">
+        <button class='btn btn-info btn-s btn-modal-new-question header-color-yellow' data-toggle="modal" data-target="modal-new-question"><span class="glyphicon glyphicon-plus"></span>  Neue Frage anlegen</button>
     </div>
     <div class="row custyle">
     <table class="table table-striped custab">
     <thead>   
         <tr>
             <th>ID</th>
-            <th>Frage</th>
+            <th class="text-center">Frage</th>
             <th>Typ</th>            
             <th class="text-center">Action</th>            
         </tr>
@@ -23,7 +23,7 @@
                 <td><%=question.text%></td>
                 <td><%=question.type%> </td>
                 <td class="text-center">
-                    <a class='btn btn-info btn-xs btn-modal-edit-question' data-toggle="modal" data-target="modal-edit-question" data-question-id="<%=question.id%>"><span class="glyphicon glyphicon-edit"></span></a>
+                    <a class='btn btn-info btn-xs btn-modal-edit-question' data-toggle="modal" data-target="modal-edit-question" data-question-id="<%=question.id%>"><span class="glyphicon glyphicon-pencil"></span></a>
                     <a class="btn btn-danger btn-xs btn-delete-question" id="btn-delete-question-<%=question.id%>" data-question-id="<%=question.id%>"><span class="glyphicon glyphicon-remove"></span></a>
                     <a class='btn btn-info btn-xs btn-detail' id="btn-detail-question-<%=question.id%>" data-question-id="<%=question.id%>" data-detail-loaded="false" data-toggle="collapse"
                     data-target="#collapse-detail-question-<%=question.id%>"><span class="glyphicon glyphicon-chevron-down"></span></a>
