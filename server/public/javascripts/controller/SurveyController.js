@@ -46,8 +46,8 @@ FeedbackSystem.SurveyController = (function() {
     $.each($checkboxAnswer, function(index, box){
       if (box.checked){
         var answer = {
-          question: $(box).data('question-id'),
-          option: $(box).data('answer-id'),
+          question_id: $(box).data('question-id'),
+          answer_id: $(box).data('answer-id'),
           type: 0,
           value: true,
           trip_id: tripId        
@@ -64,8 +64,8 @@ FeedbackSystem.SurveyController = (function() {
     $.each($radioAnswers, function(index, radio){
           if (radio.checked){
             var answer = {
-              question: $(radio).data('question-id'),
-              option: $(radio).data('answer-id'),
+              question_id: $(radio).data('question-id'),
+              answer_id: $(radio).data('answer-id'),
               type: 1,
               value: radio.value,
               trip_id: tripId
@@ -80,10 +80,11 @@ FeedbackSystem.SurveyController = (function() {
     var $textAreaSuggestions = $('#text-suggestions');
     var text = $textAreaSuggestions.val();
     var answer = {
-          question: $textAreaSuggestions.data('question-id'),
-          option: $textAreaSuggestions.data('answer-id'),
+          question_id: $textAreaSuggestions.data('question-id'),
+          answer_id: $textAreaSuggestions.data('answer-id'),
           type: 3,
-          value: text,
+          value: 0,
+          text: text,
           trip_id: tripId          
         
         };
