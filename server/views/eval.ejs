@@ -10,10 +10,9 @@
    
    <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
    <link href="/stylesheets/bootstrap-switch.css" rel="stylesheet">
-   <link href="/stylesheets/chartist.min.css" rel="stylesheet">
    <link href="/stylesheets/style.css" rel="stylesheet">
    <link href="/stylesheets/animate.css" rel="stylesheet">
-   
+   <link href="/stylesheets/star-rating.min.css" rel="stylesheet">   
 
 
 
@@ -29,9 +28,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="#">
-				Thürauf Reisen
-			</a>
+			<a href="#" class="navbar-left"><img class="logo-responsive" src="../images/logo.png"></a>			
 		</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
@@ -57,15 +54,15 @@
 		</div><!-- /.container-fluid -->
 	</nav>
 	<div class="container-fluid main-container">
-		<div class="col-md-2 sidebar main-text-dashboard">
+		<div class="col-md-2 sidebar main-text-dashboard padding-bar-nav">
 			<ul class="nav nav-stacked">
-				<li data-url="trip" class="menu-active-main-color"><a href="#">Reisen</a></li>
-				<li data-url="questions"><a href="#">Fragen</a></li>
-				<li data-url="assignment"><a href="#">Zuweisung</a></li>
-				<li data-url="score"><a href="#">Auswertungen</a></li>				
+				<li data-url="trip" class="menu-active-main-color"><a class="a-nav-active" href="#"><span class="glyphicon glyphicon-globe"></span>  Reisen</a></li>
+				<li data-url="questions"><a href="#"><span class="glyphicon glyphicon-question-sign"></span>  Fragen</a></li>
+				<li data-url="assignment"><a href="#"><span class="glyphicon glyphicon-list-alt"></span>  Zuweisung</a></li>
+				<li data-url="score"><a href="#"><span class="glyphicon glyphicon-stats"></span>  Auswertungen</a></li>				
 			</ul>
 		</div>
-		<div class="col-md-10 content">
+		<div class="col-md-8 col-md-offset-2 content padding-nav">
             <div class="panel main-text-dashboard" id="dashboard-main-content">                
                 <div class="panel-body" id="dashboard-content">
                     
@@ -78,9 +75,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   	<script src="/javascripts/libs/bootstrap.min.js"></script>  
   	<script src="/javascripts/libs/bootstrap-switch.js"></script>
-  	<script src="/javascripts/libs/chartist.min.js"></script>
-  	<script src="/javascripts/libs/chartist-plugin-legend.js"></script> 	
-
+  	<script src="/javascripts/libs/Chart.min.js"></script>
+  	<script src="/javascripts/libs/star-rating.min.js"></script>
+  	
 
 	<script src="/javascripts/FeedbackSystem.js"></script>
     <script src="/javascripts/controller/MainController.js"></script>
