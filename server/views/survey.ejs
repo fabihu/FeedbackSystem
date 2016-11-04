@@ -1,12 +1,12 @@
-    <div class="container">    
+    <div class="col-md-12 container">    
 
     <% for(var i=0; i<data.length; i++) { %>
       <% var question = data[i].question; %>
      
       <% if (i==0){ %>
-        <div class="container main-text" id='container-questions-<%=question.id%>' data-question-id='<%=question.id%>'>
+        <div class="row col-md-12 container main-text" id='container-questions-<%=question.id%>' data-question-id='<%=question.id%>'>
       <% } else { %>
-        <div class="container main-text invis" id='container-questions-<%=question.id%>' data-question-id='<%=question.id%>'>
+        <div class="row col-md-12 container main-text invis" id='container-questions-<%=question.id%>' data-question-id='<%=question.id%>'>
       <% } %>    
 
         <h2 class="question-header"><%=question.text%></h2>
@@ -39,11 +39,11 @@
               <label class="col-md-4" for="radio-question-<%=question.id%>-answer-<%=answer.id%>"> <%=answer.text%> </label>            
               <div class="col-md-8 form-group"> 
                 <label class="radio-inline" for="radio-question-<%=question.id%>-answer-<%=answer.id%>">
-                  <input type="radio" name="radio-question-<%=question.id%>-answer-<%=answer.id%>" id="radio-question-<%=question.id%>-answer-<%=answer.id%>" data-answer-id="<%=answer.id%>"  data-question-id="<%=question.id%>"value="1">
+                  <input type="radio" name="radio-question-<%=question.id%>-answer-<%=answer.id%>" id="radio-question-<%=question.id%>-answer-<%=answer.id%>" data-answer-id="<%=answer.id%>"  data-question-id="<%=question.id%>"value="5">
                   sehr gut
                 </label> 
                 <label class="radio-inline" for="radio-question-<%=question.id%>-answer-<%=answer.id%>">
-                  <input type="radio" name="radio-question-<%=question.id%>-answer-<%=answer.id%>" id="radio-question-<%=question.id%>-answer-<%=answer.id%>" data-answer-id="<%=answer.id%>"  data-question-id="<%=question.id%>" value="2">
+                  <input type="radio" name="radio-question-<%=question.id%>-answer-<%=answer.id%>" id="radio-question-<%=question.id%>-answer-<%=answer.id%>" data-answer-id="<%=answer.id%>"  data-question-id="<%=question.id%>" value="4">
                   gut
                 </label> 
                 <label class="radio-inline" for="radio-question-<%=question.id%>-answer-<%=answer.id%>">
@@ -51,11 +51,11 @@
                   mäßig
                 </label> 
                 <label class="radio-inline" for="radio-question-<%=question.id%>-answer-<%=answer.id%>">
-                  <input type="radio" name="radio-question-<%=question.id%>-answer-<%=answer.id%>" id="radio-question-<%=question.id%>-answer-<%=answer.id%>" data-answer-id="<%=answer.id%>"  data-question-id="<%=question.id%>" value="4">
+                  <input type="radio" name="radio-question-<%=question.id%>-answer-<%=answer.id%>" id="radio-question-<%=question.id%>-answer-<%=answer.id%>" data-answer-id="<%=answer.id%>"  data-question-id="<%=question.id%>" value="2">
                   schlecht
                 </label>
                 <label class="radio-inline" for="radio-question-<%=question.id%>-answer-<%=answer.id%>">
-                  <input type="radio" name="radio-question-<%=question.id%>-answer-<%=answer.id%>" id="radio-question-<%=question.id%>-answer-<%=answer.id%>" data-answer-id="<%=answer.id%>"  data-question-id="<%=question.id%>"  value="5">
+                  <input type="radio" name="radio-question-<%=question.id%>-answer-<%=answer.id%>" id="radio-question-<%=question.id%>-answer-<%=answer.id%>" data-answer-id="<%=answer.id%>"  data-question-id="<%=question.id%>"  value="1">
                   sehr schlecht
                 </label>
               </div>
