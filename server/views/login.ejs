@@ -25,7 +25,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Thürauf Reisen Umfrage</a>
+         <a href="#" class="navbar-left"><img class="logo-responsive" src="../images/logo.png"></a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
@@ -38,32 +38,29 @@
       </div>
     </nav>
 
-    <div class="container">
+    <div class="container" id="header-container">
 
-      <div class="col-md-11 main-text">
-        <h1 class="text-center text-bold">Wilkommen bei der Umfrage zu Ihrer Thürauf Reise!</h1>
-        <p class="lead text-center">Die Thürauf Reisen GmbH bietet Ihnen mit diesem innovativem<br> Feedback-System die Möglichkeit Ihre Busreise zu bewerten.</p>
+      <div class="row col-md-12 main-text-padding" id="container-info">
+        <h1 class="text-center text-bold">Bewerten Sie jetzt Ihre Thürauf Reise!</h1>
+        </br>
+        <p class="lead text-center">Wir bieten Ihnen die Möglichkeit Ihre Busreise mit einem kurzen Fragebogen zu bewerten, so können wir unser Angebot noch besser auf Ihre Wünsche und Bedürfnisse anpassen.</p>
       </div>
 
     </div>
     <div class="col-md-3 col-md-offset-4 container login-controls-padding-top" id="main-container">
 
-      <form class="form">
+      <form class="form padding-form-login" id="container-login-controls">
         <div class="form-group">        
            <div class="inner-addon left-addon">
-            <span class="glyphicon glyphicon-user"></span> 
-            <input type="text" class="form-control" id="InputTravelId" placeholder="Bitte geben Sie die Reise-ID ein"  onfocus="this.placeholder = ''" onblur="this.placeholder = 'Bitte geben Sie die Reise-ID ein'"/>
+            <span class="glyphicon glyphicon-user glyphicon-yellow"></span>
+           
+              <input type="text" class="form-control input-opaque" id="InputTravelId" placeholder="Bitte geben Sie die Reise-ID ein"  onfocus="this.placeholder = ''" onblur="this.placeholder = 'Bitte geben Sie die Reise-ID ein'"/>
+            
            </div> 
       </div>
-        <div class="form-group">
-          <div class="inner-addon left-addon">
-              <span class="glyphicon glyphicon-lock"></span>       
-              <input type="text" class="form-control" id="InputTravelPass" placeholder="Bitte geben Sie das Passwort ein"  onfocus="this.placeholder = ''" onblur="this.placeholder = 'Bitte geben Sie das Passwort ein'"/>
-             </div> 
-         
-        
-        </div>
-        <button type="submit" class="btn btn-default" id="button-submit">Weiter</button>
+       <div class="col-md-4 text-center">  
+        <button type="submit" class="btn btn-default input-opaque btn-login" id="button-submit">Weiter</button>
+       </div>
       </form>
 
     </div>
