@@ -9,7 +9,8 @@ router.get('/', function(req, res, next) {
 
 //get page content endpoint
 router.get('/trip/', function(req, res, next) {
-  dbhandler.getTrips(function(err, dbTrips){     
+  dbhandler.getTrips(function(err, dbTrips){ 
+  console.log(err);    
    res.render('snippet_eval_trips',  {trips: dbTrips});
   }); 
 });
@@ -27,9 +28,9 @@ router.get('/answers/', function(req, res, next) {
 });
 
 router.get('/assignment/', function(req, res, next) {
-  dbhandler.getTrips(function(err, dbTrips){
+  dbhandler.getNotActiveTrips(function(err, dbTrips){
     dbhandler.getQuestionsForTrips(dbTrips, function(err, dbQuestions){ 
-      dbhandler.getAllActiveQuestions(function(err, dbActiveQuestions){       
+      dbhandler.getAllActiveQuestions(function(err, dbActiveQuestions){            
         var data = formatAssignmentData(dbTrips, dbQuestions, dbActiveQuestions);        
         res.render('snippet_eval_assignment',  {data: data});
       });       
@@ -41,7 +42,6 @@ router.get('/score/', function(req, res, next) {
  dbhandler.getTrips(function(err, dbTrips){
   dbhandler.getQuestionsForTrips(dbTrips, function(err, dbQuestions){  
     dbhandler.getAnswersForTrips(dbTrips, function(err, dbAnswers){
-
       var data = formatScoreData(dbTrips, dbQuestions, dbAnswers);              
       res.render('snippet_eval_score',  {data: data});
     });
@@ -53,11 +53,19 @@ router.post('/get-chart-data/', function(req, res, next) {
  dbhandler.getTrips(function(err, dbTrips){
   dbhandler.getQuestionsForTrips(dbTrips, function(err, dbQuestions){  
     dbhandler.getAnswersForTrips(dbTrips, function(err, dbAnswers){
-      var data = formatScoreData(dbTrips, dbQuestions, dbAnswers);              
+      var data = formatScoreData(dbTrips, dbQuestions, dbAnswers);
       res.send(data);
     });
   });
  });
+});
+
+router.post('/get-trip-score/', function(req, res, next) {
+  var trip_id = req.body.trip_id;
+  var question_id = req.body.question_id;  
+  dbhandler.getUserAnswersForTrip(trip_id, question_id, function(err, dbAnswers){  
+   res.send(dbAnswers);
+  });
 });
 
 router.post('/detail-questions/', function(req, res, next) {
@@ -220,11 +228,11 @@ for (var trip_index in arr1) {
     for (var question_collection_index in question_collection) {
 
       var question = question_collection[question_collection_index];
-      item.trip.questions[question_collection_index].answers = [];
+      item.trip.questions[question_collection_index][0].answers = [];
      
       for (var answer_collection_index in arr3) {
         var answer_collection = arr3[answer_collection_index];
-        item.trip.questions[question_collection_index].answers = answer_collection.filter(function (el) {               
+        item.trip.questions[question_collection_index][0].answers = answer_collection.filter(function (el) {               
                                                                                             return el[0].question_id == question[0].question_id;                                                                                                  
                                                                                           });
 
