@@ -7,12 +7,10 @@ FeedbackSystem.EvalController = (function() {
 	
 	init = function() {				
 	 console.log("EvalController init");
-	 getPageContent('trip');				
 	 getTravelCategories();
+	 getPageContent('trip');				
 	 setClickListener();
-
-
-
+	 onNavBarClick();
 	},
 
 
@@ -22,7 +20,17 @@ FeedbackSystem.EvalController = (function() {
     		$('#dashboard-content').append(data);
 
     		switch(url){
-    			case('trip'):{
+    			case('trip'):{			
+
+    				$('#table-trips > tbody  > tr').each(function(index) {
+    					  					
+    					var field = $('#table-trips tr').eq(index+1).find('td').eq(2);
+    					var value = $(field[0]).html();    					
+    					var category = $.grep(travelCategories, function(e){ return e.id == value; });
+    					$(field[0]).html(category[0].type);
+    					
+    				});
+    				
     				$(".btn-trip-active").bootstrapSwitch({size: 'mini',
     													onColor: 'success',
     													offColor: 'danger',
@@ -156,6 +164,14 @@ FeedbackSystem.EvalController = (function() {
         		
 		
 	},
+
+	onNavBarClick = function(){
+		$('ul.nav-stacked li a').click(function (e) {		
+			$('a').removeClass('a-nav-active');
+  			$(this).addClass('a-nav-active');      
+		});
+	}
+	
 
 	onSearchInput = function(e, element){			
 			var code = e.keyCode || e.which;
@@ -502,72 +518,174 @@ FeedbackSystem.EvalController = (function() {
 
 	onLoadCharts = function(){
  	var url = 'get-chart-data';
-
+ 	var y = [];
 	$.post(url, function(result){
-	console.log('received', result); 	
-	$('.ct-chart').each(function(){
+	
+	$('.chart').each(function(el){
 
-
-
+		var element = this;		
 		var trip_id = $(this).data('trip-id');
-		var question_id =  $(this).data('question-id');
+		var question_id = $(this).data('question-id');
+		var url = 'get-trip-score';
 
-
+		$.post(url, {trip_id: trip_id, question_id: question_id}, function(res){
+		var answerd_questions = res;		
 
 		for(var index in result){
 			var trip = result[index].trip;
-			var res = $.grep(trip.questions, function(e){ return e[0].question_id == question_id; });
-			var question = res[0][0];						
-			if(question.type==0){
-					console.log("pie")
-					var data = {
-						labels: ["Banana", "Apple", "CHerry"],	  
-		  				series: [10, 10, 10]
-						};
-					createNewPieChart(this, data);
-				} else if(question.type==1){					
-					var data = {
- 								labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-  								series: [[5, 4, 3, 7, 5, 10, 3],[3, 2, 9, 5, 4, 6, 4]]
-								}
-					createNewHorziontalBarChart(this, data);
-				}
+			var res = $.grep(trip.questions, function(e){ return e[0].question_id == question_id; });					
+			var question = res[0][0];
+			var answers = [].concat.apply([], question.answers);			
+			var data = {};			
+			var x = {};
+
+			data.labels = [];
+			data.datasets = [];
+			var set = {};	
+			
+			set.data = new Array(answers.length);			
+			var backgroundColor = new Array("#2ecc71",
+    										    "#3498db",
+    										    "#95a5a6",
+    										    "#9b59b6",
+    										    "#f1c40f",
+    										    "#e74c3c");
+			setAll(set.data, 0);					
+					
+			x.question = question.question_id;
+			x.answer_ids = new Array();
+			for (var answer_index in answers){
+					var answer = answers[answer_index];					
+					data.labels.push(answer.text)
+					x.answer_ids.push(answer.answer_id);			
 			}
+			y.push(x);
+
+			if(question.type==0){
+				for (var answer_index in answerd_questions){
+					var user_answer = answerd_questions[answer_index];
+					var count_index = -1;
+					for (var j = 0; j<y.length;j++){							
+						for (var i = 0; i<y[j].answer_ids.length;i++){
+							
+							if(user_answer.answer_id == y[j].answer_ids[i]){
+								count_index = i;							
+							}
+						}					
+					}
+					++set.data[count_index];
+					
+				}				
+				set.backgroundColor = backgroundColor
+				data.datasets.push(set);				
+				createNewPieChart(element, data);
+
+			} else if(question.type==1){			
+			
+			var length_answerd_questions = answerd_questions.length / set.data.length;
+			
+
+			for (var answer_index in answerd_questions){				
+				var user_answer = answerd_questions[answer_index];					
+				var count_index = -1;
+				
+				for (var j = 0; j<y.length;j++){							
+					for (var i = 0; i<y[j].answer_ids.length;i++){
+						
+						if(user_answer.answer_id == y[j].answer_ids[i]){
+							count_index = i;
+
+							set.data[count_index] += user_answer.value;																					
+						}
+					}					
+				}			
+					
+			}
+			
+			set.data = $.map(set.data, function(n) {
+  				return (n / length_answerd_questions);
+			});
+						
+
+			data.datasets.push(set);				
+			createNewStarRating(element, data, trip.id, question.question_id);
+			} else if (question.type == 3){
+
+			for (var answer_index in answerd_questions){
+				var user_answer = answerd_questions[answer_index];
+					data.datasets.push(user_answer.text);
+				}	
+							
+			createNewTextChart(element, data);
+			}
+		}
 		
-		});			
-		
+
+			});
+		});		
 		
 	});	
+
 	},
 
-	createNewHorziontalBarChart = function(element, data){
-		var options = {
-  						seriesBarDistance: 10,
-  						reverseData: true,
-  						horizontalBars: true,
-  						axisY: {
-  						  offset: 70
-  						}
-  					}
-  		//sconsole.log(element)
-		new Chartist.Bar(element, data, options);
+	setAll = function(a, v) {
+   	var i, n = a.length;
+    	for (i = 0; i < n; ++i) {
+    	    a[i] = v;
+    	}
+	},
+
+	createNewTextChart = function(element, data){
+		console.log(data.datasets)
+		$.each(data.datasets, function(index, item) {
+			var text = data.datasets[index];    		
+			console.log(text)
+			var tr = '<p>'+text+'</p>';
+			$(element).append(tr);
+		});
+	},
+
+	createNewStarRating = function(element, data, trip_id, question_id){		
+		
+		for (var index in data.labels){		
+			var avg = data.datasets[0].data[index];
+			var tr = '<tr>';
+			var text = data.labels[index];
+			var header = '<td><label for="rating-'+trip_id + "-"+question_id+ "-"+ index +'" class="control-label label-score-star-rating">'+ text +'</label></td>';
+			var rating = '<td><input class="rating-loading" id="rating-'+trip_id + "-"+question_id+ "-"+ index +'" value="'+ avg +'"></input></td>';
+			tr = tr+header+rating+'</tr>';			
+			$(element).append(tr);		
+			$("#rating-"+trip_id+"-"+question_id+ "-"+ index).rating({displayOnly: true, step: 0.5});	
+		}			
+		
+	},
+
+	calcAvgStarRating = function(array){
+		var sum = 0; 
+		for (var index in array){
+			var value = array[index];
+			sum += value;
+		}		
+		return sum/array.length;
+
+	},
+
+	createNewPolarChart = function(element, data){
+	
+	var ctx = document.getElementById(element.id).getContext('2d');
+	ctx.canvas.width = 250;
+	ctx.canvas.height = 250;
+	var options = {
+		maintainAspectRatio: false,
+		responsive: false
+	}		
+	var myChart = new Chart(ctx, {type:'polarArea', data});
 	}
 
 	createNewPieChart = function(element, data){
-
-	var sum = function(a, b) { return a + b };
-	var options = {
-	  width: 300,
-	  height: 200,
-	  showLabel: false,
-      plugins: [
-        Chartist.plugins.legend()
-      ],
-	  labelInterpolationFnc: function(value) {
-	    return Math.round(value / data.series.reduce(sum) * 100) + '%';
-	  }
-	};
-	new Chartist.Pie(element, data, options);
+	
+	var ctx = document.getElementById(element.id).getContext('2d');
+	var myChart = new Chart(ctx, {type:'doughnut', data});
 
 	},
 
