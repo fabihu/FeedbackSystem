@@ -12,10 +12,10 @@ router.get('/', function(req, res, next) {
 router.post('/check-login/', function(req, res, next) {
 	
     var user_id = req.body.id;
-    var user_password = req.body.password;
-
-    dbhandler.checkLoginCredentials(user_id, user_password, function(result){
-    res.send(result);    	
+    //var user_password = req.body.password;
+    //dbhandler.checkLoginCredentials(user_id, user_password, function(result){
+    dbhandler.checkLoginCredentials(user_id, function(result){
+     res.send(result);    	
     });
 	
 })
