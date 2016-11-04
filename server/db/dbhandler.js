@@ -32,24 +32,25 @@ init = function(){
   
 }
 
-checkLoginCredentials = function(user_id, user_password, callback){
+checkLoginCredentials = function(user_id, callback){
   
   pool.getConnection(function(err, connection) {
     
-  var sql = 'SELECT * FROM ' + TABLE_TRIPS + ' WHERE id = ' + connection.escape(user_id) + ' AND password = ' + connection.escape(user_password);
+  var sql = 'SELECT * FROM ' + TABLE_TRIPS + ' WHERE id = ' + connection.escape(user_id);
   connection.query(sql, function(err, dbResponse) {
   if(err) {
     console.log(err);    
     return;
+  }  
+  connection.release();
+  if (dbResponse.length > 0){
+    callback(dbResponse[0]);  
+  } else {
+    callback(false);
   }
-    if(dbResponse.length > 0){
-      callback(true);
-    } else {
-      callback(false);
-    }  
   });
 
-   connection.release();
+   
   });
 }
 
@@ -65,9 +66,9 @@ getQuestions = function(callback){
     return;
   }
   if(dbResponse.length > 0){
+      connection.release();
       callback(null, dbResponse);
   } 
-    connection.release();
 
   });
 
@@ -83,9 +84,9 @@ getAllActiveQuestions = function(callback){
     callback(err, null);    
     return;
   } 
+  connection.release();
   callback(null, dbResponse);
   
-  connection.release();
 
   });
 
@@ -111,7 +112,8 @@ getAnswersForTrip  = function(trip_id, callback){
    connection.query('SELECT * FROM ' + TABLE_ANSWER_SET + ' WHERE trip_id = ?' , [trip_id], function(err, dbResponse) {      
       if(err) {
         console.log(err);       
-      }    
+      }
+        
       callback(null, dbResponse);    
     });
    
@@ -131,14 +133,24 @@ getAnswersForTrip  = function(trip_id, callback){
 
   }], function (err, result){
     if(err) console.log(err);      
+    connection.release();
     callback(null,result);
   });
   
-  connection.release();
 
   });
 
  
+}
+
+getUserAnswersForTrip = function(trip_id, question_id, callback){
+  pool.getConnection(function(err, connection) { 
+      connection.query('SELECT * FROM ' + TABLE_USER_ANSWERS + ' WHERE trip_id = ? AND question_id = ?',[trip_id, question_id],  function(err, dbResponse) {
+      if (err) console.log(err);
+      connection.release();     
+      callback(err, dbResponse);
+     });
+  });
 }
 
 getQuestionsForTrips = function(trips, callback){
@@ -148,7 +160,10 @@ getQuestionsForTrips = function(trips, callback){
       callback(err, dbResponse);
     }); 
   }, function (err, result){
-    if (err) console.log(err);    
+    if (err) {
+      console.log(err);
+      callback(err, null);
+    }    
     callback(null, result);
   });
 }
@@ -158,8 +173,10 @@ getQuestionsForTrip  = function(trip_id, callback){
   async.waterfall([function (callback){    
    connection.query('SELECT * FROM ' + TABLE_QUESTION_SET + ' WHERE trip_id = ? ORDER BY position ASC' , [trip_id], function(err, dbResponse) {      
       if(err) {
-        console.log(err);       
-      }    
+        console.log(err);
+        callback(err, null);       
+      } 
+     
       callback(null, dbResponse);    
     });
    
@@ -179,10 +196,10 @@ getQuestionsForTrip  = function(trip_id, callback){
 
   }], function (err, result){
     if(err) console.log(err);      
+    connection.release();
     callback(null,result);
   });
   
-  connection.release();
 
   });
 
@@ -195,9 +212,9 @@ pool.getConnection(function(err, connection) {
 var query = connection.query('SELECT * FROM ' + TABLE_ANSWER_COLLECTION + ' WHERE question_id = ? AND flag_history="active"', [question_id], function(err, dbResponse) {
     
   if(err)console.log(err);
+  connection.release();
   callback(null, dbResponse);    
   
-  connection.release();
   
 }); 
 });
@@ -217,9 +234,9 @@ connection.query(sql, function(err, dbResponse) {
     return;
   }
   if(dbResponse.length > 0){    
+    connection.release();
     callback(null, dbResponse);    
   }
-  connection.release();
   
 });
 
@@ -232,18 +249,38 @@ getTrips = function(callback){
 pool.getConnection(function(err, connection) {
 
 var sql = 'SELECT * FROM ' + TABLE_TRIPS;
-  
+
 connection.query(sql, function(err, dbResponse) {
     
   if(err) {
     console.log(err);
     callback(err, null);    
     return;
-  }
-  if(dbResponse.length > 0){    
-    callback(null, dbResponse);    
-  }
+  }     
   connection.release();
+  callback(null, dbResponse);    
+  
+  
+});
+
+ 
+});
+
+}
+
+getNotActiveTrips = function(callback){
+pool.getConnection(function(err, connection) {
+
+connection.query('SELECT * FROM ' + TABLE_TRIPS + ' WHERE flag_active="0"' , function(err, dbResponse) {
+    
+  if(err) {
+    console.log(err);
+    callback(err, null);    
+    return;
+  }     
+  connection.release();
+  callback(null, dbResponse);    
+  
   
 });
 
@@ -288,9 +325,9 @@ pool.getConnection(function(err, connection) {
       
   },  
   function(err, results) {
+     connection.release();
      callback();
   });
-  connection.release();
   }); 
 }); 
 }
@@ -330,6 +367,7 @@ insertStandardAnswersIntoSet = function(outerCallback){
     });
   
   }, function(err) {
+    connection.release();
     outerCallback(err);
   });
 
@@ -395,10 +433,10 @@ pool.getConnection(function(err, connection) {
     });
   }, function(err){
     if( err ){ console.log(err);}
+    connection.release();
     callback();
   });
   
-  connection.release();
 });   
 }
 
@@ -407,9 +445,9 @@ insertAnswerIntoCollection = function(id, option, callback){
   console.log(option);
    pool.getConnection(function(err, connection) {
    var second_query = connection.query('INSERT INTO ' + TABLE_ANSWER_COLLECTION + ' (answer_id, answer_version, question_id, text, flag_history) VALUES (?, 1, ?, ?, "active")', [id, option.question_id, option.text], function(err) {
+          connection.release();
          callback(err);
-       });
-   connection.release();
+    });
   }); 
 }
 
@@ -425,9 +463,9 @@ getAnswersForQuestion = function(question_id, callback){
     return;
   }
   if(dbResponse.length > 0){
-      callback(null, dbResponse);
-  } 
     connection.release();
+    callback(null, dbResponse);
+  } 
 
   });
 
@@ -446,9 +484,9 @@ getTravelTypes = function(callback){
     return;
   }
   if(dbResponse.length > 0){
+      connection.release();
       callback(null, dbResponse);
   } 
-    connection.release();
 
   });
 
@@ -465,11 +503,11 @@ deleteTrip = function(trip_id, callback){
     var second_query = connection.query('DELETE FROM ' + TABLE_QUESTION_SET + ' WHERE trip_id = ?', trip_id, function(err, result) {
 
       var third_query = connection.query('DELETE FROM ' + TABLE_ANSWER_SET + ' WHERE trip_id = ?', trip_id, function(err, result) {
+        connection.release();
         callback();
       });
     });
   });
-  connection.release();
 
   });
 }
@@ -493,12 +531,12 @@ deleteQuestion = function(question_id, callback){
       if(err){
         console.log(err);
       }
-      callback();
+        connection.release();
+        callback();
       });
       });
     });
   });
-  connection.release();
 
   });
 }
@@ -514,10 +552,10 @@ deleteAnswer = function(answer_id, callback){
       if(err){
         console.log(err);
       }
+      connection.release();
       callback();
     });
   });
-  connection.release();
 
   });
 }
@@ -532,8 +570,8 @@ updateTrip = function(trip_id, data, callback){
       console.log(err);
     }
   });
-  callback(err); 
   connection.release();
+  callback(err); 
 
   });
 }
@@ -549,11 +587,11 @@ updateQuestion = function(question_id, data, callback){
       var third_query = connection.query('INSERT INTO '+ TABLE_QUESTION_COLLECTION + ' (question_id, question_version, text, type, flag_active, flag_history) VALUES (?, (SELECT MAX(QC.question_version) FROM '+ TABLE_QUESTION_COLLECTION + ' QC WHERE question_id = ?)+1, ?, ?, 1, "active")',
       [question_id, question_id, data.text, data.type], function(err, result) { 
       
+        connection.release();
         callback(err);   
       });
     });
   });  
-  connection.release();
 
   });
 }
@@ -570,11 +608,11 @@ updateAnswer = function(answer_id, data, callback){
     var third_query = connection.query('INSERT INTO '+ TABLE_ANSWER_COLLECTION + ' (answer_id, answer_version, question_id, text, flag_history) VALUES (?, (SELECT MAX(AC.answer_version) FROM '+ TABLE_ANSWER_COLLECTION + ' AC WHERE answer_id = ?)+1, ?, ?, "active")',
       [answer_id, answer_id, data.question_id, data.text], function(err, result) { 
         console.log(err);
+        connection.release();
         callback(err);   
     });
   });
   });  
-  connection.release();
 
   });  
 }
@@ -608,13 +646,13 @@ updateActiveFlagTrip = function(trip_id, trip_status, callback){
        },
        function(err, result){
         if(err)console.log(err);       
+        connection.release();
         callback(result)
       });      
     });
 
 
   });        
-  connection.release();
 
   });
 }
@@ -641,9 +679,9 @@ updateAnswerSet = function(trip_id, answer, callback){
 
   });
    
-  callback(err);    
   connection.release();
-  //console.log(query.sql);
+  callback(err);    
+  
   }); 
 
 }  
@@ -657,8 +695,8 @@ updateOrderQuestionSet = function(trip_id, question_id, position, callback){
 
   });
    
-  callback(err);    
   connection.release();
+  callback(err);    
 
   }); 
 }
@@ -670,8 +708,8 @@ insertIntoQuestionSet = function(trip_id, question_id, question_version, callbac
       console.log(err);
     }
   });  
-  callback(err);    
   connection.release();
+  callback(err);    
 
   });
 }
@@ -689,8 +727,8 @@ deleteFromQuestionSet = function(trip_id, question_id, question_version, callbac
       });
        
   });  
-  callback(err);    
   connection.release();
+  callback(err);    
 
   });
 }
@@ -705,7 +743,9 @@ exports.getAllActiveQuestions = getAllActiveQuestions;
 exports.getAnswers = getAnswers;
 exports.getAnswersForTrip = getAnswersForTrip;
 exports.getAnswersForTrips = getAnswersForTrips;
+exports.getUserAnswersForTrip = getUserAnswersForTrip;
 exports.getTrips = getTrips;
+exports.getNotActiveTrips = getNotActiveTrips;
 exports.insertUserAnswers = insertUserAnswers;
 exports.insertNewTrip = insertNewTrip;
 exports.insertNewQuestion = insertNewQuestion;
