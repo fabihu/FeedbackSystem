@@ -9,9 +9,9 @@
     <div class="panel-heading" role="tab" id="heading-<%=trip.id%>">
       <h4 class="panel-title">
        <% if (i == 0) { %>
-        <a data-toggle="collapse" data-parent="#accordion" href="#collapse-<%=trip.id%>" aria-expanded="true" aria-controls="collapse-<%=trip.id%>">
+        <a class="header-color-yellow" data-toggle="collapse" data-parent="#accordion" href="#collapse-<%=trip.id%>" aria-expanded="true" aria-controls="collapse-<%=trip.id%>">
        <%  } else { %>
-        <a data-toggle="collapse" data-parent="#accordion" href="#collapse-<%=trip.id%>" aria-expanded="false" aria-controls="collapse-<%=trip.id%>"> 
+        <a class="header-color-yellow" data-toggle="collapse" data-parent="#accordion" href="#collapse-<%=trip.id%>" aria-expanded="false" aria-controls="collapse-<%=trip.id%>"> 
        <%  } %>
         <%=trip.name%>
         </a>

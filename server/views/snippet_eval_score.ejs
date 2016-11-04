@@ -1,16 +1,15 @@
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 <% var i = 0; %>
 <% for (var index in data) {%>
-<% //console.log() %>
 <% var trip = data[index].trip; %>
 
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="heading-<%=trip.id%>">
       <h4 class="panel-title">
        <% if (i == 0) { %>
-        <a data-toggle="collapse" data-parent="#accordion" href="#collapse-<%=trip.id%>" aria-expanded="true" aria-controls="collapse-<%=trip.id%>">
+        <a class="header-color-yellow" data-toggle="collapse" data-parent="#accordion" href="#collapse-<%=trip.id%>" aria-expanded="true" aria-controls="collapse-<%=trip.id%>">
        <%  } else { %>
-        <a data-toggle="collapse" data-parent="#accordion" href="#collapse-<%=trip.id%>" aria-expanded="false" aria-controls="collapse-<%=trip.id%>"> 
+        <a class="header-color-yellow"  data-toggle="collapse" data-parent="#accordion" href="#collapse-<%=trip.id%>" aria-expanded="false" aria-controls="collapse-<%=trip.id%>"> 
        <%  } %>
         <%=trip.name%>
         </a>
@@ -25,15 +24,20 @@
       <div class="container">
         <% for (var index in trip.questions) {%>
         <% var question = trip.questions[index][0]; %>
-        <% //console.log(question) %>
+       
          <h4 class="main-text-header">Auswertung: <%=question.text%></h4>
-         <% if (question.type == 0) { %> 
-          <div class="ct-chart ct-fixed-height ct-golden-section <%=question.question_id%>" data-trip-id="<%=trip.id%>" data-question-id="<%=question.question_id%>"></div>
-
-        <%  } %>
+         <div class="container-chart">
+         <% if (question.type == 0) { %>
+              <canvas class="chart chart-<%=question.question_id%>" id="chart-<%=question.question_id%>" data-trip-id="<%=trip.id%>" data-question-id="<%=question.question_id%>"></canvas>
+          <%  } %>
          <% if (question.type == 1) { %>
-          <div class="ct-chart ct-fixed-height ct-golden-section <%=question.question_id%>" data-trip-id="<%=trip.id%>" data-question-id="<%=question.question_id%>"></div>
-        <%  } %>   
+          <table class="chart" id="chart-<%=question.question_id%>" data-trip-id="<%=trip.id%>" data-question-id="<%=question.question_id%>">            
+          </table>
+        <%  } %>
+        <% if (question.type == 3) { %>
+          <div class="chart chart-<%=question.question_id%>" data-trip-id="<%=trip.id%>" data-question-id="<%=question.question_id%>"></div>
+         <%  } %>
+         </div>    
         <%  } %>
       </div>
     </div>

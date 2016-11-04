@@ -1,10 +1,10 @@
    <h2>Reisen verwalten</h2>
-  <div class="col-md-10 container">
-  	<div class="row col-md-6">
-  		<button href="#" class='btn btn-info btn-s btn-modal-new-trip' data-toggle="modal" data-target="modal-new-trip"><span class="glyphicon glyphicon-plus"></span> Neue Reise anlegen</button>
+  <div class="col-md-12 container">
+  	<div class="row col-md-2">
+  		<button href="#" class='btn btn-info btn-s btn-modal-new-trip header-color-yellow' data-toggle="modal" data-target="modal-new-trip"><span class="glyphicon glyphicon-plus"></span> Neue Reise anlegen</button>
 	</div>
-    <div class="row col-md-10 custyle">
-    <table class="table table-striped custab">
+    <div class="row col-md-12 custyle">
+    <table class="table table-striped custab" id="table-trips">
     <thead>   
         <tr>
             <th>ID</th>
@@ -31,7 +31,7 @@
                 <td><%=trip.password%></td>
               
                 <td class="text-center">
-                  <a href="#" class='btn btn-info   btn-xs btn-edit-trip'   id="btn-edit-trip-<%=trip.id%>" data-trip-id="<%=trip.id%>"><span class="glyphicon glyphicon-edit"></span></a>
+                  <a href="#" class='btn btn-info   btn-xs btn-edit-trip'   id="btn-edit-trip-<%=trip.id%>" data-trip-id="<%=trip.id%>"><span class="glyphicon glyphicon-pencil"></span></a>
                   <a href="#" class="btn btn-danger btn-xs btn-delete-trip" id="btn-delete-trip-<%=trip.id%>" data-trip-id="<%=trip.id%>"><span class="glyphicon glyphicon-remove"></span></a>
                 </td>
 
