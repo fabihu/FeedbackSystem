@@ -9,8 +9,7 @@ router.get('/', function(req, res, next) {
 
 //get page content endpoint
 router.get('/trip/', function(req, res, next) {
-  dbhandler.getTrips(function(err, dbTrips){ 
-  console.log(err);    
+  dbhandler.getTrips(function(err, dbTrips){    
    res.render('snippet_eval_trips',  {trips: dbTrips});
   }); 
 });
