@@ -1,8 +1,7 @@
-    <div class="col-md-12 container">    
+
 
     <% for(var i=0; i<data.length; i++) { %>
-      <% var question = data[i].question; %>
-     
+      <% var question = data[i].question; %>     
       <% if (i==0){ %>
         <div class="row col-md-12 container main-text" id='container-questions-<%=question.id%>' data-question-id='<%=question.id%>'>
       <% } else { %>
@@ -15,62 +14,44 @@
       <form class="form-horizontal">
         
       <% for(var index in question.answers) { %>
-      <%  var answer = question.answers[index][0]; %>      
-      <% if(question.type == 0) {%>            
-                  <fieldset>
-                  <div class="form-group">
-                    <div class="col-md-3">
-                    </div>           
-                    <div class="col-md-9">             
-                    <div class="checkbox">  
-                     <input type="checkbox" name="answer-check-radio-<%=question.id%>" id="answer-options-check-<%=answer.id%>" data-answer-id="<%=answer.id%>" data-question-id="<%=question.id%>">             
-                      <label class="question-answer-option" for="answer-options-check-<%=answer.id%>"> <%=answer.text%> </label>
-                    </div>
-                    
+      <% var answer = question.answers[index][0]; %>
     
+      <% if(question.type == 0) {%>  
+                  <form role="form">                           
+
+                    <div class="padding-star-rating"> 
+                     
+                                           
+                        <button class="btn-checkbox btn-lg" name="answer-check-radio-<%=question.id%>" id="answer-options-check-<%=answer.id%>" data-answer-id="<%=answer.id%>" data-question-id="<%=question.id%>">
+                          <span class="glyphicon glyphicon-none"></span>
+                      </button>
+                       
+                        <label class="question-answer-option col-md-4" for="answer-check-<%=answer.id%>"> <%=answer.text%> </label>
+                     
                     </div>
-                  </div>
-                  </fieldset>               
+                 
+                   </form>               
         <% } %>
 
-        <% if(question.type == 1) { %>
-        
+        <% if(question.type == 1) { %> 
               <fieldset>
-              <label class="col-md-4" for="radio-question-<%=question.id%>-answer-<%=answer.id%>"> <%=answer.text%> </label>            
-              <div class="col-md-8 form-group"> 
-                <label class="radio-inline" for="radio-question-<%=question.id%>-answer-<%=answer.id%>">
-                  <input type="radio" name="radio-question-<%=question.id%>-answer-<%=answer.id%>" id="radio-question-<%=question.id%>-answer-<%=answer.id%>" data-answer-id="<%=answer.id%>"  data-question-id="<%=question.id%>"value="5">
-                  sehr gut
-                </label> 
-                <label class="radio-inline" for="radio-question-<%=question.id%>-answer-<%=answer.id%>">
-                  <input type="radio" name="radio-question-<%=question.id%>-answer-<%=answer.id%>" id="radio-question-<%=question.id%>-answer-<%=answer.id%>" data-answer-id="<%=answer.id%>"  data-question-id="<%=question.id%>" value="4">
-                  gut
-                </label> 
-                <label class="radio-inline" for="radio-question-<%=question.id%>-answer-<%=answer.id%>">
-                  <input type="radio" name="radio-question-<%=question.id%>-answer-<%=answer.id%>" id="radio-question-<%=question.id%>-answer-<%=answer.id%>" data-answer-id="<%=answer.id%>"  data-question-id="<%=question.id%>"value="3" checked="true">
-                  mäßig
-                </label> 
-                <label class="radio-inline" for="radio-question-<%=question.id%>-answer-<%=answer.id%>">
-                  <input type="radio" name="radio-question-<%=question.id%>-answer-<%=answer.id%>" id="radio-question-<%=question.id%>-answer-<%=answer.id%>" data-answer-id="<%=answer.id%>"  data-question-id="<%=question.id%>" value="2">
-                  schlecht
-                </label>
-                <label class="radio-inline" for="radio-question-<%=question.id%>-answer-<%=answer.id%>">
-                  <input type="radio" name="radio-question-<%=question.id%>-answer-<%=answer.id%>" id="radio-question-<%=question.id%>-answer-<%=answer.id%>" data-answer-id="<%=answer.id%>"  data-question-id="<%=question.id%>"  value="1">
-                  sehr schlecht
-                </label>
-              </div>
+              <label class="col-md-4" for="radio-question-<%=question.id%>-answer-<%=answer.id%>"> <%=answer.text%> </label>
+              <div class="padding-star-rating">
+                <input class="rating rating-loading" name="radio-question-<%=question.id%>-answer-<%=answer.id%>" id="radio-question-<%=question.id%>-answer-<%=answer.id%>" data-answer-id="<%=answer.id%>"  data-question-id="<%=question.id%>" data-min="0" data-max="5" data-step="1"> </input>
+              </div>  
               </fieldset>
-        
+              
       <% } %>
              
       <% if(question.type == 3){ %>        
-                <label for="text-suggestion">In diesem Textfeld können Sie uns die Eindrücke und Erlebnisse auf Ihrer Reise zukommen lassen. Für Verbesserungsvorschläge und Kritik jeder Art sind wir Ihnen sehr dankbar. Aus technischen und    organisatorischen Gründen können wir keine persönliche Antwort auf Ihre Anmerkungen geben. </label>          
+                <label class="lbl-suggestions" for="text-suggestion">In diesem Textfeld können Sie uns die Eindrücke und Erlebnisse auf Ihrer Reise zukommen lassen. Für Verbesserungsvorschläge und Kritik jeder Art sind wir Ihnen sehr dankbar. Aus technischen und    organisatorischen Gründen können wir jedoch keine persönliche Antwort auf Ihre Anmerkungen geben. </label>          
                 <div class="col-md-2"></div>          
-    ​            <textarea class="col-md-7 txtarea-suggestions" id="text-suggestions" data-answer-id="<%=answer.id%>"  data-question-id="<%=question.id%>" name="text-suggestion" rows="10" cols="70"></textarea>              
+    ​            <textarea class="txtarea-suggestions" id="text-suggestions" data-answer-id="<%=answer.id%>"  data-question-id="<%=question.id%>" name="text-suggestion" rows="10" cols="45"></textarea>              
         
       <% } %>
     
     <% } %>
+   
     </form>    
 
     <% if (i == data.length-1){ %>
@@ -83,5 +64,5 @@
    
 </div>
 <% } %>   
-</div>
+
 
