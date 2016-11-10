@@ -15,20 +15,17 @@ FeedbackSystem.LoginController = (function() {
 		$submitButton = $('#button-submit');
 		$('#container-info').addClass('animated slideInDown');
 		$('#container-login-controls').addClass('animated slideInDown');
-				
+
 		onClickButtonSubmit();
 	},
 
 	onClickButtonSubmit = function(){
-		$txtUserTravelID = $('#InputTravelId');
-		//$txtUserPassword = $('#InputTravelPass');
+		$txtUserTravelID = $('#InputTravelId');		
 		
 		$submitButton.on('click', function(e){
 			e.preventDefault();
 			var user_id = $txtUserTravelID.val();
-			//var user_password = $txtUserPassword.val()
 			
-			//$.post("/check-login/", { id: user_id, password: user_password }, function(data){
 			$.post("/check-login/", {id: user_id}, function(data){							
       			var credentials_ok = data;
 				if(credentials_ok){
@@ -36,11 +33,20 @@ FeedbackSystem.LoginController = (function() {
 					if(is_open == 0){
 						$.post('/get-questions/',{id: user_id}, function( data ) {
 	
-								$('#main-container').empty();
-								$('#header-container').append(data);
+								$('#container-info').removeClass('animated slideInDown');
+								$('#main-container').addClass("animated fadeOutDown");
+								$('#container-info').addClass("animated fadeOutDown");
+
+								setTimeout(function(){ 
+								     
+								$('#survey-container').addClass('animated slideInDown').append(data);
+								$('#main-container').remove();
+								$('#container-info').remove();
+
 								$(document).trigger('initControls');
 								$(document).trigger('fadeInContainer');
 								$(document).trigger('getTripId', user_id);						
+								}, 800);
 						});
 					} else {
 					window.alert("Reise noch nicht zur Bewertung freigegeben!");

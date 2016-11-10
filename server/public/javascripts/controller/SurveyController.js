@@ -12,17 +12,36 @@ FeedbackSystem.SurveyController = (function() {
    
   },
 
-  onInitControls = function(){
-   
+  onInitControls = function(){   
     $containerQuestions = $('#container-questions');
     $buttonNext = $("button[name=button-next");
+
+    $('.rating').rating({ showClear:false,
+                          showCaption: false });
+  
+    $('.btn-checkbox').on('click', function(e){
+      e.preventDefault();       
+      var span = $(this).find("span");
+
+      if($(span).hasClass('glyphicon glyphicon-ok')){
+        $(span).removeClass('glyphicon glyphicon-ok')
+        $(span).addClass('glyphicon glyphicon-none');
+      } else {
+         $(span).removeClass('glyphicon glyphicon-none')     
+        $(span).addClass('glyphicon glyphicon-ok');
+      }
+    });
     
     getSelectedAnswers();    
   },  
 
   onFadeInContainer = function(id){
-   $('#container-questions-'+id).removeClass("invis");  
-   $('#container-questions-'+id).addClass("animated fadeIn");   
+   $('#container-questions-'+id).removeClass("invis");
+   $('#container-questions-'+id).addClass("visible");
+
+      
+  
+   $('#container-questions-'+id).addClass("animated fadeInDown");   
   },
 
   onGetTripId = function(event, trip_id){    
@@ -30,10 +49,8 @@ FeedbackSystem.SurveyController = (function() {
   },
 
   getSelectedAnswers = function(){
-  var collection_answers = [];
-
-  $buttonNext.click(function(){
-  
+  var collection_answers = [];  
+  $buttonNext.click(function(){  
 
   var question_id =  $(this).data("question-id");
   var question_type = $(this).data("question-type");  
@@ -42,7 +59,7 @@ FeedbackSystem.SurveyController = (function() {
   onFadeInContainer(next_question_id);
 
   if(question_type == 0) {
-    var $checkboxAnswer = $("input[name=answer-check-radio-"+ question_id+"]");  
+    var $checkboxAnswer = $("span[name=answer-check-radio-"+ question_id+"]");  
     $.each($checkboxAnswer, function(index, box){
       if (box.checked){
         var answer = {
@@ -95,11 +112,19 @@ FeedbackSystem.SurveyController = (function() {
 if(last_question){
   $.post('/receive-answers/', {data: collection_answers}, function( data ) {
       console.log("server received answers");
+      var message = '<div class="container main-text margin-credits animated fadeInDown"><label class="lbl-suggestions" for="text-suggestion">Vielen Dank für Ihre Teilnahme an unserer Umfrage. <br/>'+
+      'Wir hoffen, dass wir Sie auch in Zukunft auf weiteren Reisen begrüßen dürfen! </label></div>'
+      $(message).insertAfter('.navbar');
+
   }); 
 }
 
- 
-  $('#container-questions-' + question_id).remove();
+  $('#container-questions-' + question_id).removeClass("animated fadeInDown");
+  $('#container-questions-' + question_id).addClass("animated fadeOutDown");
+  setTimeout(function(){    
+    $('#container-questions-' + question_id).remove();
+  }, 700); 
+
   });
   
 
