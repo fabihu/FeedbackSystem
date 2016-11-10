@@ -11,20 +11,14 @@
    <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
    <link href="/stylesheets/style.css" rel="stylesheet">
    <link href="/stylesheets/animate.css" rel="stylesheet">
-
+   <link href="/stylesheets/star-rating.min.css" rel="stylesheet">
 
 
   </head>
   <body>   
      <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
+        <div class="navbar-header">          
          <a href="#" class="navbar-left"><img class="logo-responsive" src="../images/logo.png"></a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
@@ -38,28 +32,28 @@
       </div>
     </nav>
 
-    <div class="container" id="header-container">
-
+   <div class="container" id="survey-container">
+   </div>
       <div class="row col-md-12 main-text-padding" id="container-info">
         <h1 class="text-center text-bold">Bewerten Sie jetzt Ihre Thürauf Reise!</h1>
         </br>
-        <p class="lead text-center">Wir bieten Ihnen die Möglichkeit Ihre Busreise mit einem kurzen Fragebogen zu bewerten, so können wir unser Angebot noch besser auf Ihre Wünsche und Bedürfnisse anpassen.</p>
+        <p class="lead text-center">Wir bieten Ihnen die Möglichkeit Ihre Busreise mit einem kurzen Fragebogen zu bewerten. So können wir unser Angebot noch besser auf Ihre Wünsche und Bedürfnisse anpassen.</p>
       </div>
 
-    </div>
+   
     <div class="col-md-3 col-md-offset-4 container login-controls-padding-top" id="main-container">
 
       <form class="form padding-form-login" id="container-login-controls">
         <div class="form-group">        
            <div class="inner-addon left-addon">
-            <span class="glyphicon glyphicon-user glyphicon-yellow"></span>
+            <span class="glyphicon glyphicon-globe glyphicon-yellow glyphicon-lg"></span>
            
-              <input type="text" class="form-control input-opaque" id="InputTravelId" placeholder="Bitte geben Sie die Reise-ID ein"  onfocus="this.placeholder = ''" onblur="this.placeholder = 'Bitte geben Sie die Reise-ID ein'"/>
+              <input type="text" class="form-control input-opaque input-lg" id="InputTravelId" placeholder="Bitte geben Sie Ihre Reise-ID ein..."  onfocus="this.placeholder = ''" onblur="this.placeholder = 'Bitte geben Sie Ihre Reise-ID ein...'"/>
             
            </div> 
       </div>
-       <div class="col-md-4 text-center">  
-        <button type="submit" class="btn btn-default input-opaque btn-login" id="button-submit">Weiter</button>
+       <div class="text-center">  
+        <button type="submit" class="btn btn-default input-opaque btn-login btn-lg" id="button-submit">Weiter</button>
        </div>
       </form>
 
@@ -67,6 +61,7 @@
     
     <script src="/javascripts/libs/jquery-2.1.3.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="/javascripts/libs/star-rating.min.js"></script>
 
    
     <script src="/javascripts/FeedbackSystem.js"></script>
