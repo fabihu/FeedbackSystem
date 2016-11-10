@@ -11,9 +11,7 @@ router.get('/', function(req, res, next) {
 
 router.post('/check-login/', function(req, res, next) {
 	
-    var user_id = req.body.id;
-    //var user_password = req.body.password;
-    //dbhandler.checkLoginCredentials(user_id, user_password, function(result){
+    var user_id = req.body.id;    
     dbhandler.checkLoginCredentials(user_id, function(result){
      res.send(result);    	
     });
@@ -40,8 +38,8 @@ router.post('/get-questions/', function(req, res, next) {
     if(err) {
       console.log("Error: " + err);      
     } else {
-     
       var sortedQuestions = formatArr(result.questions, result.answers);     
+      //console.log(sortedQuestions[0])
       res.render('survey', {data: sortedQuestions});     
     }    
   });  
