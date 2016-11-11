@@ -4,6 +4,7 @@ FeedbackSystem.EvalController = (function() {
 	edit = false,
 	answer_option_counter = 0,
 	new_question = null,
+	old_answer_values = [],
 	
 	init = function() {				
 	 console.log("EvalController init");
@@ -21,27 +22,28 @@ FeedbackSystem.EvalController = (function() {
 
     		switch(url){
     			case('trip'):{			
-
+    			$(document).ready(function(){	
     				$('#table-trips > tbody  > tr').each(function(index) {
-    					  					
-    					var field = $('#table-trips tr').eq(index+1).find('td').eq(2);
+    					console.log("load"); 					
+    					var field = $('#table-trips tr').eq(index+1).find('td').eq(1);
     					var value = $(field[0]).html();    					
     					var category = $.grep(travelCategories, function(e){ return e.id == value; });
     					$(field[0]).html(category[0].type);
     					
     				});
+    			});	
     				
-    				$(".btn-trip-active").bootstrapSwitch({size: 'mini',
-    													onColor: 'success',
-    													offColor: 'danger',
-    													onSwitchChange: function(){
-    														onChangeTripStatus(this);
-    													}});
+    					$(".btn-trip-active").bootstrapSwitch({size: 'mini',
+    														onColor: 'success',
+    														offColor: 'danger',
+    														onSwitchChange: function(){
+    															onChangeTripStatus(this);
+    														}});    					
+    				
     			break;
     			}
     			case('score'):{
     			 onLoadCharts();
-
     			 break;
     			}
     		}
@@ -63,11 +65,7 @@ FeedbackSystem.EvalController = (function() {
 		
 		
 		//Buttons for trip	
-		$('#dashboard-content').on('click', ".btn-detail", function( e ){
-			onClickDetailQuestion(e, this);
-			$(this).find('span').toggleClass('glyphicon glyphicon-chevron-down').toggleClass('glyphicon glyphicon-chevron-up');
-		});
-	
+
 		$('#dashboard-content').on('click', ".btn-modal-new-trip", function( e ){
 			onModalTripShow();
 		});
@@ -128,17 +126,41 @@ FeedbackSystem.EvalController = (function() {
 		});
 
 		//Buttons for answer
+		$('#dashboard-content').on('click', ".btn-detail", function( e ){
+			onClickDetailQuestion(e, this);			
+		});
+	
 		$('#dashboard-content').on('click', ".btn-modal-edit-answer", function( e ){			
 			onModalEditAnswer(e, this);						
+		});
+
+
+
+		$('#dashboard-content').on('click', ".btn-delete-answer", function( e ){			
+									
+		});
+
+
+
+
+
+		$('#dashboard-content').on('hidden.bs.modal', "#modal-detail-question", function( e ){			
+			onModalAnswerClose(e, this);						
+		});
+
+		$('#dashboard-content').on('click', ".btn-add-row-answer-option-detail", function( e ){			
+			onAddRowAnswerOptionDetail(e, this);						
+		});	
+
+		$('#dashboard-content').on('click','.btn-del-answer', function( e ){
+			onDeleteAnswer(e, this);
+
 		});
 
 		$('#dashboard-content').on('click', ".btn-modal-save-edit-answer", function( e ){			
 			onSaveEditAnswer(e, this);						
 		});
 
-		$('#dashboard-content').on('click', ".btn-delete-answer", function( e ){			
-			onDeleteAnswer(e, this);						
-		});
 
 		//Buttons for assignment
 		$('#dashboard-content').on('click', '.list-group .list-group-item', function () {
@@ -316,24 +338,56 @@ FeedbackSystem.EvalController = (function() {
 
 	},
 
+	//check if works
 	onSaveEditAnswer = function(e, item){
-		e.preventDefault();		
-		var question_id =  $('#edit-question-id').val();
-		var answer_id = $('#edit-answer-id').val();
-		var new_text = $('#edit-answer-text').val();
-
-		var answer = {
-			text: new_text,
-			question_id: question_id			
-		}
+		e.preventDefault();
+		var forms = $("#container-question-id-details").children('.form-inline');
+		var question_id = $('#container-question-id-details').data('question-id');		
+		var new_answer_options = [];
 		
-		var url = 'update-answer'
-		$.post(url, {data: answer, id: answer_id, question_id: question_id}, function( data ){			
-			$('#collapse-detail-question-' + question_id).empty();
-    		$('#collapse-detail-question-' + question_id).append(data);
-		});
+		
+		$.each(forms, function(index, element){
+			var answer_id = -1;
+			var new_text = $(element).find("#detail-answer-text").val();
+			var answer = {
+				text: new_text,
+				question_id: question_id			
+			}
+			var url = "";
+			
+			if ($(element).find("#detail-answer-text").data('answer-id')){
+				if($.inArray(new_text, old_answer_values) == -1){
+					answer_id = $(element).find("#detail-answer-text").data('answer-id');
+					url = 'update-answer'
+					$.post(url, {data: answer, id: answer_id, question_id: question_id}, function( data ){			
+						
+					});
+				}
+			} else {
+					
+					var answer_option = {
+	    				text: new_text,
+	    				question_id: question_id
+	    			} 
+	    			new_answer_options.push(answer_option);
+					
+			}
+		
+		});	
+		
+		if (new_answer_options.length > 0){			
+			url = 'save-new-answer-options'
+			$.post(url, {data: new_answer_options}, function( data ){
+				
+			});
+		}	
 
 		$("#modal-edit-answer").hide('modal');
+	},
+
+	onModalAnswerClose = function(e, item){
+		e.preventDefault();	
+		$('#modal-body-detail-question').empty();		
 	},
 
 	onSaveEditQuestion = function(e){
@@ -359,16 +413,16 @@ FeedbackSystem.EvalController = (function() {
 			var trip_id = $(item).data('trip-id')
 			var $row = $('#trip-row-' + trip_id);	
 
-			var old_trip_name = $($row.children()[1]).text();
-			var old_trip_type = $($row.children()[2]).text();
-			var old_trip_count = $($row.children()[4]).text();
-			var old_trip_password = $($row.children()[5]).text();
-
+			var old_trip_name = $($row.children()[0]).text();
+			var old_trip_type = $($row.children()[1]).text();
+			var old_trip_count = $($row.children()[2]).text();
+			var old_trip_password = $($row.children()[3]).text();
+			
 			$("#modal-new-trip").modal('show');
 			loadTravelCategoriesInModal();
 
 			var result = travelCategories.filter(function( obj ) {				
-  				return obj.id == old_trip_type;
+  				return obj.type == old_trip_type;
 			});					
 
 			$('#new-trip-id').val(trip_id);
@@ -426,7 +480,23 @@ FeedbackSystem.EvalController = (function() {
         $(".table-answer-options").append(newRow);
         answer_option_counter++;
 
-	}
+	},
+
+	onAddRowAnswerOptionDetail = function(e, item){
+		var form = $("#container-question-id-details").children('.form-inline').last();
+		var new_input = '<div class="form-inline margin-answer-detail"><input type="text" class="form-control custom-input-width new-input" id="detail-answer-text" value="Neue Antwortoptionen eingeben..."/>' +
+						'<input type="button" class="btn btn-md btn-danger btn-del-answer" value="X"/></div>';	
+
+		$(new_input).insertAfter(form);
+
+		$('.new-input').focus(function(){						
+		   $(this).data('value', $(this).attr('value'))
+		          .attr('value','');
+		}).blur(function(){
+		  $('.new-input').attr('value' , "Neue Antwortoptionen eingeben...");
+		});		
+
+	},
 
 	onDeleteTrip = function(e, element){
 		e.preventDefault();	
@@ -497,13 +567,14 @@ FeedbackSystem.EvalController = (function() {
 	},
 
 	onDeleteAnswer = function(e, element){
-		var answer_id = $(element).data('answer-id');
+		
+
+		var answer_id = $(element).prev().data('answer-id');		
+		$(this).parent().remove();		
 		
 		var url = 'delete-answer';
 		$.post(url, {id: answer_id}, function( data ){							
-			$('#answer-row-'+ answer_id).fadeOut().delay(800).queue(function(){
-				$(this).remove();
-			});
+	
 		});
 	},
 
@@ -635,12 +706,10 @@ FeedbackSystem.EvalController = (function() {
     	}
 	},
 
-	createNewTextChart = function(element, data){
-		console.log(data.datasets)
+	createNewTextChart = function(element, data){		
 		$.each(data.datasets, function(index, item) {
-			var text = data.datasets[index];    		
-			console.log(text)
-			var tr = '<p>'+text+'</p>';
+			var text = data.datasets[index];
+			var tr = '<p><i>'+text+'</i></p></br>';
 			$(element).append(tr);
 		});
 	},
@@ -703,18 +772,23 @@ FeedbackSystem.EvalController = (function() {
 	},
 
 	onClickDetailQuestion = function(e, element){
-			e.preventDefault();			
-			var question_id = $(element).data('question-id');
-			var isLoaded = $(element).data('detail-loaded');			
+			e.preventDefault();
+			$("#modal-detail-question").modal('show');			
+			var question_id = $(element).data('question-id');		
 			var url = 'detail-questions';
-					
-			if(!isLoaded){
-				$.post(url, {id: question_id}, function( data ){					
-					$('#collapse-detail-question-'+ question_id).append(data);
-					$(element).data('detail-loaded', true);
-				});
-			} 	
-			
+
+			$.post(url, {id: question_id}, function( data ){
+				$('#modal-body-detail-question').append(data);
+				onReceiveAnswers();
+			});
+	},
+
+	onReceiveAnswers = function(){
+		var forms = $("#container-question-id-details").children('.form-inline');	
+		$.each(forms, function(index, element){
+			var text = $(element).find("#detail-answer-text").val();			
+			old_answer_values.push(text);
+		});		
 	};
 
 
