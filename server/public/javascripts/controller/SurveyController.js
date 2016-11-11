@@ -7,7 +7,7 @@ FeedbackSystem.SurveyController = (function() {
 
   init = function() {
   	console.log("SurveyController init");
-    $(document).on("initControls", onInitControls);
+    $(document).on("initSurvey", onInitControls);
     $(document).on("getTripId", onGetTripId);
    
   },

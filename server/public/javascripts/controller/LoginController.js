@@ -26,13 +26,15 @@ FeedbackSystem.LoginController = (function() {
 			e.preventDefault();
 			var user_id = $txtUserTravelID.val();
 			
-			$.post("/check-login/", {id: user_id}, function(data){							
+			$.post("/check-login/", {id: user_id}, function(data){
+
       			var credentials_ok = data;
 				if(credentials_ok){
 					var is_open = data.status;
+					var id = data.id;
 					if(is_open == 0){
-						$.post('/get-questions/',{id: user_id}, function( data ) {
-	
+						$.post('/get-questions/', {id: id}, function( data ) {
+								
 								$('#container-info').removeClass('animated slideInDown');
 								$('#main-container').addClass("animated fadeOutDown");
 								$('#container-info').addClass("animated fadeOutDown");
@@ -43,9 +45,9 @@ FeedbackSystem.LoginController = (function() {
 								$('#main-container').remove();
 								$('#container-info').remove();
 
-								$(document).trigger('initControls');
+								$(document).trigger('initSurvey');
 								$(document).trigger('fadeInContainer');
-								$(document).trigger('getTripId', user_id);						
+								$(document).trigger('getTripId', id);						
 								}, 800);
 						});
 					} else {

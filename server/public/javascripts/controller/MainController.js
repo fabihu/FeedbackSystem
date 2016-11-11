@@ -5,6 +5,7 @@ FeedbackSystem.MainController = (function() {
 	init = function() {				
 		FeedbackSystem.LoginController.init();
 		FeedbackSystem.SurveyController.init();
+		FeedbackSystem.SurveySTController.init();
 								
 	},
 
