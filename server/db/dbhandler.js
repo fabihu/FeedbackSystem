@@ -36,7 +36,7 @@ checkLoginCredentials = function(user_id, callback){
   
   pool.getConnection(function(err, connection) {
     
-  var sql = 'SELECT * FROM ' + TABLE_TRIPS + ' WHERE id = ' + connection.escape(user_id);
+  var sql = 'SELECT * FROM ' + TABLE_TRIPS + ' WHERE password = ' + connection.escape(user_id);
   connection.query(sql, function(err, dbResponse) {
   if(err) {
     console.log(err);    
