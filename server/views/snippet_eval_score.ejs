@@ -25,8 +25,8 @@
         <% for (var index in trip.questions) {%>
         <% var question = trip.questions[index][0]; %>
        
-         <h4 class="main-text-header">Auswertung: <%=question.text%></h4>
-         <div class="container-chart">
+         <div class="row col-md-8 col-md-offset-2 container-chart">
+         <h4 class="main-text-header header-score">Auswertung: <%=question.text%></h4>
          <% if (question.type == 0) { %>
               <canvas class="chart chart-<%=question.question_id%>" id="chart-<%=question.question_id%>" data-trip-id="<%=trip.id%>" data-question-id="<%=question.question_id%>"></canvas>
           <%  } %>

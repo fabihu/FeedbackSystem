@@ -3,32 +3,30 @@
   	<div class="row col-md-2">
   		<button href="#" class='btn btn-info btn-s btn-modal-new-trip header-color-yellow' data-toggle="modal" data-target="modal-new-trip"><span class="glyphicon glyphicon-plus"></span> Neue Reise anlegen</button>
 	</div>
-    <div class="row col-md-12 custyle">
-    <table class="table table-striped custab" id="table-trips">
+    <div class="row col-md-12">
+    <table class="table table-hover" id="table-trips">
     <thead>   
-        <tr>
-            <th>ID</th>
+        <tr>                    
             <th>Name</th>
             <th>Typ</th>
-            <th>Status</th>
             <th>Anzahl Reisende</th>
             <th>Passwort</th>
+            <th>Status</th>
             <th class="text-center"></th>
         </tr>
     </thead>
     	<% for (var index in trips) {%>
     	<% var trip = trips[index]; %>
-            <tr id="trip-row-<%=trip.id%>">
-                <td><%=trip.id%></td>
+            <tr id="trip-row-<%=trip.id%>">                
                 <td><%=trip.name%></td>
                 <td><%=trip.type%></td>
+                <td><%=trip.count_travellers%></td>
+                <td><%=trip.password%></td>
                 <% if(trip.flag_active == 1){%>
                   <td><input class="btn-trip-active" type="checkbox" name="btn-trip-active-<%=trip.id%>" data-trip-id="<%=trip.id%>" checked></td>
                  <% } else { %>
                   <td><input class="btn-trip-active" type="checkbox" name="btn-trip-active-<%=trip.id%>" data-trip-id="<%=trip.id%>"></td>
                  <% } %>
-                <td><%=trip.count_travellers%></td>
-                <td><%=trip.password%></td>
               
                 <td class="text-center">
                   <a href="#" class='btn btn-info   btn-xs btn-edit-trip'   id="btn-edit-trip-<%=trip.id%>" data-trip-id="<%=trip.id%>"><span class="glyphicon glyphicon-pencil"></span></a>

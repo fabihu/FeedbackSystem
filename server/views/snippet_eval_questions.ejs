@@ -5,13 +5,13 @@
         <button class='btn btn-info btn-s btn-modal-new-question header-color-yellow' data-toggle="modal" data-target="modal-new-question"><span class="glyphicon glyphicon-plus"></span>  Neue Frage anlegen</button>
     </div>
     <div class="row custyle">
-    <table class="table table-striped custab">
+    <table class="table custab">
     <thead>   
         <tr>
             <th>ID</th>
-            <th class="text-center">Frage</th>
+            <th>Frage</th>
             <th>Typ</th>            
-            <th class="text-center">Action</th>            
+               
         </tr>
     </thead>
     <tbody>
@@ -25,16 +25,12 @@
                 <td class="text-center">
                     <a class='btn btn-info btn-xs btn-modal-edit-question' data-toggle="modal" data-target="modal-edit-question" data-question-id="<%=question.id%>"><span class="glyphicon glyphicon-pencil"></span></a>
                     <a class="btn btn-danger btn-xs btn-delete-question" id="btn-delete-question-<%=question.id%>" data-question-id="<%=question.id%>"><span class="glyphicon glyphicon-remove"></span></a>
-                    <a class='btn btn-info btn-xs btn-detail' id="btn-detail-question-<%=question.id%>" data-question-id="<%=question.id%>" data-detail-loaded="false" data-toggle="collapse"
-                    data-target="#collapse-detail-question-<%=question.id%>"><span class="glyphicon glyphicon-chevron-down"></span></a>
-                </td>                
-            </tr>
-            <tr class="row-no-border-top">
-              <td colspan="6">
-                <div id="collapse-detail-question-<%=question.id%>" class="collapse"> </div>
-              </td>
-           </tr>
-          
+                    <a class='btn btn-info btn-xs btn-detail' id="btn-detail-question-<%=question.id%>" data-question-id="<%=question.id%>" data-toggle="modal" data-target="modal-detail-question">
+                     <span class="glyphicon glyphicon-align-justify"></span>
+                   </a>
+                </td>                          
+            </tr>       
+       
         <% } %>
     </tbody>             
     </table>
@@ -102,7 +98,7 @@
             <table id="table-new-answer-option" class="table table-answer-options">
             <thead>
                 <tr>                    
-                    <td>ID</td>
+                    <td class="invis">ID</td>
                     <td>Text</td>
                 </tr>
             </thead>
@@ -110,7 +106,7 @@
             <tbody>
                 <tr>
                     <td>
-                        <input type="text" name="input-new-answer-option-id"  class="form-control" disabled/>
+                        <input type="text" name="input-new-answer-option-id"  class="form-control invis" disabled/>
                     </td>
                     <td>
                         <input type="text" name="input-new-answer-option-text" class="form-control input-new-answer-option-text" />
@@ -181,4 +177,33 @@
     </div>
 
   </div>
+
+
+<div id="modal-detail-question" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    
+    <div class="modal-content" id="modal-content-detail-question">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 id="modal-edit-text-header" class="modal-title">Antwortoptionen bearbeiten</h4>
+      </div>
+      <div class="modal-body" id="modal-body-detail-question">
+
+
+
+    </div>
+     <div class="modal-footer">   
+        <button type="button" class="btn btn-default btn-modal-answer-close" id="btn-modal-answer-close" data-dismiss="modal">Abbrechen</button>
+        <button type="button" class="btn btn-default btn-modal-save-edit-answer" id="btn-modal-save-edit-answer" data-dismiss="modal">Speichern</button>
+    </div>
+    
+    </div>
+
+  </div>
+
+
+
+
+
 </div> 
