@@ -1,44 +1,87 @@
     <% for(var i=0; i<data.length; i++) { %>
       <% var question = data[i].question; %>     
       <% if (i==0){ %>
-        <div class="row col-md-12 container main-text" id='container-questions-<%=question.id%>' data-question-id='<%=question.id%>'>
+        <div class="col-md-12 container main-text" id='container-questions-<%=question.id%>' data-question-id='<%=question.id%>'>
       <% } else { %>
-        <div class="row col-md-12 container main-text invis" id='container-questions-<%=question.id%>' data-question-id='<%=question.id%>'>
+        <div class="col-md-12 container main-text invis" id='container-questions-<%=question.id%>' data-question-id='<%=question.id%>'>
       <% } %>    
 
         <h2 class="question-header"><%=question.text%></h2>
             
-      
-      <form class="form-horizontal">
-        
+        <% if(question.type == 0) {%>  
+       <div id="bus-type-0-draggable" class="bus-container">
+          <div id="bus-left" class="bus bus-left">
+          </div>
+          
+         
+      <% } %>    
+
       <% for(var index in question.answers) { %>
       <% var answer = question.answers[index][0]; %>
-    
-      <% if(question.type == 0) {%>  
-                  <form role="form">                           
+      <% if(question.type == 0) {%>
+        <div id="bus-middle" class="bus bus-middle">
+        <p> <%=answer.text%></p>
+        </div>
+      <% } %>     
 
-                    <div class="padding-star-rating"> 
-                     
-                                           
-                        <button class="btn-checkbox btn-lg" name="answer-check-radio-<%=question.id%>" id="answer-options-check-<%=answer.id%>" data-answer-id="<%=answer.id%>" data-question-id="<%=question.id%>">
-                          <span class="glyphicon glyphicon-none"></span>
-                      </button>
-                       
-                        <label class="question-answer-option col-md-4" for="answer-check-<%=answer.id%>"> <%=answer.text%> </label>
-                     
+
+        <% if(question.type == 1) { %>
+
+        <% if (index==0){ %>
+        <div id="answer-container-<%=answer.id%>"> 
+        <h3><%=answer.text%></h3>
+            <div class="container-elements">             
+                <div id="container-draggable" class="container-draggable">
+                  <div id="bus-type-1-draggable" class="ui-widget-content ui-draggable demo-1"> </div>    
+                </div>              
+            <div id="container-droppable" data-answer-id="<%=answer.id%>" class="container-droppable">
+                     <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="1">
+                      <p>1</p>
                     </div>
-                 
-                   </form>               
+                    <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="2">
+                      <p>2</p>
+                    </div> 
+                    <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="3">
+                      <p>3</p>
+                    </div> 
+                    <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="4">
+                      <p>4</p>
+                    </div>  
+                     <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="5">
+                      <p>5</p>
+                    </div>
+              </div>
+          </div>
+        </div>       
+        <% } else { %>
+          <div id="answer-container-<%=answer.id%>" class="invis">
+            <div class="container-elements">
+               <h3>answer.text</h3>
+               <div id="container-draggable" class="container-draggable">
+                  <div id="bus-type-1-draggable" class="ui-widget-content ui-draggable demo-1"> </div>    
+                </div> 
+                <div id="container-droppable" data-answer-id="<%=answer.id%>" class="invis container-droppable"> 
+                    <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="1">
+                      <p>1</p>
+                    </div>
+                    <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="2">
+                      <p>2</p>
+                    </div> 
+                    <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="3">
+                      <p>3</p>
+                    </div> 
+                    <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="4">
+                      <p>4</p>
+                    </div>  
+                     <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="5">
+                      <p>5</p>
+                    </div>
+              </div>
+
+            </div>
+          </div>
         <% } %>
 
-        <% if(question.type == 1) { %> 
-              <fieldset>
-              <label class="col-md-4" for="radio-question-<%=question.id%>-answer-<%=answer.id%>"> <%=answer.text%> </label>
-              <div class="padding-star-rating">
-                <input class="rating rating-loading" name="radio-question-<%=question.id%>-answer-<%=answer.id%>" id="radio-question-<%=question.id%>-answer-<%=answer.id%>" data-answer-id="<%=answer.id%>"  data-question-id="<%=question.id%>" data-min="0" data-max="5" data-step="1"> </input>
-              </div>  
-              </fieldset>
-              
       <% } %>
              
       <% if(question.type == 3){ %>        
@@ -49,17 +92,23 @@
       <% } %>
     
     <% } %>
-   
-    </form>    
+    <% if(question.type == 0) {%>
+        <div id="bus-right" class="bus bus-right">
+        </div>
+       </div> 
+    <% } %>  
+     
 
     <% if (i == data.length-1){ %>
       <div class="col-md-12">    
-        <button class="button-next" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="true">Absenden</button>    
+        <button class="button-next btn-next-qtype-1" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="true">Absenden</button>    
       </div>
     <% } else { %>  
-      <button class="button-next" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="false">Weiter ></button>
+    <div class="col-md-12">    
+        <button class="button-next btn-next-qtype-1" style="position: fixed; bottom: 0;"id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="true">Weiter</button>    
+      </div>
     <% } %>
-   
+     
 </div>
 <% } %>   
 

@@ -18,6 +18,76 @@ a {
   color: #3c3c3e;
 }
 
+.hide-overflow{
+  overflow: hidden;
+}
+
+.bus-left {
+  background-image:  url("../images/st/bus_swipe_left.png");  
+  width: 100px;  
+}
+
+.bus-container{     
+  display: inline-flex;
+}
+
+.bus-middle {
+  background-image:  url("../images/st/bus_swipe_middle.png");
+  width: 68px;
+
+}
+
+.bus-right {
+  background-image:  url("../images/st/bus_swipe_right.png");  
+  width: 144px;
+}
+
+.bus {
+  float:left;
+  border:solid 0px transparent;
+  height: 150px;
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+
+.container-draggable{
+  width:50%;
+}
+
+.container-droppable{
+  width: 120px;
+  float: right;
+  padding-bottom: 75px;
+}
+
+
+.demo-1 {
+  float:left;
+  position: relative;
+  width: 100px;
+  height: 50px;
+  background-image: url("../images/st/bus_temp.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  z-index: 10;
+}
+
+.demo-2 {
+    margin-right: 20px;
+    padding: 35px;
+    float: right;
+    position: relative;
+    width: 105px;
+    height: 50px;
+    background-image: url("../images/st/parking-single.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+
 .panel-body{
   background-color: #ffffff;
 }
@@ -138,7 +208,7 @@ a {
 .logo-responsive {
     height: auto;
     width: auto;
-    max-height: 72px;
+    max-height: 65px;
     max-width: 250px;
     padding-bottom: 10px;
     padding-top: 10px;
