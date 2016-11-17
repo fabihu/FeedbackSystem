@@ -45,8 +45,7 @@ FeedbackSystem.LoginController = (function() {
 								$('#main-container').remove();
 								$('#container-info').remove();
 
-								$(document).trigger('initSurvey');
-								$(document).trigger('fadeInContainer');
+								$(document).trigger('initSTSurvey');								
 								$(document).trigger('getTripId', id);						
 								}, 800);
 						});
