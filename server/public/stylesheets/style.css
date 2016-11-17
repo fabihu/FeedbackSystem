@@ -18,13 +18,26 @@ a {
   color: #3c3c3e;
 }
 
+.glow {
+  -webkit-box-shadow:0 0 20px yellow inset; 
+  -moz-box-shadow: 0 0 20px yellow inset; 
+  box-shadow:0 0 20px yellow inset;
+}
+
+.p-padding {
+  word-break: break-all;
+  text-align: center;
+  padding: 20px 10px;
+  height: 50%;
+}
+
 .hide-overflow{
   overflow: hidden;
 }
 
 .bus-left {
   background-image:  url("../images/st/bus_swipe_left.png");  
-  width: 100px;  
+  width: 149px;  
 }
 
 .bus-container{     
@@ -33,13 +46,13 @@ a {
 
 .bus-middle {
   background-image:  url("../images/st/bus_swipe_middle.png");
-  width: 68px;
+  width: 100px;
 
 }
 
 .bus-right {
   background-image:  url("../images/st/bus_swipe_right.png");  
-  width: 144px;
+  width: 214px;
 }
 
 .bus {
@@ -50,15 +63,14 @@ a {
   background-size: 100%;
 }
 
-
 .container-draggable{
-  width:50%;
+  width:55%;
 }
 
 .container-droppable{
   width: 120px;
   float: right;
-  padding-bottom: 75px;
+  padding-bottom: 70px;
 }
 
 
@@ -72,6 +84,7 @@ a {
   background-repeat: no-repeat;
   background-size: 100%;
   z-index: 10;
+  margin-top: 90%;
 }
 
 .demo-2 {
@@ -376,7 +389,7 @@ tr.row-no-border-top td{
 }
 
 .lbl-suggestions{
-   margin: 20px;
+   margin: 10px;
 }
 
 .hover-li-enabled{
@@ -505,8 +518,7 @@ padding-right: 0px;
     display: inline-block;
     max-width: 100%;
     margin-bottom: 5px;
-    font-weight: 700;
-    padding:20px;
+    font-weight: 700;   
 }
 
 .question-answer-option {

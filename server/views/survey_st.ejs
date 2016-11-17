@@ -19,8 +19,8 @@
       <% for(var index in question.answers) { %>
       <% var answer = question.answers[index][0]; %>
       <% if(question.type == 0) {%>
-        <div id="bus-middle" class="bus bus-middle">
-        <p> <%=answer.text%></p>
+        <div id="bus-middle" class="bus bus-middle" data-answer-id="<%=answer.id%>" data-checked="false">
+        <p class="bus-answer-field p-padding"> <%=answer.text%></p>
         </div>
       <% } %>     
 
@@ -28,8 +28,8 @@
         <% if(question.type == 1) { %>
 
         <% if (index==0){ %>
-        <div id="answer-container-<%=answer.id%>"> 
-        <h3><%=answer.text%></h3>
+        <div id="answer-container-<%=answer.id%>" data-answer-id="<%=answer.id%>"> 
+        <h4><%=answer.text%></h4>
             <div class="container-elements">             
                 <div id="container-draggable" class="container-draggable">
                   <div id="bus-type-1-draggable" class="ui-widget-content ui-draggable demo-1"> </div>    
@@ -54,13 +54,13 @@
           </div>
         </div>       
         <% } else { %>
-          <div id="answer-container-<%=answer.id%>" class="invis">
+          <div id="answer-container-<%=answer.id%>" class="invis" data-answer-id="<%=answer.id%>">
             <div class="container-elements">
-               <h3>answer.text</h3>
+               <h3><%=answer.text%></h3>
                <div id="container-draggable" class="container-draggable">
                   <div id="bus-type-1-draggable" class="ui-widget-content ui-draggable demo-1"> </div>    
                 </div> 
-                <div id="container-droppable" data-answer-id="<%=answer.id%>" class="invis container-droppable"> 
+                <div id="container-droppable" data-answer-id="<%=answer.id%>" class="container-droppable"> 
                     <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="1">
                       <p>1</p>
                     </div>
@@ -98,16 +98,30 @@
        </div> 
     <% } %>  
      
+    <% if(question.type == 1) {%>
+    <% if (i == data.length-1){ %>
+ 
+        <button class="button-next btn-next-qtype-1 invis" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="true">Absenden</button>    
+  
+    <% } else { %>
+
+
+        <button class="button-next btn-next-qtype-1 invis" style="bottom: 0;"id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="true">Weiter</button>    
+     
+    <% } %>
+    <% } else { %>  
 
     <% if (i == data.length-1){ %>
-      <div class="col-md-12">    
-        <button class="button-next btn-next-qtype-1" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="true">Absenden</button>    
-      </div>
-    <% } else { %>  
-    <div class="col-md-12">    
-        <button class="button-next btn-next-qtype-1" style="position: fixed; bottom: 0;"id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="true">Weiter</button>    
-      </div>
+      
+        <button class="button-next btn-next-qtype-0" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="true">Absenden</button>    
+    
+    <% } else { %>
+
+      
+        <button class="button-next btn-next-qtype-0" style="bottom: 0;"id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="true">Weiter</button>    
+     
     <% } %>
+     <% } %>
      
 </div>
 <% } %>   
