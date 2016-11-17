@@ -39,8 +39,9 @@ router.post('/get-questions/', function(req, res, next) {
       console.log("Error: " + err);      
     } else {
       var sortedQuestions = formatArr(result.questions, result.answers);     
-      //console.log(sortedQuestions[0])
-      res.render('survey', {data: sortedQuestions});     
+      
+      //res.render('survey', {data: sortedQuestions});
+       res.render('survey_st', {data: sortedQuestions});     
     }    
   });  
 });
