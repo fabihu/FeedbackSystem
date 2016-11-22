@@ -18,6 +18,41 @@ a {
   color: #3c3c3e;
 }
 
+.first-star {
+  margin-left: 5px;
+}
+
+.star-image{
+  margin-top: 35%; 
+  width: 15px;
+  height: 15px;
+  background-image: url("../images/st/star.png");
+  background-size: cover;
+  display: inline-block;
+ 
+}
+
+.stretch {
+    width: 100%;
+    display: inline-block;
+    font-size: 0;
+    line-height: 0
+}
+
+.container-qv-2 {
+ width: 100%;
+}
+
+.bus-qv-2 {
+  height: 70px!important
+}
+
+.qv-2 {
+  margin: 20px;
+  border: 0.1em solid #ffd500;
+  padding: 12px;
+}
+
 .glow {
   -webkit-box-shadow:0 0 20px yellow inset; 
   -moz-box-shadow: 0 0 20px yellow inset; 
@@ -42,6 +77,7 @@ a {
 
 .bus-container{     
   display: inline-flex;
+  padding-top: 20px;
 }
 
 .bus-middle {
@@ -52,7 +88,7 @@ a {
 
 .bus-right {
   background-image:  url("../images/st/bus_swipe_right.png");  
-  width: 214px;
+  width: 212px;
 }
 
 .bus {
@@ -77,9 +113,9 @@ a {
 .demo-1 {
   float:left;
   position: relative;
-  width: 100px;
+  width: 125px;
   height: 50px;
-  background-image: url("../images/st/bus_temp.png");
+  background-image: url("../images/st/bus_tempv2.png");
   background-size: cover;
   background-repeat: no-repeat;
   background-size: 100%;
@@ -87,17 +123,18 @@ a {
   margin-top: 90%;
 }
 
-.demo-2 {
-    margin-right: 20px;
-    padding: 35px;
-    float: right;
+.demo-2 {   
+    padding: 5px;   
     position: relative;
-    width: 105px;
-    height: 50px;
-    background-image: url("../images/st/parking-single.png");
-    background-size: cover;
+    width: 115px;
+    height: 70px;
+    background-image: url("../images/st/parking-singlev2.png");  
     background-repeat: no-repeat;
     background-size: 100%;
+    text-align: justify;
+    -ms-text-justify: distribute-all-lines;
+    text-justify: distribute-all-lines;
+
 }
 
 
@@ -423,6 +460,22 @@ tr.row-no-border-top td{
    color: #fbd929!important;
  }
 
+ .button-qv-2{
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 400!important;
+    color: #ffd500!important;
+    font-size: 20px!important;
+    padding: 5px 20px 5px 20px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    border: 0.1em solid #ffd500;
+    text-decoration: none!important;
+    background: #912584;
+    letter-spacing: 1px;
+    text-align: center;
+ }
+
 .button-next {
     border-radius: 25px;
     cursor: pointer;
@@ -438,7 +491,7 @@ tr.row-no-border-top td{
     letter-spacing: 1px;
     text-align: center;
     float: right;
-  }
+}
 .button-submit-sug {
     position: absolute;
     bottom: 0;
