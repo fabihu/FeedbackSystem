@@ -3,17 +3,15 @@ var router = express.Router();
 var dbhandler = require('../db/dbhandler');
 var async = require('async');
 
-/* GET home page. */
 router.get('/', function(req, res, next) {
   dbhandler.init();
   res.render('login', { title: 'Express' });  
 })
 
-router.post('/check-login/', function(req, res, next) {
-	
+router.post('/check-login/', function(req, res, next) {	
     var user_id = req.body.id;    
     dbhandler.checkLoginCredentials(user_id, function(result){
-     res.send(result);    	
+      res.send(result);    	
     });
 	
 })
@@ -46,10 +44,44 @@ router.post('/get-questions/', function(req, res, next) {
   });  
 });
 
+router.post('/create-user/', function(req, res, next) {
+  var id = req.body.id;  
+  dbhandler.insertUserMeta(id, function(err, id){      
+      res.json({id: id});;
+  });
+})
+
 router.post('/receive-answers/', function(req, res, next) {
   var answers = req.body.data;  
   dbhandler.insertUserAnswers(answers);
-  res.send("jup");
+  res.json({data: "ok"});
+})
+
+router.post('/insert-time/', function(req, res, next) {
+  var user_id = req.body.user_id;
+  var question_id = req.body.question_id;
+  var trip_id = req.body.trip_id;  
+  var seconds = req.body.seconds;
+  console.log(req.body);
+  dbhandler.insertTimeQuestion(user_id, question_id, trip_id, seconds, function(err, result){
+    res.json();    
+  });
+})
+
+router.post('/update-meta-count/', function(req, res, next) {
+  var user_id = req.body.user_id;
+  var trip_id = req.body.trip_id;  
+  dbhandler.updateMetaCount(user_id, trip_id, function(err, result){
+    res.json({data: "ok"});
+  });
+})
+
+router.post('/update-meta-finish/', function(req, res, next) {
+  var user_id = req.body.user_id;
+  var trip_id = req.body.trip_id;  
+  dbhandler.updateMetaFinish(user_id, trip_id, function(err, result){
+    res.json({data: "ok"});
+  });
 })
 
 router.get('/eval/', function(req, res, next) {

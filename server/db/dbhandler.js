@@ -6,6 +6,7 @@ var pool   = mysql.createPool({
     password : '',
     database : 'database'
 });
+var utils = require('../models/utils');
 
 var TABLE_QUESTIONS = 'questions';
 var TABLE_ANSWERS = 'answers';
@@ -16,6 +17,8 @@ var TABLE_ANSWER_SET = 'answer_set';
 var TABLE_QUESTION_SET = 'question_set';
 var TABLE_TRIPS = 'trip';
 var TABLE_TRAVEL_TYPE = 'travel_type';
+var TABLE_USER_META = 'user_meta';
+var TABLE_TIME_QUESTION = 'time_question';
 
 init = function(){ 
   console.log('DB init');  
@@ -441,8 +444,7 @@ pool.getConnection(function(err, connection) {
 }
 
 
-insertAnswerIntoCollection = function(id, option, callback){
-  console.log(option);
+insertAnswerIntoCollection = function(id, option, callback){  
    pool.getConnection(function(err, connection) {
    var second_query = connection.query('INSERT INTO ' + TABLE_ANSWER_COLLECTION + ' (answer_id, answer_version, question_id, text, flag_history) VALUES (?, 1, ?, ?, "active")', [id, option.question_id, option.text], function(err) {
           connection.release();
@@ -687,7 +689,7 @@ updateAnswerSet = function(trip_id, answer, callback){
 }  
 
 updateOrderQuestionSet = function(trip_id, question_id, position, callback){
- var query =  pool.getConnection(function(err, connection) {  
+ var query = pool.getConnection(function(err, connection) {  
   var query = connection.query('UPDATE ' + TABLE_QUESTION_SET + ' SET position=? WHERE trip_id=? AND question_id=?' , [position, trip_id, question_id], function(err, result) {  
     if(err){
       console.log(err);
@@ -733,6 +735,50 @@ deleteFromQuestionSet = function(trip_id, question_id, question_version, callbac
   });
 }
 
+insertUserMeta = function(trip_id, callback){
+   pool.getConnection(function(err, connection) {
+   var query = connection.query('INSERT INTO ' + TABLE_USER_META + ' (trip_id, status, count_answerd_questions, date_answer) VALUES (?, "pending", 0, ?)', [trip_id, utils.getDateTime()], function(err, result) {
+         connection.release();
+         callback(err, result.insertId);
+    });
+  }); 
+}
+
+insertTimeQuestion = function(user_id, question_id, trip_id, seconds, callback){
+   pool.getConnection(function(err, connection) {
+   var query = connection.query('INSERT INTO ' + TABLE_TIME_QUESTION + ' (user_id, question_id, trip_id, seconds_per_question ) VALUES (?, ?, ?, ?)', [user_id, question_id, trip_id, seconds], function(err, result) {
+         connection.release();      
+         callback(err);
+    });
+  }); 
+}
+
+updateMetaCount = function(user_id, trip_id, callback){
+pool.getConnection(function(err, connection) {  
+  var query = connection.query('UPDATE ' + TABLE_USER_META + ' SET count_answerd_questions=count_answerd_questions+1 WHERE id=? AND trip_id=?' , [user_id, trip_id], function(err, result) {  
+    if(err){
+      console.log(err); 
+    }
+  });   
+  connection.release();
+  callback(err);    
+
+  }); 
+}
+
+updateMetaFinish = function(user_id, trip_id, callback){
+pool.getConnection(function(err, connection) {  
+  var query = connection.query('UPDATE ' + TABLE_USER_META + ' SET count_answerd_questions=count_answerd_questions+1, status="finished" WHERE id=? AND trip_id=?' , [user_id, trip_id], function(err, result) {  
+    if(err){
+      console.log(err); 
+    }
+  });   
+  connection.release();
+  callback(err);    
+
+  }); 
+}
+
 exports.init = init;
 exports.checkLoginCredentials = checkLoginCredentials;
 exports.getQuestions = getQuestions;
@@ -755,6 +801,9 @@ exports.deleteTrip = deleteTrip;
 exports.updateTrip = updateTrip;
 exports.updateActiveFlagTrip = updateActiveFlagTrip;
 exports.insertNewAnswerOptions = insertNewAnswerOptions;
+exports.insertUserMeta = insertUserMeta;
+exports.updateMetaCount = updateMetaCount;
+exports.updateMetaFinish = updateMetaFinish;
 exports.deleteQuestion = deleteQuestion;
 exports.updateQuestion = updateQuestion;
 exports.updateOrderQuestionSet = updateOrderQuestionSet
@@ -762,3 +811,4 @@ exports.insertIntoQuestionSet = insertIntoQuestionSet;
 exports.deleteFromQuestionSet = deleteFromQuestionSet;
 exports.updateAnswer = updateAnswer;
 exports.deleteAnswer = deleteAnswer;
+exports.insertTimeQuestion = insertTimeQuestion;

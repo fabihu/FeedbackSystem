@@ -1,14 +1,18 @@
 FeedbackSystem.SurveySTController = (function() {
 var that = {},
 tripId = -1,
+userId = -1,
 collection_answers = [],
+start = 0,
 
 init = function() {
   	console.log("SurveySTController init");
     $(document).on("initSTSurvey", onInitSTSurvey);
     $(document).on("getTripId", onGetTripId);
+    $(document).on("getUserId", onGetUserId);
+    $(document).on("startTimer", onStartTimer);    
 
-    initComponents();
+    initComponents();    
 },
 
 onInitSTSurvey = function(){
@@ -18,6 +22,10 @@ onInitSTSurvey = function(){
 
 onGetTripId = function(event, trip_id){    
   tripId = parseInt(trip_id);
+},
+
+onGetUserId = function(event, user_id){    
+    userId = parseInt(user_id);
 },
 
 initComponents = function(){
@@ -72,7 +80,7 @@ initDraggable = function(){
 initDroppable = function(){
 	$( ".ui-droppable" ).droppable({
 	    drop: function( event, ui ) {
-	    	onDropBus(this)
+	    	onDropBus(this);	    
 	    }
     });	
 },
@@ -128,6 +136,7 @@ onDropBus = function(element){
    			initDraggable();
    			}, 700);    
 	} else {
+		stopTimer(question_id);
 		showNextQuestion(question_id, next_question_id);
 	}
 },
@@ -144,6 +153,7 @@ onButtonNextClick = function(element, id, next_id){
  		collection_answers.push(answer);
  	}
  });
+ stopTimer(question_id);
  showNextQuestion(id, next_id);
 },
 
@@ -162,10 +172,10 @@ onButtonNextTypeOneClick = function(element, id, next_id){
  		}
  	 }); 	 	
 
- 	var answer = createSingleUserAnswer(question_id, answer_id, type, value);
- 	console.log(answer);
+ 	var answer = createSingleUserAnswer(question_id, answer_id, type, value); 
  	collection_answers.push(answer); 	
  });
+ stopTimer(question_id);
  showNextQuestion(id, next_id);
 },
 
@@ -201,17 +211,18 @@ onMiddleClick = function(element){
 },
 
 createSingleUserAnswer = function(question_id, answer_id, type, value){
-	    return answer = {
-          question_id: question_id,
-          answer_id: answer_id,
-          type: type,
-          value: value,
-          trip_id: tripId        
-        };               
+	return answer = {
+      question_id: question_id,
+      answer_id: answer_id,
+      type: type,
+      value: value,
+      trip_id: tripId        
+    };               
 },
 
-showNextQuestion = function(id, next_id){  
+showNextQuestion = function(id, next_id){
    if(next_id){	   
+   	$(document).trigger("startTimer");  
 	
 	$('#container-questions-' + id).removeClass("animated fadeInDown");
 	$('#container-questions-' + id).addClass("animated fadeOutDown");
@@ -224,9 +235,42 @@ showNextQuestion = function(id, next_id){
 	   	 initDraggable();
    	}, 700);    
    } else {
+   	updateMetaFinish();
    	sendAnswers(id);
    }
    
+},
+
+onStartTimer = function(){
+	start = new Date();	
+}, 
+
+stopTimer = function(question_id){
+	var elapsed = (new Date() - start) / 1000;
+	start = 0;
+	sendTimeTaken(question_id, elapsed);
+	updateMetaCount();
+},
+
+sendTimeTaken = function(question_id, seconds){
+var url = '/insert-time/';
+$.post(url, {user_id: userId, question_id: question_id, trip_id: tripId, seconds: seconds}, function( data ) {
+	
+});
+},
+
+updateMetaCount = function(){
+	var url = '/update-meta-count/';
+	$.post(url, {user_id: userId, trip_id: tripId}, function( data ) {
+		
+	});
+},
+
+updateMetaFinish = function(){
+var url = '/update-meta-finish/';
+	$.post(url, {user_id: userId, trip_id: tripId}, function( data ) {
+		
+	});
 };
 
 that.init = init;
