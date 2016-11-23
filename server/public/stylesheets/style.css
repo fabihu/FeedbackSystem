@@ -298,7 +298,10 @@ a {
 .right-addon .glyphicon { right: 0px;}
 
 /* add padding  */
-.left-addon input  { padding-left:  45px; }
+.left-addon input  {
+ font-size: 13px!important; 
+ padding-left:  45px;
+}
 .right-addon input { padding-right: 45px; }
 
 .text-center {
