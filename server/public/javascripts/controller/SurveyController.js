@@ -4,11 +4,13 @@ FeedbackSystem.SurveyController = (function() {
   $buttonNext = null,
   $containerQuestions = null,
   tripId = -1,
+  userId = -1,
 
   init = function() {
   	console.log("SurveyController init");
     $(document).on("initSurvey", onInitControls);
     $(document).on("getTripId", onGetTripId);
+    $(document).on("getUserId", onGetUserId);
    
   },
 
@@ -46,6 +48,10 @@ FeedbackSystem.SurveyController = (function() {
 
   onGetTripId = function(event, trip_id){    
     tripId = parseInt(trip_id);
+  },
+
+ onGetUserId = function(event, user_id){    
+    userId = parseInt(user_id);
   },
 
   getSelectedAnswers = function(){

@@ -34,6 +34,12 @@ FeedbackSystem.LoginController = (function() {
 					var id = data.id;
 					if(is_open == 0){
 						$.post('/get-questions/', {id: id}, function( data ) {
+
+							$.post('/create-user/', {id: id}, function(data){
+								console.log(data);
+								$(document).trigger('getUserId', data.id);
+							});
+							
 								
 								$('#container-info').removeClass('animated slideInDown');
 								$('#main-container').addClass("animated fadeOutDown");
@@ -46,7 +52,8 @@ FeedbackSystem.LoginController = (function() {
 								$('#container-info').remove();
 
 								$(document).trigger('initSTSurvey');								
-								$(document).trigger('getTripId', id);						
+								$(document).trigger('getTripId', id);
+								$(document).trigger('startTimer');							
 								}, 800);
 						});
 					} else {
