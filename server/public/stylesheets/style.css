@@ -18,6 +18,12 @@ a {
   color: #3c3c3e;
 }
 
+.container-arrows {
+  font-size: 50px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
 .first-star {
   margin-left: 5px;
 }
@@ -223,7 +229,9 @@ a {
 }
 
 .container-chart{
-    padding: 60px;
+    padding: 30px;
+    margin: 30px;
+    border: 0.1em solid #E6E9ED;
 }
 
 .table>tbody>tr>td{
@@ -480,6 +488,23 @@ tr.row-no-border-top td{
  }
 
 .button-next {
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 400!important;
+    color: #ffd500!important;
+    font-size: 20px!important;
+    padding: 5px 20px 5px 20px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    border: 0.1em solid #ffd500;
+    text-decoration: none!important;
+    background: #912584;
+    letter-spacing: 1px;
+    text-align: center;
+    float: right;
+}
+
+.button-next-st {
     border-radius: 25px;
     cursor: pointer;
     font-weight: 400!important;

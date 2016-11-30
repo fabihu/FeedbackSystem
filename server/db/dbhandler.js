@@ -735,9 +735,9 @@ deleteFromQuestionSet = function(trip_id, question_id, question_version, callbac
   });
 }
 
-insertUserMeta = function(trip_id, callback){
+insertUserMeta = function(trip_id, type_questionnaire, callback){
    pool.getConnection(function(err, connection) {
-   var query = connection.query('INSERT INTO ' + TABLE_USER_META + ' (trip_id, status, count_answerd_questions, date_answer) VALUES (?, "pending", 0, ?)', [trip_id, utils.getDateTime()], function(err, result) {
+   var query = connection.query('INSERT INTO ' + TABLE_USER_META + ' (trip_id, status, count_answerd_questions, date_answer, type_questionnaire) VALUES (?, "pending", 0, ?, ?)', [trip_id, utils.getDateTime(), type_questionnaire], function(err, result) {
          connection.release();
          callback(err, result.insertId);
     });
@@ -779,6 +779,53 @@ pool.getConnection(function(err, connection) {
   }); 
 }
 
+updateMetaCancel = function(user_id, callback){
+pool.getConnection(function(err, connection) {  
+  var query = connection.query('UPDATE ' + TABLE_USER_META + ' SET status="canceld" WHERE id=?' , [user_id], function(err, result) {  
+    if(err){
+      console.log(err); 
+    }
+  });   
+  connection.release();
+  callback(err);    
+
+  }); 
+}
+
+getQuestionnaireType = function(trip_id, callback){
+  pool.getConnection(function(err, connection) { 
+      connection.query('SELECT type_questionnaire FROM ' + TABLE_TRIPS + ' WHERE id = ?',[trip_id],  function(err, dbResponse) {
+      if (err) console.log(err);
+      connection.release();     
+      callback(err, dbResponse);
+     });
+  });
+}
+
+updateQuestionnaireType = function(trip_id, type, callback){
+pool.getConnection(function(err, connection) {  
+  var query = connection.query('UPDATE ' + TABLE_TRIPS + ' SET type_questionnaire=? WHERE id=?' , [type, trip_id], function(err, result) {  
+    if(err){
+      console.log(err); 
+    }
+  });   
+  connection.release();
+  callback(err);    
+
+  });   
+}
+
+getLastUserQtype = function(trip_id, callback){
+  pool.getConnection(function(err, connection) { 
+      connection.query('SELECT type_questionnaire FROM ' + TABLE_USER_META + ' WHERE trip_id = ? GROUP BY id HAVING id = MAX(id)', [trip_id],  function(err, dbResponse) {
+      if (err) console.log(err);
+      connection.release();       
+      callback(err, dbResponse);
+     });
+  });
+
+}
+
 exports.init = init;
 exports.checkLoginCredentials = checkLoginCredentials;
 exports.getQuestions = getQuestions;
@@ -786,12 +833,15 @@ exports.getQuestionsForTrips = getQuestionsForTrips;
 exports.getQuestionsForTrip = getQuestionsForTrip;
 exports.getAllActiveQuestions = getAllActiveQuestions;
 //exports.getActiveAnswersFromCollection = getActiveAnswersFromCollection;
+exports.getLastUserQtype = getLastUserQtype;
 exports.getAnswers = getAnswers;
 exports.getAnswersForTrip = getAnswersForTrip;
 exports.getAnswersForTrips = getAnswersForTrips;
 exports.getUserAnswersForTrip = getUserAnswersForTrip;
 exports.getTrips = getTrips;
 exports.getNotActiveTrips = getNotActiveTrips;
+exports.getQuestionnaireType = getQuestionnaireType;
+exports.updateQuestionnaireType = updateQuestionnaireType;
 exports.insertUserAnswers = insertUserAnswers;
 exports.insertNewTrip = insertNewTrip;
 exports.insertNewQuestion = insertNewQuestion;
@@ -804,6 +854,7 @@ exports.insertNewAnswerOptions = insertNewAnswerOptions;
 exports.insertUserMeta = insertUserMeta;
 exports.updateMetaCount = updateMetaCount;
 exports.updateMetaFinish = updateMetaFinish;
+exports.updateMetaCancel = updateMetaCancel;
 exports.deleteQuestion = deleteQuestion;
 exports.updateQuestion = updateQuestion;
 exports.updateOrderQuestionSet = updateOrderQuestionSet

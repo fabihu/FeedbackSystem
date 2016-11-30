@@ -3,12 +3,12 @@ FeedbackSystem.LoginController = (function() {
 	$submitButton = null,
 	$txtUserTravelID = null,
 	$txtUserPassword = null,
-
-
+	
 //Initialisierung der Logins
 	init = function() {
 		console.log("LoginController init")
-		initControls();
+		initControls();	 
+
 	},
 
 	initControls = function(){
@@ -34,9 +34,10 @@ FeedbackSystem.LoginController = (function() {
 					var id = data.id;
 					if(is_open == 0){
 						$.post('/get-questions/', {id: id}, function( data ) {
-
-							$.post('/create-user/', {id: id}, function(data){
-								console.log(data);
+					
+							var qtype_id = $(data).html(data).filter("#temp-qtype").data("qtype");
+							
+							$.post('/create-user/', {id: id, qtype_id: qtype_id}, function(data){								
 								$(document).trigger('getUserId', data.id);
 							});
 							
@@ -51,9 +52,14 @@ FeedbackSystem.LoginController = (function() {
 								$('#main-container').remove();
 								$('#container-info').remove();
 
-								$(document).trigger('initSTSurvey');								
+								if(qtype_id == 0){
+									$(document).trigger('initSurvey');
+									$(document).trigger('startTimer');							
+								} else {
+									$(document).trigger('initSurveyST');
+									$(document).trigger('startTimerST');	
+								}
 								$(document).trigger('getTripId', id);
-								$(document).trigger('startTimer');							
 								}, 800);
 						});
 					} else {

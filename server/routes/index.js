@@ -1,7 +1,33 @@
+module.exports = function(io) { // catch here
+
 var express = require('express');
 var router = express.Router();
 var dbhandler = require('../db/dbhandler');
 var async = require('async');
+var allClients = {};
+allClients.sockets = [];
+allClients.ids = [];
+
+
+io.sockets.on('connection', function (socket) {
+
+    socket.on('user_data', function(data) {      
+       allClients.sockets.push(socket);
+       allClients.ids.push(data.user_id);      
+    });
+
+     socket.on('disconnect', function (data) {      
+       var i = allClients.sockets.indexOf(socket);
+       var user_id = allClients.ids[i];
+       delete allClients.sockets[i];
+       delete allClients.ids[i];      
+      
+       if(user_id != -1){
+            dbhandler.updateMetaCancel(user_id, function(err, result){               
+            });    
+        }
+      });
+});
 
 router.get('/', function(req, res, next) {
   dbhandler.init();
@@ -37,16 +63,38 @@ router.post('/get-questions/', function(req, res, next) {
       console.log("Error: " + err);      
     } else {
       var sortedQuestions = formatArr(result.questions, result.answers);     
+      var type = 0;
       
-      //res.render('survey', {data: sortedQuestions});
-       res.render('survey_st', {data: sortedQuestions});     
+      dbhandler.getQuestionnaireType(trip_id, function(err, result){
+        type = result[0];
+        if(type == 0){
+          res.render('survey', {type: type, data: sortedQuestions});
+        } else if (type == 1) {
+          res.render('survey_st', {type: type, data: sortedQuestions});
+        }
+        else {
+          var type = 0;    
+          dbhandler.getLastUserQtype(trip_id, function(err, result){
+            if(result.length > 0) type = result[0].type_questionnaire;
+           
+           
+            if (type == 1){
+              res.render('survey', {type: 0, data: sortedQuestions});       
+            } else {
+              res.render('survey_st', {type: 1, data: sortedQuestions}); 
+                   
+            }
+          })
+        }
+      });
     }    
   });  
 });
 
 router.post('/create-user/', function(req, res, next) {
-  var id = req.body.id;  
-  dbhandler.insertUserMeta(id, function(err, id){      
+  var id = req.body.id;
+  var qtype_id = req.body.qtype_id;
+  dbhandler.insertUserMeta(id, qtype_id, function(err, id){      
       res.json({id: id});;
   });
 })
@@ -84,6 +132,18 @@ router.post('/update-meta-finish/', function(req, res, next) {
   });
 })
 
+router.post('/update-meta-cancel/', function(req, res, next) {
+  var user_id = req.body.user_id;
+  var trip_id = req.body.trip_id;    
+
+  if(user_id != -1){
+    dbhandler.updateMetaCancel(user_id, function(err, result){
+        res.json({data: "ok"});
+    });    
+  }
+
+})
+
 router.get('/eval/', function(req, res, next) {
   res.render('eval');  
 })
@@ -117,4 +177,5 @@ formatArr = function(arr1, arr2) {
   return result;
 }
 
-module.exports = router;
+    return router;
+}

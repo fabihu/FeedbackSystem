@@ -1,3 +1,4 @@
+     <div id="temp-qtype" class="invis" data-qtype="<%=type%>"></div>
     <% for(var i=0; i<data.length; i++) { %>
       <% var question = data[i].question; %>
 
@@ -128,7 +129,7 @@
             </div> 
           <button class="button-qv-2 button-minus" id="button-sub-<%=question.id%>" ><span class="glyphicon glyphicon-minus"></span></button>  
           </div> 
-          <button class="button-next btn-next-qtype-1 invis" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="false">Absenden</button>
+          <button class="button-next-st btn-next-qtype-1 invis" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="false">Absenden</button>
           <% } %>
       <% } %>
              
@@ -143,26 +144,32 @@
     <% if(question.type == 0) {%>
         <div id="bus-right" class="bus bus-right">
         </div>
-       </div> 
+       </div>
+
+
+        <div class="container-arrows">
+        <span class="glyphicon glyphicon-menu-left btn-arr btn-arr-left"></span>       
+        <span class="glyphicon glyphicon-menu-right btn-arr btn-arr-right"></span>
+       </div>       
     <% } %>  
      
     <% if(question.type == 1) {%>
       <% if (i == data.length-1){ %>
-           <button class="button-next invis" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="true">Absenden</button>    
+           <button class="button-next-st invis" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="true">Absenden</button>    
        <% } else { %>
         <% if(even_odd == 0) {%>
-           <button class="button-next invis" style="bottom: 0;"id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="false">Weiter</button>
+           <button class="button-next-st invis" style="bottom: 0;"id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="false">Weiter</button>
         <% } else { %> 
-           <button class="button-next button-next-qtype-1" style="bottom: 0;" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="false">Weiter</button>
+           <button class="button-next-st button-next-qtype-1" style="bottom: 0;" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="false">Weiter</button>
         <% } %>   
       <% } %>
 
     <% } else { %>  
 
     <% if (i == data.length-1){ %>      
-        <button class="button-next" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="true">Absenden</button>        
+        <button class="button-next-st" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="true">Absenden</button>        
     <% } else { %>      
-        <button class="button-next" style="bottom: 0;"id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="false">Weiter</button>
+        <button class="button-next-st" style="bottom: 0;"id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="false">Weiter</button>
     <% } %>
      <% } %>
      

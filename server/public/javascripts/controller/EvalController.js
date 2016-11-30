@@ -8,23 +8,23 @@ FeedbackSystem.EvalController = (function() {
 	
 	init = function() {				
 	 console.log("EvalController init");
-	 getTravelCategories();
-	 getPageContent('trip');				
+	 getTravelCategories(function(){
+	 	getPageContent('/eval/trip');	 	
+	 });
 	 setClickListener();
 	 onNavBarClick();
 	},
 
 
-	getPageContent = function(url){
-		$.get(url, function( data ){						
+	getPageContent = function(url){		
+		$.get(url, function( data ){									
     		$('#dashboard-content').empty();
     		$('#dashboard-content').append(data);
 
     		switch(url){
-    			case('trip'):{			
+    			case('/eval/trip'):{	    				
     			$(document).ready(function(){	
-    				$('#table-trips > tbody  > tr').each(function(index) {
-    					console.log("load"); 					
+    				$('#table-trips > tbody  > tr').each(function(index) {    									
     					var field = $('#table-trips tr').eq(index+1).find('td').eq(1);
     					var value = $(field[0]).html();    					
     					var category = $.grep(travelCategories, function(e){ return e.id == value; });
@@ -33,16 +33,22 @@ FeedbackSystem.EvalController = (function() {
     				});
     			});	
     				
-    					$(".btn-trip-active").bootstrapSwitch({size: 'mini',
+    			$(".btn-trip-active").bootstrapSwitch({size: 'mini',
     														onColor: 'success',
     														offColor: 'danger',
     														onSwitchChange: function(){
     															onChangeTripStatus(this);
-    														}});    					
-    				
+    														}});
+    			$('#table-trips > tbody  > tr').each(function(index, element) {    			
+    				var trip_id = $(element).data('trip-id');
+    				getQuestionnaireType(trip_id, function(data){
+    					var type = data[0].type_questionnaire;    					
+    					$("#select-q-type-"+trip_id).val(type);	
+    				});
+    			});	
     			break;
     			}
-    			case('score'):{
+    			case('/eval/score'):{
     			 onLoadCharts();
     			 break;
     			}
@@ -183,8 +189,29 @@ FeedbackSystem.EvalController = (function() {
 		$('#dashboard-content').on('click','.list-order-arrows button', function (e) {        	
         	onArrowUpDownClick(this);            
         });
-        		
+
+        $('#dashboard-content').on('change', '.select-questionnaire', function() {        	
+  			onSelectChange(this);
+		});        		
 		
+	},
+
+	onSelectChange = function(element){
+		var new_value = $(element).val();
+		var trip_id =  $(element).data('trip-id'); 		
+		var url = '/eval/change-type-questionnaire';
+
+		$.post(url, {trip_id: trip_id, type: new_value}, function( data ){
+		 	callback(data);					
+		});	
+
+	},
+
+	getQuestionnaireType = function(trip_id, callback){
+		var url = '/eval/get-questionnaire-type';
+		$.post(url, {trip_id: trip_id}, function( data ){
+		 	callback(data);					
+		});	
 	},
 
 	onNavBarClick = function(){
@@ -226,14 +253,14 @@ FeedbackSystem.EvalController = (function() {
                 if ($button.hasClass('move-left')) {                	
                     actives = $('.list-right ul li.active');
                     actives.appendTo($('.list-left ul.'+trip_id)); 
-                    url = 'add-question-set'                   
+                    url = '/eval/add-question-set'                   
                     
 
                 } else if ($button.hasClass('move-right')) {
 
                     actives = $('.list-left ul li.active');
                     actives.appendTo($('.list-right ul.'+trip_id));
-                    url = 'remove-question-set';
+                    url = '/eval/remove-question-set';
 				                      
                 }
                 
@@ -273,7 +300,7 @@ FeedbackSystem.EvalController = (function() {
         	var question = $(question_entries[i]);
         	var question_id = $(question).data('question-id');
         	var position = i+1;
-        	var url = 'change-order-question-set'
+        	var url = '/eval/change-order-question-set'
 			$.post(url, {trip_id: trip_id, question_id: question_id, position: position}, function( data ){
 				
 			});        	       	
@@ -290,7 +317,7 @@ FeedbackSystem.EvalController = (function() {
 			active_state = false;
 		}
 		
-		var url = 'update-active-trip'
+		var url = '/eval/update-active-trip'
 		$.post(url, {trip_id: trip_id, flag_active: active_state}, function( data ){
 			
 		});
@@ -358,7 +385,7 @@ FeedbackSystem.EvalController = (function() {
 			if ($(element).find("#detail-answer-text").data('answer-id')){
 				if($.inArray(new_text, old_answer_values) == -1){
 					answer_id = $(element).find("#detail-answer-text").data('answer-id');
-					url = 'update-answer'
+					url = '/eval/update-answer'
 					$.post(url, {data: answer, id: answer_id, question_id: question_id}, function( data ){			
 						
 					});
@@ -376,7 +403,7 @@ FeedbackSystem.EvalController = (function() {
 		});	
 		
 		if (new_answer_options.length > 0){			
-			url = 'save-new-answer-options'
+			url = '/eval/save-new-answer-options'
 			$.post(url, {data: new_answer_options}, function( data ){
 				
 			});
@@ -400,7 +427,7 @@ FeedbackSystem.EvalController = (function() {
 			type: new_type
 		}
 		
-		var url = 'update-question'
+		var url = '/eval/update-question'
 		$.post(url, {data: question, id: question_id}, function( data ){
 			getPageContent('questions');
 		});
@@ -449,13 +476,13 @@ FeedbackSystem.EvalController = (function() {
 			
 			
 			if(edit){
-				var url = 'update-trip'
+				var url = '/eval/update-trip'
 				$.post(url, {data: new_trip, id: trip_id}, function( data ){
 					getPageContent('trip');
 				});
 
 			} else {
-				var url = 'save-new-trip'
+				var url = '/eval/save-new-trip'
 				$.post(url, {data: new_trip}, function( data ){
 					getPageContent('trip');
 
@@ -501,7 +528,7 @@ FeedbackSystem.EvalController = (function() {
 	onDeleteTrip = function(e, element){
 		e.preventDefault();	
 		var trip_id = $(element).data('trip-id');
-		var url = 'delete-trip';
+		var url = '/eval/delete-trip';
 		$.post(url, {id: trip_id}, function( data ){					
 			$('#trip-row-'+ trip_id).fadeOut().delay(800).queue(function(){
 				$(this).remove();
@@ -532,7 +559,7 @@ FeedbackSystem.EvalController = (function() {
 
 	onSaveNewQuestion = function(e){		
 		var new_answer_options = [];
-		var url = 'save-new-question';
+		var url = '/eval/save-new-question';
 		$.post(url, {data: new_question}, function( data ){	
 				
 			var question_id = data.questionID;
@@ -546,7 +573,7 @@ FeedbackSystem.EvalController = (function() {
     			
     			new_answer_options.push(answer_option);
 			});
-			var url = 'save-new-answer-options'
+			var url = '/eval/save-new-answer-options'
 			$.post(url, {data: new_answer_options}, function( data ){
 				getPageContent('questions');
 			});
@@ -558,7 +585,7 @@ FeedbackSystem.EvalController = (function() {
 
 	onDeleteQuestion = function(e, element){
 		var question_id = $(element).data('question-id');		
-		var url = 'delete-question';
+		var url = '/eval/delete-question';
 		$.post(url, {id: question_id}, function( data ){							
 			$('#question-row-'+ question_id).fadeOut().delay(800).queue(function(){
 				$(this).remove();
@@ -572,7 +599,7 @@ FeedbackSystem.EvalController = (function() {
 		var answer_id = $(element).prev().data('answer-id');		
 		$(this).parent().remove();		
 		
-		var url = 'delete-answer';
+		var url = '/eval/delete-answer';
 		$.post(url, {id: answer_id}, function( data ){							
 	
 		});
@@ -582,13 +609,13 @@ FeedbackSystem.EvalController = (function() {
 		$(".menu-active-main-color").removeClass("menu-active-main-color");
     	$(item).addClass("menu-active-main-color");
     	
-    	var url = $(item).data('url'); 
+    	var url = /eval/ + $(item).data('url'); 
     	getPageContent(url);
     		
 	},
 
 	onLoadCharts = function(){
- 	var url = 'get-chart-data';
+ 	var url = '/eval/get-chart-data';
  	var y = [];
 	$.post(url, function(result){
 	
@@ -597,7 +624,7 @@ FeedbackSystem.EvalController = (function() {
 		var element = this;		
 		var trip_id = $(this).data('trip-id');
 		var question_id = $(this).data('question-id');
-		var url = 'get-trip-score';
+		var url = '/eval/get-trip-score';
 
 		$.post(url, {trip_id: trip_id, question_id: question_id}, function(res){
 		var answerd_questions = res;		
@@ -758,10 +785,11 @@ FeedbackSystem.EvalController = (function() {
 
 	},
 
-	getTravelCategories = function(){
-		var url = "get-categories";
+	getTravelCategories = function(callback){
+		var url = "/eval/get-categories";		
 		$.get(url, function( data ){
 			travelCategories = data;
+			callback();
 		});
 	},
 
@@ -775,7 +803,7 @@ FeedbackSystem.EvalController = (function() {
 			e.preventDefault();
 			$("#modal-detail-question").modal('show');			
 			var question_id = $(element).data('question-id');		
-			var url = 'detail-questions';
+			var url = '/eval/detail-questions';
 
 			$.post(url, {id: question_id}, function( data ){
 				$('#modal-body-detail-question').append(data);

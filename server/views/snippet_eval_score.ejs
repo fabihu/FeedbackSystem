@@ -2,7 +2,7 @@
 <% var i = 0; %>
 <% for (var index in data) {%>
 <% var trip = data[index].trip; %>
-
+  
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="heading-<%=trip.id%>">
       <h4 class="panel-title">
@@ -21,11 +21,27 @@
         <div id="collapse-<%=trip.id%>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-<%=trip.id%>">
     <%  } %>  
     <div class="panel-body">
-      <div class="container">
+      <div class="container col-md-offset-1">
         <% for (var index in trip.questions) {%>
         <% var question = trip.questions[index][0]; %>
-       
-         <div class="row col-md-8 col-md-offset-2 container-chart">
+         <% if (index == 0) { %>
+         <div class="row col-md-8 container-chart">
+
+            <div>
+              <h4 class="main-text-header header-score">Allgemein</h4>
+              <span class="glyphicon glyphicon glyphicon-user"></span>
+               <div><b>x</b> Reisende haben den Fragebogen vollständig beantwortet</div>
+               <div><b>x</b> Reisende haben den Fragebogen vorzeitig beendet</div> 
+            </div>
+            <br/>
+            <div>
+              <span class="glyphicon glyphicon glyphicon-time"></span>
+              <div>Für die Beantwortung des Fragebogens haben die Kunden durchschnittlich <b>x</b> Minuten Sekunden benötigt</div> 
+            </div>            
+
+         </div>
+         <%  } %>  
+         <div class="row col-md-8 container-chart">
          <h4 class="main-text-header header-score">Auswertung: <%=question.text%></h4>
          <% if (question.type == 0) { %>
               <canvas class="chart chart-<%=question.question_id%>" id="chart-<%=question.question_id%>" data-trip-id="<%=trip.id%>" data-question-id="<%=question.question_id%>"></canvas>

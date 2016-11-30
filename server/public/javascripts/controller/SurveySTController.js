@@ -4,20 +4,30 @@ tripId = -1,
 userId = -1,
 collection_answers = [],
 start = 0,
+isDown = false,
+interval = 0,
+socket = null,
 
 init = function() {
-  	console.log("SurveySTController init");
-    $(document).on("initSTSurvey", onInitSTSurvey);
+  	console.log("SurveySTController init");  	
+;   $(document).on("initSTSurvey", onInitSTSurvey);
     $(document).on("getTripId", onGetTripId);
     $(document).on("getUserId", onGetUserId);
-    $(document).on("startTimer", onStartTimer);    
+    $(document).on("startTimerST", onStartTimerST);
+    $(document).on("leavePageST", onLeavePageST);    
 
     initComponents();    
 },
 
 onInitSTSurvey = function(){
 	initDraggable();
-	initDroppable();  
+	initDroppable();
+	socket = io('http://localhost:8080');
+	handleConnect();     
+},
+
+handleDisconnect = function(){
+   socket.emit('disconnect', {trip_id: tripId, userId}); 
 },
 
 onGetTripId = function(event, trip_id){    
@@ -30,7 +40,7 @@ onGetUserId = function(event, user_id){
 
 initComponents = function(){
 	
-	$('#survey-container').on('click', ".button-next", function(e){
+	$('#survey-container').on('click', ".button-next-st", function(e){
 		e.preventDefault();
 		var next_id = $(this).parent().next('.container').data('question-id');		
 		var id =  $(this).data('question-id');
@@ -56,8 +66,48 @@ initComponents = function(){
 		onPlusBtnPress(this);
 	});
 
+	$('#survey-container').on('touchstart mousedown', ".btn-arr", function(e){
+		e.preventDefault();
+		e.stopPropagation();	
+			isDown = true;
+		onBtnArrPress(this);
+	});
+
+	$('#survey-container').on('touchend mouseup', ".btn-arr", function(e){		
+		e.stopPropagation();
+		e.preventDefault();		
+		isDown = false;				
+	});
+
+	$(window).on('beforeunload', function(e){ 	 		
+    	return "Why are you leaving?";       	
+    });
+
+    $(window).on('unload', function(){   	
+		 $(document).trigger('leavePageST');
+	}); 	
+
 
 },
+
+
+handleConnect = function(){
+  socket.on('connect',function(){ 
+    console.log("connected");
+    socket.emit('user_data', {user_id: userId});
+  });
+},
+
+  onLeavePageST = function(){
+   handleDisconnect();
+  /*var url = 'update-meta-cancel';
+    $.ajax({
+        type: 'POST',
+        async: false,
+        url: url,
+        data: {user_id: userId, trip_id: tripId}
+    });*/
+  },
 
 initDraggable = function(){
 	var startPosition = 0;
@@ -83,6 +133,42 @@ initDroppable = function(){
 	    	onDropBus(this);	    
 	    }
     });	
+},
+
+onBtnArrPress = function(element){	
+	interval = setInterval(function(){			
+		if(isDown === true){
+		 moveBus(element);			
+		} else {
+		 clearInterval(interval);
+		}
+	}, 20); 
+},
+
+moveBus = function(element){
+
+var offset = $('.bus-container').offset();
+var new_offset_left = offset.left - 25;
+var new_offset_right = offset.left + 25;
+
+if($(element).hasClass('btn-arr-left')){
+	if(!(new_offset_left <= -650)){
+		$('.bus-container').css({'left': "-=" + 25});
+	} else {
+		$('.bus-container').offset({"left": -650});
+	}
+}
+
+if($(element).hasClass('btn-arr-right')) {
+	if(!(new_offset_right > 150)){
+	  $('.bus-container').css({'left': "+=" + 25});
+	} else {
+	  $('.bus-containe').offset({"left": 150});
+	}
+}	
+
+
+
 },
 
 onMinusBtnPress = function(element){
@@ -136,24 +222,43 @@ onDropBus = function(element){
    			initDraggable();
    			}, 700);    
 	} else {
-		stopTimer(question_id);
+		stopTimerST(question_id);
 		showNextQuestion(question_id, next_question_id);
 	}
 },
 
 onButtonNextClick = function(element, id, next_id){
- var elements = $(element).parent().find(".bus-middle");
- var question_id = $(element).data('question-id');
- var type = 0;
- $.each(elements, function(index, item){
- 	var value = $(item).data("checked");
- 	if (value){
- 		var answer_id = $(item).data("answer-id"); 		
- 		var answer = createSingleUserAnswer(question_id, answer_id, type, value);
- 		collection_answers.push(answer);
- 	}
- });
- stopTimer(question_id);
+var elements = $(element).parent().find(".bus-middle");
+var question_id = $(element).data('question-id');
+var question_type = $(element).data('question-type');
+var type = 0;
+if(question_type == 1) {
+ 	$.each(elements, function(index, item){
+ 		var value = $(item).data("checked");
+ 		if (value){
+ 			var answer_id = $(item).data("answer-id"); 		
+ 			var answer = createSingleUserAnswer(question_id, answer_id, type, value);
+ 			collection_answers.push(answer);
+ 		}
+ 	});
+	
+} else {
+	var $textAreaSuggestions = $('#text-suggestions');
+    var text = $textAreaSuggestions.val();
+    var answer = {
+          question_id: $textAreaSuggestions.data('question-id'),
+          answer_id: $textAreaSuggestions.data('answer-id'),
+          type: 3,
+          value: 0,
+          text: text,
+          trip_id: tripId          
+        
+        };
+    collection_answers.push(answer);  
+}
+
+
+ stopTimerST(question_id);
  showNextQuestion(id, next_id);
 },
 
@@ -175,7 +280,7 @@ onButtonNextTypeOneClick = function(element, id, next_id){
  	var answer = createSingleUserAnswer(question_id, answer_id, type, value); 
  	collection_answers.push(answer); 	
  });
- stopTimer(question_id);
+ stopTimerST(question_id);
  showNextQuestion(id, next_id);
 },
 
@@ -222,7 +327,7 @@ createSingleUserAnswer = function(question_id, answer_id, type, value){
 
 showNextQuestion = function(id, next_id){
    if(next_id){	   
-   	$(document).trigger("startTimer");  
+   	$(document).trigger("startTimerST");  
 	
 	$('#container-questions-' + id).removeClass("animated fadeInDown");
 	$('#container-questions-' + id).addClass("animated fadeOutDown");
@@ -241,11 +346,12 @@ showNextQuestion = function(id, next_id){
    
 },
 
-onStartTimer = function(){
+onStartTimerST = function(){
 	start = new Date();	
 }, 
 
-stopTimer = function(question_id){
+stopTimerST = function(question_id){
+	console.log("stop");	
 	var elapsed = (new Date() - start) / 1000;
 	start = 0;
 	sendTimeTaken(question_id, elapsed);

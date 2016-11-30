@@ -1,9 +1,11 @@
+module.exports = function() {
 var express = require('express');
 var router = express.Router();
 var dbhandler = require('../db/dbhandler');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
+  console.log("test")
   res.send('respond with a resource');
 });
 
@@ -75,7 +77,7 @@ router.post('/detail-questions/', function(req, res, next) {
 });
 
 router.get('/get-categories/', function(req, res, next) {
-  dbhandler.getTravelTypes(function(err, dbTravelTypes){     
+  dbhandler.getTravelTypes(function(err, dbTravelTypes){    
    res.send(dbTravelTypes);
   }); 
 });
@@ -194,6 +196,22 @@ router.post('/change-order-question-set/', function(req, res, next) {
   }); 
 });
 
+router.post('/get-questionnaire-type/', function(req, res, next) {
+ var trip_id = req.body.trip_id;      
+ dbhandler.getQuestionnaireType(trip_id, function(err, result){    
+   res.json(result);
+  }); 
+});
+
+router.post('/change-type-questionnaire/', function(req, res, next) {
+ var trip_id = req.body.trip_id;    
+ var type = req.body.type;  
+ dbhandler.updateQuestionnaireType(trip_id, type, function(err, result){    
+   res.json(result);
+  }); 
+});
+
+
 formatAssignmentData = function(arr1, arr2, allActives) {
   var result = [];  
 
@@ -258,4 +276,6 @@ removeDuplicates = function(a, b){
 }
 
 
-module.exports = router;
+return router;
+}
+
