@@ -14,7 +14,7 @@ init = function() {
     $(document).on("getTripId", onGetTripId);
     $(document).on("getUserId", onGetUserId);
     $(document).on("startTimerST", onStartTimerST);
-    $(document).on("leavePageST", onLeavePageST);    
+    $(document).on("leavePageST", onLeavePageST);        
 
     initComponents();    
 },
@@ -27,7 +27,7 @@ onInitSTSurvey = function(){
 },
 
 handleDisconnect = function(){
-   socket.emit('disconnect', {trip_id: tripId, userId}); 
+   socket.emit('disconnect'); 
 },
 
 onGetTripId = function(event, trip_id){    
@@ -79,35 +79,27 @@ initComponents = function(){
 		isDown = false;				
 	});
 
-	$(window).on('beforeunload', function(e){ 	 		
-    	return "Why are you leaving?";       	
-    });
-
-    $(window).on('unload', function(){   	
-		 $(document).trigger('leavePageST');
-	}); 	
-
 
 },
 
 
 handleConnect = function(){
   socket.on('connect',function(){ 
-    console.log("connected");
     socket.emit('user_data', {user_id: userId});
   });
 },
 
-  onLeavePageST = function(){
-   handleDisconnect();
-  /*var url = 'update-meta-cancel';
-    $.ajax({
-        type: 'POST',
-        async: false,
-        url: url,
-        data: {user_id: userId, trip_id: tripId}
-    });*/
-  },
+onLeavePageST = function(){	
+ 	handleDisconnect(); 
+},
+
+unbindWindowClose = function(){ 
+  $(window).unbind('beforeunload');
+  $(window).unbind('unload');
+  $(document).unbind("leavePageST");
+    window.onbeforeunload = function(){return null};
+    window.unload = function(){return null};
+},
 
 initDraggable = function(){
 	var startPosition = 0;
@@ -285,10 +277,11 @@ onButtonNextTypeOneClick = function(element, id, next_id){
 },
 
 sendAnswers = function(question_id){
-	
+	updateMetaFinish();
+	unbindWindowClose();	
 	$.post('/receive-answers/', {data: collection_answers}, function( data ) {
     	console.log("server received answers");
-    	var message = '<div class="container main-text margin-credits animated fadeInDown"><label class="lbl-suggestions" for="text-suggestion">Vielen Dank für Ihre Teilnahme an unserer Umfrage. <br/>'+
+    	var message = '<div id="container-credits" class="container main-text margin-credits animated fadeInDown"><label class="lbl-suggestions" for="text-suggestion">Vielen Dank für Ihre Teilnahme an unserer Umfrage. <br/>'+
     	'Wir hoffen, dass wir Sie auch in Zukunft auf weiteren Reisen begrüßen dürfen! </label></div>'
     	$(message).insertAfter('.navbar');
  	});
@@ -339,14 +332,22 @@ showNextQuestion = function(id, next_id){
 	   	$('#container-questions-' + id).remove();
 	   	 initDraggable();
    	}, 700);    
-   } else {
-   	updateMetaFinish();
+   } else {   
    	sendAnswers(id);
    }
    
 },
 
 onStartTimerST = function(){
+
+	$(window).on('beforeunload', function(e){		
+    	return "Why are you leaving?";    		       	
+    });
+
+	$(window).on('unload', function(){   		
+		$(document).trigger('leavePageST');		
+	}); 	
+
 	start = new Date();	
 }, 
 
@@ -373,6 +374,7 @@ updateMetaCount = function(){
 },
 
 updateMetaFinish = function(){
+socket.emit('finished', {user_id: userId});
 var url = '/update-meta-finish/';
 	$.post(url, {user_id: userId, trip_id: tripId}, function( data ) {
 		

@@ -7,14 +7,13 @@ FeedbackSystem.SurveyController = (function() {
   userId = -1,
   socket = null,
 
-
   init = function() {
   	console.log("SurveyController init");   
     $(document).on("initSurvey", onInitSurvey);
     $(document).on("getTripId", onGetTripId);
     $(document).on("getUserId", onGetUserId);
     $(document).on("startTimer", onStartTimer);
-    $(document).on("leavePage", onLeavePage);    
+    $(document).on("leavePage", onLeavePage);
   },
 
   onInitSurvey = function(){ 
@@ -30,21 +29,22 @@ FeedbackSystem.SurveyController = (function() {
       onCustomCheckboxClick(this);
     });
 
-   $(window).on('beforeunload', function(e){       
-       return "Why are you leaving?";        
-   });
-  
-   $(window).on('unload', function(){    
-        $(document).trigger('leavePage');
-   });   
+    
 
     getSelectedAnswers();
     handleConnect();    
   },
 
+  unbindWindowClose = function(){
+    $(window).unbind('beforeunload');
+    $(window).unbind('unload');
+    $(document).unbind("leavePage");
+    window.onbeforeunload = function(){return null};
+    window.unload = function(){return null};
+  },
+
   handleConnect = function(){
     socket.on('connect',function(){ 
-      console.log("connected");
       socket.emit('user_data', {user_id: userId});
     });
   },
@@ -55,13 +55,6 @@ FeedbackSystem.SurveyController = (function() {
 
   onLeavePage = function(){
    handleDisconnect();
-  /*var url = 'update-meta-cancel';
-    $.ajax({
-        type: 'POST',
-        async: false,
-        url: url,
-        data: {user_id: userId, trip_id: tripId}
-    });*/
   },
 
   onCustomCheckboxClick = function(element){
@@ -154,9 +147,9 @@ FeedbackSystem.SurveyController = (function() {
 
 if(last_question){
   updateMetaFinish();
+  unbindWindowClose();  
   $.post('/receive-answers/', {data: collection_answers}, function( data ) {
-      console.log("server received answers");
-      var message = '<div class="container main-text margin-credits animated fadeInDown"><label class="lbl-suggestions" for="text-suggestion">Vielen Dank für Ihre Teilnahme an unserer Umfrage. <br/>'+
+      var message = '<div id="container-credits" class="container main-text margin-credits animated fadeInDown"><label class="lbl-suggestions" for="text-suggestion">Vielen Dank für Ihre Teilnahme an unserer Umfrage. <br/>'+
       'Wir hoffen, dass wir Sie auch in Zukunft auf weiteren Reisen begrüßen dürfen! </label></div>'
       $(message).insertAfter('.navbar');
 
@@ -177,11 +170,17 @@ if(last_question){
 
 
 onStartTimer = function(){
+  $(window).on('beforeunload', function(e){
+        return "Why are you leaving?";               
+    });
+
+  $(window).on('unload', function(){    
+    $(document).trigger('leavePage');    
+  });   
   start = new Date(); 
 }, 
 
 stopTimer = function(question_id){
-  console.log("stop");
   var elapsed = (new Date() - start) / 1000;
   start = 0;
   sendTimeTaken(question_id, elapsed);
@@ -203,6 +202,7 @@ updateMetaCount = function(){
 },
 
 updateMetaFinish = function(){
+  socket.emit('finished', {user_id: userId});
   var url = '/update-meta-finish/';
   $.post(url, {user_id: userId, trip_id: tripId}, function( data ) {
     
