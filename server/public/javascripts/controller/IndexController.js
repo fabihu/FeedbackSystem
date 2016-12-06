@@ -1,4 +1,4 @@
-FeedbackSystem.LoginController = (function() {
+FeedbackSystem.IndexController = (function() {
 	var that = {},
 	$submitButton = null,
 	$txtUserTravelID = null,
@@ -6,7 +6,7 @@ FeedbackSystem.LoginController = (function() {
 	
 //Initialisierung der Logins
 	init = function() {
-		console.log("LoginController init")
+		console.log("IndexController init")
 		initControls();	 
 
 	},

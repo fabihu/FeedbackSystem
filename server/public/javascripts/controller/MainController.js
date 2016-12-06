@@ -3,7 +3,7 @@ FeedbackSystem.MainController = (function() {
 
 	//Initialisiert alle anderen notwendigen Controller 
 	init = function() {				
-		FeedbackSystem.LoginController.init();
+		FeedbackSystem.IndexController.init();
 		FeedbackSystem.SurveyController.init();
 		FeedbackSystem.SurveySTController.init();
 								

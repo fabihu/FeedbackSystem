@@ -10,70 +10,42 @@
    
    <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
    <link href="/stylesheets/style.css" rel="stylesheet">
-   <link href="/stylesheets/animate.css" rel="stylesheet">
-   <link href="/stylesheets/star-rating.min.css" rel="stylesheet">
-
+   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> 
 
   </head>
-  <body>   
-     <nav class="navbar navbar-default navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">          
-         <a href="#" class="navbar-left"><img class="logo-responsive" src="../images/logo.png"></a>
+  <body>  
+  <body>
+    <div class="container">
+
+<div class="col-sm-6 col-sm-offset-3 container main-text">
+
+    <h1><span class="fa fa-sign-in"></span> Login</h1>
+
+    <!-- show any messages that come back with authentication -->
+      <% if (message.length > 0) { %>
+        <div class="alert alert-danger"><%= message %></div>
+    <% } %>
+
+    <!-- LOGIN FORM -->
+    <form action="/login/try-login" method="post">
+        <div class="form-group">
+            <label>Email</label>
+            <input type="text" class="form-control" name="email" >
         </div>
-        <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="/">Home</a></li>           
-            <li><a href="#contact">Kontakt</a></li>
-            <li><a href="/eval/">Anmelden</a></li>
+        <div class="form-group">
+            <label>Passwort</label>
+            <input type="password" class="form-control" name="password">
+        </div>
 
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
+        <button type="submit" class="btn btn-submit-login btn-lg">Login</button>
+    </form>
 
-   <div class="container hide-overflow" id="survey-container">
-   </div>
-      <div class="row col-md-12 main-text-padding" id="container-info">
-        <h1 class="text-center text-bold">Bewerten Sie jetzt Ihre Thürauf Reise!</h1>
-        </br>
-        <p class="lead text-center">Wir bieten Ihnen die Möglichkeit Ihre Busreise mit einem kurzen Fragebogen zu bewerten. So können wir unser Angebot noch besser auf Ihre Wünsche und Bedürfnisse anpassen.</p>
-      </div>
 
-   
-    <div class="col-md-3 col-md-offset-4 container login-controls-padding-top" id="main-container">
+</div>
 
-      <form class="form padding-form-login" id="container-login-controls">
-        <div class="form-group">        
-           <div class="inner-addon left-addon">
-            <span class="glyphicon glyphicon-globe glyphicon-yellow glyphicon-lg"></span>
-           
-              <input type="text" class="form-control input-opaque input-lg" id="InputTravelId" placeholder="Bitte geben Sie Ihre Reise-ID ein..."  onfocus="this.placeholder = ''" onblur="this.placeholder = 'Bitte geben Sie Ihre Reise-ID ein...'"/>
-            
-           </div> 
-      </div>
-       <div class="text-center">  
-        <button type="submit" class="btn btn-default input-opaque btn-login btn-lg" id="button-submit">Weiter</button>
-       </div>
-      </form>
+</div>
+</body>
 
-    </div>
-    
-    <script src="/javascripts/libs/jquery-3.1.1.min.js"></script>
-    <script src="/javascripts/libs/jquery-ui.min.js"></script>   
-    <script src="/javascripts/libs/star-rating.min.js"></script>
-    <script src="/javascripts/libs/jquery.ui.touch-punch.min.js"></script>
-    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
-    
-   
-    <script src="/javascripts/FeedbackSystem.js"></script>
-    <script src="/javascripts/controller/MainController.js"></script>
-    <script src="/javascripts/controller/LoginController.js"></script>
-    <script src="/javascripts/controller/SurveyController.js"></script>
-    <script src="/javascripts/controller/SurveySTController.js"></script>   
-    <script>
-      FeedbackSystem.init();
-    </script>   
-    
+
+  <script src="/javascripts/libs/jquery-3.1.1.min.js"></script>
   </body>
-</html>

@@ -19,19 +19,27 @@ io.sockets.on('connection', function (socket) {
      socket.on('disconnect', function (data) {      
        var i = allClients.sockets.indexOf(socket);
        var user_id = allClients.ids[i];
+       console.log("user id", user_id);
        delete allClients.sockets[i];
-       delete allClients.ids[i];      
-      
-       if(user_id != -1){
+       delete allClients.ids[i];
+   
+      if(user_id != -1){
             dbhandler.updateMetaCancel(user_id, function(err, result){               
-            });    
+      });    
         }
       });
+
+    socket.on('finished', function (data) { 
+      var user_id = data.user_id;
+      var index = allClients.ids.indexOf(user_id);
+      allClients.ids[index] = -1;
+
+    });
 });
 
 router.get('/', function(req, res, next) {
   dbhandler.init();
-  res.render('login', { title: 'Express' });  
+  res.render('index', { title: 'Express' });  
 })
 
 router.post('/check-login/', function(req, res, next) {	
@@ -66,17 +74,15 @@ router.post('/get-questions/', function(req, res, next) {
       var type = 0;
       
       dbhandler.getQuestionnaireType(trip_id, function(err, result){
-        type = result[0];
-        if(type == 0){
+        type = result[0].type_questionnaire; 
+        if(type == 0){   
           res.render('survey', {type: type, data: sortedQuestions});
         } else if (type == 1) {
           res.render('survey_st', {type: type, data: sortedQuestions});
-        }
-        else {
+        } else {
           var type = 0;    
           dbhandler.getLastUserQtype(trip_id, function(err, result){
-            if(result.length > 0) type = result[0].type_questionnaire;
-           
+            if(result.length > 0) type = result[0].type_questionnaire;           
            
             if (type == 1){
               res.render('survey', {type: 0, data: sortedQuestions});       
@@ -144,9 +150,6 @@ router.post('/update-meta-cancel/', function(req, res, next) {
 
 })
 
-router.get('/eval/', function(req, res, next) {
-  res.render('eval');  
-})
 
 filterAnswers = function(id, arr){
   
