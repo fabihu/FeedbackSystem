@@ -370,7 +370,6 @@ insertStandardAnswersIntoSet = function(outerCallback){
     });
   
   }, function(err) {
-    connection.release();
     outerCallback(err);
   });
 
@@ -383,6 +382,7 @@ insertQuestionsIntoSet = function(id, callback){
            if(err)console.log(err);
            callback(err);
    });
+   connection.release();
   }); 
 }
 
@@ -753,6 +753,16 @@ insertTimeQuestion = function(user_id, question_id, trip_id, seconds, callback){
   }); 
 }
 
+getAvgTimeForQuestion = function(trip_id, question_id, callback){
+ pool.getConnection(function(err, connection) { 
+      connection.query('SELECT AVG(seconds_per_question) AS avg FROM ' + TABLE_TIME_QUESTION + ' WHERE trip_id = ? AND question_id = ?',[trip_id, question_id],  function(err, dbResponse) {
+      if (err) console.log(err);
+      connection.release();     
+      callback(err, dbResponse);
+     });
+  });
+}
+
 updateMetaCount = function(user_id, trip_id, callback){
 pool.getConnection(function(err, connection) {  
   var query = connection.query('UPDATE ' + TABLE_USER_META + ' SET count_answerd_questions=count_answerd_questions+1 WHERE id=? AND trip_id=?' , [user_id, trip_id], function(err, result) {  
@@ -826,6 +836,38 @@ getLastUserQtype = function(trip_id, callback){
 
 }
 
+getSumParticipants = function(trip_id, callback){
+   pool.getConnection(function(err, connection) { 
+      connection.query('SELECT COUNT(id) AS sum FROM ' + TABLE_USER_META + ' WHERE trip_id = ?', [trip_id],  function(err, dbResponse) {
+      if (err) console.log(err);
+      connection.release();     
+      callback(err, dbResponse);
+     });
+  });
+}
+
+getSumParticipantsCancel = function(trip_id, callback){
+   pool.getConnection(function(err, connection) { 
+      connection.query('SELECT COUNT(id) AS sum FROM ' + TABLE_USER_META + ' WHERE trip_id = ? AND status="canceld" OR status="pending"', [trip_id],  function(err, dbResponse) {
+      if (err) console.log(err);
+      connection.release();            
+      callback(err, dbResponse);
+     });
+  });
+}
+
+getSumParticipantsFinish = function(trip_id, callback){
+   pool.getConnection(function(err, connection) { 
+      connection.query('SELECT COUNT(id) AS sum FROM ' + TABLE_USER_META + ' WHERE trip_id = ? AND status="finished"', [trip_id],  function(err, dbResponse) {
+      if (err) console.log(err);
+      connection.release();
+         
+      callback(err, dbResponse);
+     });
+  });
+}
+
+
 exports.init = init;
 exports.checkLoginCredentials = checkLoginCredentials;
 exports.getQuestions = getQuestions;
@@ -863,3 +905,7 @@ exports.deleteFromQuestionSet = deleteFromQuestionSet;
 exports.updateAnswer = updateAnswer;
 exports.deleteAnswer = deleteAnswer;
 exports.insertTimeQuestion = insertTimeQuestion;
+exports.getAvgTimeForQuestion = getAvgTimeForQuestion;
+exports.getSumParticipants = getSumParticipants;
+exports.getSumParticipantsCancel = getSumParticipantsCancel;
+exports.getSumParticipantsFinish = getSumParticipantsFinish;
