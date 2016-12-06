@@ -27,16 +27,18 @@
          <% if (index == 0) { %>
          <div class="row col-md-8 container-chart">
 
-            <div>
               <h4 class="main-text-header header-score">Allgemein</h4>
-              <span class="glyphicon glyphicon glyphicon-user"></span>
-               <div><b>x</b> Reisende haben den Fragebogen vollständig beantwortet</div>
-               <div><b>x</b> Reisende haben den Fragebogen vorzeitig beendet</div> 
+              <span class="col-md-1 glyphicon glyphicon glyphicon-user"></span>
+              <div class="col-md-11 t-score">
+              
+               <div> Insgesamt haben <b id="info-sum-participants">x</b> Personen den Fragebogen bearbeitet</div> 
+               <div><b id="info-sum-participants-finish">x</b> Reisende haben den Fragebogen vollständig beantwortet</div>
+               <div><b id="info-sum-participants-cancel">x</b> Reisende haben den Fragebogen vorzeitig beendet</div> 
+                <br/>
             </div>
-            <br/>
-            <div>
-              <span class="glyphicon glyphicon glyphicon-time"></span>
-              <div>Für die Beantwortung des Fragebogens haben die Kunden durchschnittlich <b>x</b> Minuten Sekunden benötigt</div> 
+           <span class="col-md-1 glyphicon glyphicon glyphicon-time"></span>
+           <div class="col-md-11 t-score">
+              <div>Für die Beantwortung des Fragebogens haben die Kunden durchschnittlich <b id="info-avg-time">0</b> Sekunden benötigt</div> 
             </div>            
 
          </div>

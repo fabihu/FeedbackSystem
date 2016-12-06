@@ -617,6 +617,8 @@ FeedbackSystem.EvalController = (function() {
 	onLoadCharts = function(){
  	var url = '/eval/get-chart-data';
  	var y = [];
+
+
 	$.post(url, function(result){
 	
 	$('.chart').each(function(el){
@@ -625,7 +627,7 @@ FeedbackSystem.EvalController = (function() {
 		var trip_id = $(this).data('trip-id');
 		var question_id = $(this).data('question-id');
 		var url = '/eval/get-trip-score';
-
+			
 		$.post(url, {trip_id: trip_id, question_id: question_id}, function(res){
 		var answerd_questions = res;		
 
@@ -720,6 +722,8 @@ FeedbackSystem.EvalController = (function() {
 		
 
 			});
+
+		displayCommonInfo(trip_id, question_id);
 		});		
 		
 	});	
@@ -732,6 +736,7 @@ FeedbackSystem.EvalController = (function() {
     	    a[i] = v;
     	}
 	},
+	
 
 	createNewTextChart = function(element, data){		
 		$.each(data.datasets, function(index, item) {
@@ -749,7 +754,8 @@ FeedbackSystem.EvalController = (function() {
 			var text = data.labels[index];
 			var header = '<td><label for="rating-'+trip_id + "-"+question_id+ "-"+ index +'" class="control-label label-score-star-rating">'+ text +'</label></td>';
 			var rating = '<td><input class="rating-loading" id="rating-'+trip_id + "-"+question_id+ "-"+ index +'" value="'+ avg +'"></input></td>';
-			tr = tr+header+rating+'</tr>';			
+			var info = '<td><p class="score-avg-info">'+ avg.toFixed(1) +' / 5<p></td>'
+			tr = tr+header+rating+info+'</tr>';			
 			$(element).append(tr);		
 			$("#rating-"+trip_id+"-"+question_id+ "-"+ index).rating({displayOnly: true, step: 0.5});	
 		}			
@@ -766,23 +772,61 @@ FeedbackSystem.EvalController = (function() {
 
 	},
 
-	createNewPolarChart = function(element, data){
-	
-	var ctx = document.getElementById(element.id).getContext('2d');
-	ctx.canvas.width = 250;
-	ctx.canvas.height = 250;
-	var options = {
-		maintainAspectRatio: false,
-		responsive: false
-	}		
-	var myChart = new Chart(ctx, {type:'polarArea', data});
-	}
 
 	createNewPieChart = function(element, data){
 	
 	var ctx = document.getElementById(element.id).getContext('2d');
 	var myChart = new Chart(ctx, {type:'doughnut', data});
 
+	},
+
+	displayCommonInfo = function(trip_id, question_id){
+		getAvgTimeForQuestion(trip_id, question_id, function(time){
+			var currentVal = $('#info-avg-time').text();
+			var newVal = parseFloat(time) + parseFloat(currentVal);
+			newVal = newVal.toFixed(2);
+			$('#info-avg-time').text(newVal);
+		});
+
+		getSumParticipants(trip_id, function(sum){			
+			$('#info-sum-participants').text(sum);
+		})
+		
+		getSumParticipantsFinish(trip_id, function(sum){			
+			$('#info-sum-participants-finish').text(sum);
+		})
+
+		getSumParticipantsCancel(trip_id, function(sum){			
+			$('#info-sum-participants-cancel').text(sum);
+		})
+	},
+
+	getSumParticipantsFinish = function(trip_id, callback){		
+		var url = '/eval/get-sum-participants-finish';
+		$.post(url, {trip_id: trip_id}, function( data ){			
+			callback(data[0].sum);
+		});
+	},
+
+	getSumParticipantsCancel = function(trip_id, callback){
+		var url = '/eval/get-sum-participants-cancel';
+		$.post(url, {trip_id: trip_id}, function( data ){			
+			callback(data[0].sum);
+		});
+	},
+
+	getSumParticipants = function(trip_id, callback){
+		var url = '/eval/get-sum-participants';
+		$.post(url, {trip_id: trip_id}, function( data ){			
+			callback(data[0].sum);
+		});
+	},
+
+	getAvgTimeForQuestion = function(trip_id, question_id, callback){
+		var url = '/eval/get-avg-question';
+		$.post(url, {trip_id: trip_id, question_id: question_id}, function( data ){			
+			callback(data[0].avg.toFixed(2));
+		});
 	},
 
 	getTravelCategories = function(callback){
