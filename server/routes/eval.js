@@ -4,9 +4,9 @@ var router = express.Router();
 var dbhandler = require('../db/dbhandler');
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.get('/', IsAuthenticated, function(req, res, next) {
   console.log("test")
-  res.send('respond with a resource');
+  res.render('eval'); 
 });
 
 //get page content endpoint
@@ -203,10 +203,44 @@ router.post('/get-questionnaire-type/', function(req, res, next) {
   }); 
 });
 
+router.post('/get-avg-question/', function(req, res, next) {
+ var trip_id = req.body.trip_id;
+ var question_id = req.body.question_id;
+
+ dbhandler.getAvgTimeForQuestion(trip_id, question_id, function(err, result){    
+   res.json(result);
+  }); 
+});
+
 router.post('/change-type-questionnaire/', function(req, res, next) {
  var trip_id = req.body.trip_id;    
  var type = req.body.type;  
  dbhandler.updateQuestionnaireType(trip_id, type, function(err, result){    
+   res.json(result);
+  }); 
+});
+
+
+router.post('/get-sum-participants/', function(req, res, next) {
+ var trip_id = req.body.trip_id; 
+
+ dbhandler.getSumParticipants(trip_id, function(err, result){    
+   res.json(result);
+  }); 
+});
+
+router.post('/get-sum-participants-finish/', function(req, res, next) {
+ var trip_id = req.body.trip_id; 
+
+ dbhandler.getSumParticipantsFinish(trip_id, function(err, result){    
+   res.json(result);
+  }); 
+});
+
+router.post('/get-sum-participants-cancel/', function(req, res, next) {
+ var trip_id = req.body.trip_id; 
+
+ dbhandler.getSumParticipantsCancel(trip_id, function(err, result){    
    res.json(result);
   }); 
 });
@@ -277,5 +311,13 @@ removeDuplicates = function(a, b){
 
 
 return router;
+}
+
+function IsAuthenticated(req,res,next){
+  if (req.user) {
+     next();
+  } else {
+     res.redirect('/login');
+  }  
 }
 
