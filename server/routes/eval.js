@@ -5,7 +5,6 @@ var dbhandler = require('../db/dbhandler');
 
 /* GET users listing. */
 router.get('/', IsAuthenticated, function(req, res, next) {
-  console.log("test")
   res.render('eval'); 
 });
 
@@ -31,8 +30,8 @@ router.get('/answers/', function(req, res, next) {
 router.get('/assignment/', function(req, res, next) {
   dbhandler.getNotActiveTrips(function(err, dbTrips){
     dbhandler.getQuestionsForTrips(dbTrips, function(err, dbQuestions){ 
-      dbhandler.getAllActiveQuestions(function(err, dbActiveQuestions){            
-        var data = formatAssignmentData(dbTrips, dbQuestions, dbActiveQuestions);        
+      dbhandler.getAllActiveQuestions(function(err, dbActiveQuestions){
+        var data = formatAssignmentData(dbTrips, dbQuestions, dbActiveQuestions);          
         res.render('snippet_eval_assignment',  {data: data});
       });       
     }); 
@@ -42,18 +41,49 @@ router.get('/assignment/', function(req, res, next) {
 router.get('/score/', function(req, res, next) {
  dbhandler.getTrips(function(err, dbTrips){
   dbhandler.getQuestionsForTrips(dbTrips, function(err, dbQuestions){  
-    dbhandler.getAnswersForTrips(dbTrips, function(err, dbAnswers){
-      var data = formatScoreData(dbTrips, dbQuestions, dbAnswers);              
+    dbhandler.getAnswersForTrips(dbTrips, function(err, dbAnswers){     
+      var data = formatScoreData(dbTrips, dbQuestions, dbAnswers);                  
       res.render('snippet_eval_score',  {data: data});
     });
   });
  });
 });
 
+router.get('/users/', IsAuthenticated, function(req, res, next) {
+  dbhandler.getUsers(function(err, dbUsers){   
+    res.render('snippet_eval_users',  {users: dbUsers});
+  });
+});
+
+router.post('/save-new-user/', function(req, res, next) {
+  var mail = req.body.mail;
+  var password = req.body.password;
+   dbhandler.insertNewUser(mail, password, function(err){   
+     res.json({err});   
+  }); 
+});
+
+router.post('/delete-user/', function(req, res, next) {
+  var id = req.body.id;
+   dbhandler.deleteUser(id, function(err){   
+     res.json({err});   
+  }); 
+});
+
+router.post('/edit-user/', function(req, res, next) {
+  var id = req.body.id;
+  var mail = req.body.mail;
+  var password = req.body.password;
+
+   dbhandler.updateUser(id, mail, password, function(err){   
+     res.json({err});   
+  }); 
+});
+
 router.post('/get-chart-data/', function(req, res, next) {
  dbhandler.getTrips(function(err, dbTrips){
   dbhandler.getQuestionsForTrips(dbTrips, function(err, dbQuestions){  
-    dbhandler.getAnswersForTrips(dbTrips, function(err, dbAnswers){
+    dbhandler.getAnswersForTrips(dbTrips, function(err, dbAnswers){    
       var data = formatScoreData(dbTrips, dbQuestions, dbAnswers);
       res.send(data);
     });
@@ -61,7 +91,7 @@ router.post('/get-chart-data/', function(req, res, next) {
  });
 });
 
-router.post('/get-trip-score/', function(req, res, next) {
+router.post('/get-question-score/', function(req, res, next) {
   var trip_id = req.body.trip_id;
   var question_id = req.body.question_id;  
   dbhandler.getUserAnswersForTrip(trip_id, question_id, function(err, dbAnswers){  
@@ -266,32 +296,32 @@ formatAssignmentData = function(arr1, arr2, allActives) {
 formatScoreData = function(arr1, arr2, arr3) {
 var result = [];
 
-for (var trip_index in arr1) {
-  var item = {}
-  var trip = arr1[trip_index];
-  item.trip = trip;
+var allTrips = arr1;
+var allQuestions = arr2;
+var allAnswers = arr3;
 
-  for (var question_index in arr2){
-    var question_collection = arr2[question_index];
-    item.trip.questions = question_collection.slice(0);
-    
+for (var trip_index in allTrips) {
 
-    for (var question_collection_index in question_collection) {
+var item = {}
+var trip = allTrips[trip_index];
+var trip_id = trip.id
+item.trip = trip
+item.trip.questions = [];
+var question_collection = allQuestions[trip_index];
+ 
+item.trip.questions = [].concat.apply([], question_collection);
 
-      var question = question_collection[question_collection_index];
-      item.trip.questions[question_collection_index][0].answers = [];
-     
-      for (var answer_collection_index in arr3) {
-        var answer_collection = arr3[answer_collection_index];
-        item.trip.questions[question_collection_index][0].answers = answer_collection.filter(function (el) {               
-                                                                                            return el[0].question_id == question[0].question_id;                                                                                                  
-                                                                                          });
+item.trip.questions.forEach(function(question, index){
+  var question_id = question.question_id;  
 
-       
-      } 
-    }
-  }
-  result.push(item)
+  item.trip.questions[index].answers = allAnswers[trip_index].filter(function (answer){                                           
+                                            return answer[0].question_id == question_id;                          
+                                          });
+  item.trip.questions[index].answers = [].concat.apply([], item.trip.questions[index].answers);
+});  
+
+result.push(item)
+
 }
 
 return result;

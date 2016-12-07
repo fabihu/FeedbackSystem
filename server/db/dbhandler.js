@@ -19,6 +19,7 @@ var TABLE_TRIPS = 'trip';
 var TABLE_TRAVEL_TYPE = 'travel_type';
 var TABLE_USER_META = 'user_meta';
 var TABLE_TIME_QUESTION = 'time_question';
+var TABLE_USERS = 'users';
 
 init = function(){ 
   console.log('DB init');  
@@ -867,6 +868,46 @@ getSumParticipantsFinish = function(trip_id, callback){
   });
 }
 
+getUsers = function(callback){
+  pool.getConnection(function(err, connection) { 
+      connection.query('SELECT * FROM ' + TABLE_USERS,  function(err, dbResponse) {
+      if (err) console.log(err);
+      connection.release();
+         
+      callback(err, dbResponse);
+     });
+  });
+}
+
+insertNewUser = function(mail, password, callback){
+pool.getConnection(function(err, connection) { 
+      connection.query('INSERT INTO ' + TABLE_USERS + ' (email, password) VALUES (?, ?)', [mail, password],  function(err, dbResponse) {
+      if (err) console.log(err);
+      connection.release();         
+      callback(err, dbResponse);
+     });
+  });
+}
+
+deleteUser = function(id, callback){
+  pool.getConnection(function(err, connection) { 
+  var query = connection.query('DELETE FROM ' + TABLE_USERS + ' WHERE id = ?', id, function(err, result) {
+    if(err) console.log(err);  
+      connection.release();         
+      callback(err, result);
+    });
+  });
+}
+updateUser = function(id, mail, password, callback){
+  pool.getConnection(function(err, connection) { 
+      connection.query('UPDATE ' + TABLE_USERS + ' SET email = ?, password = ? WHERE id = ?', [mail, password, id],  function(err, dbResponse) {
+      if (err) console.log(err);
+      connection.release();         
+      callback(err, dbResponse);
+     });
+  });
+}
+
 
 exports.init = init;
 exports.checkLoginCredentials = checkLoginCredentials;
@@ -909,3 +950,7 @@ exports.getAvgTimeForQuestion = getAvgTimeForQuestion;
 exports.getSumParticipants = getSumParticipants;
 exports.getSumParticipantsCancel = getSumParticipantsCancel;
 exports.getSumParticipantsFinish = getSumParticipantsFinish;
+exports.getUsers = getUsers;
+exports.insertNewUser = insertNewUser;
+exports.deleteUser = deleteUser;
+exports.updateUser = updateUser;

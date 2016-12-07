@@ -18,6 +18,16 @@ a {
   color: #3c3c3e;
 }
 
+.font-large{
+    font-size: large;
+}
+
+.text-container{
+    height: 450px;
+    width: 100%;
+    overflow-y: scroll;
+}
+
 .score-avg-info{
   font-size: 20px;
   font-weight: 800;
@@ -576,7 +586,7 @@ padding-right: 0px;
 
 .main-text {
 	background-color: rgba(138, 65, 156, 0.701961);
-	padding: 3px 10px 3px;
+	padding: 3px 25px 3px;
 	margin-top: 10px;
 	border: 0.1em solid #ffffff;
 	color: #ffd500!important;

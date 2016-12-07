@@ -82,7 +82,7 @@ FeedbackSystem.SurveyController = (function() {
 
  onGetUserId = function(event, user_id){    
     userId = parseInt(user_id);
-  },
+ },
 
   getSelectedAnswers = function(){
   var collection_answers = [];  

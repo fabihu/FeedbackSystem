@@ -1,0 +1,66 @@
+   <h2>Benutzer verwalten</h2>
+  <div class="col-md-12 container">
+  	<div class="row col-md-2">
+  		<button href="#" class='btn btn-info btn-s btn-modal-new-user header-color-yellow' data-toggle="modal" data-target="modal-new-user"><span class="glyphicon glyphicon-plus"></span> Neuen Benutzer anlegen</button>
+	</div>
+    <div class="row col-md-12">
+    <table class="table table-hover" id="table-users">
+    <thead>   
+        <tr>                    
+            <th>E-Mail</th>
+            <th>Passwort</th>            
+            <th class="text-center"></th>
+        </tr>
+    </thead>
+    	<% for (var index in users) {%>
+    	<% var user = users[index]; %>
+            <tr id="user-row-<%=user.id%>" data-user-id="<%=user.id%>">                
+                <td><%=user.email%></td>
+                <td><%=user.password%></td>
+                <td class="text-center">
+                  <a href="#" class='btn btn-info   btn-xs btn-edit-user'   id="btn-edit-user-<%=user.id%>"   data-user-id="<%=user.id%>"><span class="glyphicon glyphicon-pencil"></span></a>
+                  <a href="#" class="btn btn-danger btn-xs btn-delete-user" id="btn-delete-user-<%=user.id%>" data-user-id="<%=user.id%>"><span class="glyphicon glyphicon-remove"></span></a>
+                </td>
+
+            </tr>
+        <% } %>             
+    </table>
+    </div>
+</div>
+
+<div id="modal-new-users" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Neuen Benutzer anlegen</h4>
+      </div>
+      <div class="modal-body">
+        
+        <form>
+          <div class="form-group">
+            <label for="new-user-id">ID</label>
+            <input type="text" class="form-control" id="new-user-id" disabled >
+          </div>
+
+          <div class="form-group">
+            <label for="new-user-email">Email</label>
+            <input type="text" class="form-control" id="new-user-email">
+          </div>
+
+          <div class="form-group">  
+           <div class="form-group">
+              <label for="new-user-password">Passwort</label>
+              <input type="text" class="form-control" id="new-user-password">
+            </div>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-modal-cancel" id="btn-modal-cancel-new-user" data-dismiss="modal">Abbrechen</button>
+        <button type="button" class="btn btn-default btn-modal-save-new-user" id="btn-modal-save-new-user" data-dismiss="modal">Speichern</button>
+      </div>
+    </div>
+
+  </div>
+</div>  

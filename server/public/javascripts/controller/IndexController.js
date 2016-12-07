@@ -30,9 +30,10 @@ FeedbackSystem.IndexController = (function() {
 
       			var credentials_ok = data;
 				if(credentials_ok){
-					var is_open = data.status;
+					console.log(data);
+					var is_open = data.flag_active;
 					var id = data.id;
-					if(is_open == 0){
+					if(is_open == 1){
 						$.post('/get-questions/', {id: id}, function( data ) {
 					
 							var qtype_id = $(data).html(data).filter("#temp-qtype").data("qtype");

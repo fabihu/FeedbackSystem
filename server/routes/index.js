@@ -45,6 +45,7 @@ router.get('/', function(req, res, next) {
 router.post('/check-login/', function(req, res, next) {	
     var user_id = req.body.id;    
     dbhandler.checkLoginCredentials(user_id, function(result){
+      console.log(result);
       res.send(result);    	
     });
 	
