@@ -6,6 +6,7 @@ FeedbackSystem.SurveyController = (function() {
   tripId = -1,
   userId = -1,
   socket = null,
+  collection_answers = [],
 
   init = function() {
   	console.log("SurveyController init");   
@@ -30,9 +31,9 @@ FeedbackSystem.SurveyController = (function() {
     });
 
     
-
+    initListener();
     getSelectedAnswers();
-    handleConnect();    
+    handleConnect();        
   },
 
   unbindWindowClose = function(){
@@ -41,6 +42,13 @@ FeedbackSystem.SurveyController = (function() {
     $(document).unbind("leavePage");
     window.onbeforeunload = function(){return null};
     window.unload = function(){return null};
+  },
+
+  initListener = function(){
+    $('.btn-checkbox').click(function(e){
+      e.preventDefault();
+      onBtnCheckboxClick(this);
+    });
   },
 
   handleConnect = function(){
@@ -74,87 +82,65 @@ FeedbackSystem.SurveyController = (function() {
    $('#container-questions-'+id).addClass("visible");
   
    $('#container-questions-'+id).addClass("animated fadeInDown");   
-  },
+},
 
-  onGetTripId = function(event, trip_id){    
+onGetTripId = function(event, trip_id){    
     tripId = parseInt(trip_id);
-  },
+},
 
- onGetUserId = function(event, user_id){    
+onGetUserId = function(event, user_id){    
     userId = parseInt(user_id);
+},
+
+onBtnCheckboxClick = function(element){
+  var checked = $(element).data("checked");
+
+  if(checked){
+    $(element).attr("data-checked", false);
+    $(element).data("checked", false);
+  } else {
+    $(element).attr("data-checked", true);
+     $(element).data("checked", true);
+  }
  },
 
-  getSelectedAnswers = function(){
-  var collection_answers = [];  
-  $buttonNext.click(function(){  
+getSelectedAnswers = function(){
+$buttonNext.click(function(){  
   var question_id =  $(this).data("question-id");
   var question_type = $(this).data("question-type");  
   var next_question_id = $(this).parent().next('.container').data('question-id'); 
-  var last_question = $(this).data("last-question");
-  onFadeInContainer(next_question_id);
-  stopTimer(question_id);
+  var last_question = $(this).data("last-question");  
 
   if(question_type == 0) {
-    var $checkboxAnswer = $("span[name=answer-check-radio-"+ question_id+"]");  
-    $.each($checkboxAnswer, function(index, box){
-      if (box.checked){
-        var answer = {
-          question_id: $(box).data('question-id'),
-          answer_id: $(box).data('answer-id'),
-          type: 0,
-          value: true,
-          trip_id: tripId        
-        };        
-        collection_answers.push(answer);
-      }
-    });
-
+    var checkedButtons = $(".answer-options-"+question_id).filter('button[data-checked="true"]');
+    if(checkedButtons.length == 0){  onNoAnswerGiven(this); return;}
+    prepareAnswerObjects(checkedButtons, 0); 
   } else {
-
     var $radioGroup = $('#container-questions-' + question_id);    
-    var $radioAnswers = $radioGroup.find("input")    
-  
-    $.each($radioAnswers, function(index, radio){
-          if (radio.checked){
-            var answer = {
-              question_id: $(radio).data('question-id'),
-              answer_id: $(radio).data('answer-id'),
-              type: 1,
-              value: radio.value,
-              trip_id: tripId
-            
-            };        
-            collection_answers.push(answer);
-          }
-    });
-  }
-  $(document).trigger("startTimer");  
+    var radioAnswers = $radioGroup.find("input");
+    if(radioAnswers.length == 0) { onNoAnswerGiven(this); return;}
+    prepareAnswerObjects( radioAnswers, 1); 
+  }  
+
   if(question_type == 3){
-    var $textAreaSuggestions = $('#text-suggestions');
-    var text = $textAreaSuggestions.val();
-    var answer = {
-          question_id: $textAreaSuggestions.data('question-id'),
-          answer_id: $textAreaSuggestions.data('answer-id'),
-          type: 3,
-          value: 0,
-          text: text,
-          trip_id: tripId          
-        
-        };
-    collection_answers.push(answer);  
- 
+    var textAreaSuggestions = $('#text-suggestions');
+    prepareAnswerObjects( textAreaSuggestions, 1);
   }
 
-if(last_question){
-  updateMetaFinish();
-  unbindWindowClose();  
-  $.post('/receive-answers/', {data: collection_answers}, function( data ) {
-      var message = '<div id="container-credits" class="container main-text margin-credits animated fadeInDown"><label class="lbl-suggestions" for="text-suggestion">Vielen Dank für Ihre Teilnahme an unserer Umfrage. <br/>'+
-      'Wir hoffen, dass wir Sie auch in Zukunft auf weiteren Reisen begrüßen dürfen! </label></div>'
-      $(message).insertAfter('.navbar');
+  stopTimer(question_id);
+  onFadeInContainer(next_question_id);  
+  $(document).trigger("startTimer"); 
 
-  }); 
-}
+  if(last_question){
+    updateMetaFinish();
+    unbindWindowClose();  
+    $.post('/receive-answers/', {data: collection_answers}, function( data ) {
+        var message = '<div id="container-credits" class="container main-text margin-credits animated fadeInDown"><label class="lbl-suggestions" for="text-suggestion">Vielen Dank für Ihre Teilnahme an unserer Umfrage. <br/>'+
+        'Wir hoffen, dass wir Sie auch in Zukunft auf weiteren Reisen begrüßen dürfen! </label></div>'
+        $(message).insertAfter('.navbar');
+  
+    }); 
+  }
 
   $('#container-questions-' + question_id).removeClass("animated fadeInDown");
   $('#container-questions-' + question_id).addClass("animated fadeOutDown");
@@ -163,13 +149,51 @@ if(last_question){
   }, 700); 
 
   });
-  
 
 
-  },
+},
 
+onNoAnswerGiven = function(element){
+  $(element).tooltip({ animation: true,                       
+                       container: element,
+                        title: "Bitte geben Sie eine gültige Bewertung ab!"})
+  $(element).tooltip('show');
+},
+
+prepareAnswerObjects = function(object, question_type){
+  if(question_type == 0 || question_type == 1){
+    $.each(object, function(index, element){
+    var value = (question_type == 0) ? true:element.value;
+    var answer = {
+      question_id: $(element).data('question-id'),
+      answer_id: $(element).data('answer-id'),
+      type: question_type,
+      value: value,
+      trip_id: tripId        
+    };   
+    collection_answers.push(answer);      
+    });
+  } else {    
+    var text = $(object).val();
+    var answer = {
+          question_id: $(object).data('question-id'),
+          answer_id: $(object).data('answer-id'),
+          type: question_type,
+          value: 0,
+          text: text,
+          trip_id: tripId          
+        
+        };
+    collection_answers.push(answer);  
+  }
+},
 
 onStartTimer = function(){
+  initPageLeaveAction();
+  start = new Date(); 
+},
+
+initPageLeaveAction = function(){
   $(window).on('beforeunload', function(e){
         return "Why are you leaving?";               
     });
@@ -177,8 +201,7 @@ onStartTimer = function(){
   $(window).on('unload', function(){    
     $(document).trigger('leavePage');    
   });   
-  start = new Date(); 
-}, 
+} 
 
 stopTimer = function(question_id){
   var elapsed = (new Date() - start) / 1000;

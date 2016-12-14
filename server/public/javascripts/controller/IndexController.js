@@ -24,20 +24,18 @@ FeedbackSystem.IndexController = (function() {
 		
 		$submitButton.on('click', function(e){
 			e.preventDefault();
-			var user_id = $txtUserTravelID.val();
+			var travel_id = $txtUserTravelID.val();
 			
-			$.post("/check-login/", {id: user_id}, function(data){
+			$.post("/check-login/", {id: travel_id}, function(data){
 
-      			var credentials_ok = data;
+      			var credentials_ok = (data.flag_active == 1) ? true:false;	
+				
 				if(credentials_ok){
-					console.log(data);
 					var is_open = data.flag_active;
 					var id = data.id;
 					if(is_open == 1){
-						$.post('/get-questions/', {id: id}, function( data ) {
-					
-							var qtype_id = $(data).html(data).filter("#temp-qtype").data("qtype");
-							
+						$.post('/get-questions/', {id: id}, function( data ) {							
+							var qtype_id = $(data).html(data).filter("#temp-qtype").data("qtype");							
 							$.post('/create-user/', {id: id, qtype_id: qtype_id}, function(data){								
 								$(document).trigger('getUserId', data.id);
 							});
@@ -52,7 +50,7 @@ FeedbackSystem.IndexController = (function() {
 								$('#survey-container').addClass('animated slideInDown').append(data);
 								$('#main-container').remove();
 								$('#container-info').remove();
-
+							
 								if(qtype_id == 0){
 									$(document).trigger('initSurvey');
 									$(document).trigger('startTimer');							

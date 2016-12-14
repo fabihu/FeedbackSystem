@@ -10,7 +10,7 @@ socket = null,
 
 init = function() {
   	console.log("SurveySTController init");  	
-;   $(document).on("initSTSurvey", onInitSTSurvey);
+;   $(document).on("initSurveyST", onInitSTSurvey);
     $(document).on("getTripId", onGetTripId);
     $(document).on("getUserId", onGetUserId);
     $(document).on("startTimerST", onStartTimerST);
@@ -101,7 +101,7 @@ unbindWindowClose = function(){
     window.unload = function(){return null};
 },
 
-initDraggable = function(){
+initDraggable = function(){	
 	var startPosition = 0;
 	$( "#bus-type-1-draggable" ).draggable();
     $( "#bus-type-0-draggable").draggable({
@@ -125,6 +125,13 @@ initDroppable = function(){
 	    	onDropBus(this);	    
 	    }
     });	
+},
+
+onNoAnswerGiven = function(element){
+  $(element).tooltip({ animation: true,                       
+                       container: element,
+                       title: "Bitte geben Sie eine gültige Bewertung ab!"})
+  $(element).tooltip('show');
 },
 
 onBtnArrPress = function(element){	
@@ -158,8 +165,6 @@ if($(element).hasClass('btn-arr-right')) {
 	  $('.bus-containe').offset({"left": 150});
 	}
 }	
-
-
 
 },
 
@@ -195,9 +200,9 @@ onPlusBtnPress = function(element){
 
 onDropBus = function(element){
 	var answer_id = $( element ).parent().data("answer-id");
-	var next_id = $('#answer-container-'+answer_id).next('div').data('answer-id');
-	var next_question_id = $('#answer-container-'+answer_id).parent().next('div').data('question-id');
-	var question_id = $('#answer-container-'+answer_id).parent().data('question-id');	
+	var next_id = $('#answer-container-'+ answer_id).next('div').data('answer-id');
+	var next_question_id = $('#answer-container-'+ answer_id).parent().next('div').data('question-id');
+	var question_id = $('#answer-container-'+ answer_id).parent().data('question-id');	
 	var value = $( element ).data("value");
 	var type = 1;
 
@@ -220,21 +225,22 @@ onDropBus = function(element){
 },
 
 onButtonNextClick = function(element, id, next_id){
-var elements = $(element).parent().find(".bus-middle");
+var elements =  $(element).parent().find(".bus-middle").filter('div[data-checked="true"]');
 var question_id = $(element).data('question-id');
 var question_type = $(element).data('question-type');
 var type = 0;
-if(question_type == 1) {
- 	$.each(elements, function(index, item){
- 		var value = $(item).data("checked");
- 		if (value){
- 			var answer_id = $(item).data("answer-id"); 		
- 			var answer = createSingleUserAnswer(question_id, answer_id, type, value);
- 			collection_answers.push(answer);
- 		}
- 	});
-	
-} else {
+
+
+if(question_type == 0) {
+if (elements.length == 0) {  onNoAnswerGiven(element); return;}
+ 	$.each(elements, function(index, item){ 		
+ 		var answer_id = $(item).data("answer-id"); 		
+ 		var answer = createSingleUserAnswer(question_id, answer_id, type, true);
+ 		collection_answers.push(answer);		
+ 	});	
+}
+
+if(question_type == 3) {
 	var $textAreaSuggestions = $('#text-suggestions');
     var text = $textAreaSuggestions.val();
     var answer = {
@@ -248,7 +254,6 @@ if(question_type == 1) {
         };
     collection_answers.push(answer);  
 }
-
 
  stopTimerST(question_id);
  showNextQuestion(id, next_id);
@@ -300,11 +305,13 @@ onMiddleClick = function(element){
 	if($(element).find(".bus-answer-field").hasClass("check-middle")){
 		$(element).find(".bus-answer-field").removeClass("check-middle");
 		$(element).css("background-image", 'url("../images/st/bus_swipe_middle.png")');
-		$(element).data("checked", false); 
+		$(element).data("checked", false);
+		$(element).attr("data-checked", false);  
 	} else {
 		$(element).find(".bus-answer-field").addClass("check-middle");
    		$(element).css("background-image", 'url("../images/st/bus_swipe_middle_check.png")');
-		$(element).data("checked", true); 
+		$(element).data("checked", true);
+		$(element).attr("data-checked", true);   
 	}
 },
 
@@ -352,7 +359,6 @@ onStartTimerST = function(){
 }, 
 
 stopTimerST = function(question_id){
-	console.log("stop");	
 	var elapsed = (new Date() - start) / 1000;
 	start = 0;
 	sendTimeTaken(question_id, elapsed);

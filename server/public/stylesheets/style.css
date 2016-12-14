@@ -18,6 +18,60 @@ a {
   color: #3c3c3e;
 }
 
+li {list-style-type: none;}
+
+
+.canvas-chart{
+      padding-top: 10px;
+  display:inline-block!important; 
+  width:450px;
+  height: 250px;
+  vertical-align: middle;
+  
+}
+
+.legend-list{
+  vertical-align: top;
+ display:inline-block;
+}
+
+.legend-square{    
+    margin: 9px;
+    width: 50px;
+    text-align: center;
+    font-weight: 700;
+    border: 1px solid;
+    display: inline-block;
+}
+
+.header-date{
+  display: inline;
+}
+
+.padding-bottom-date-input {
+    padding-bottom: 20px;
+}
+
+.tooltip-bottom .tooltip-inner{
+  font-color: #ffd500;
+  width:200px;
+}
+
+.tooltip {
+  font-color: #ffd500;
+}
+
+.tooltip-inner {
+   white-space:pre-wrap;
+    max-width: 200px;
+    width: 200px;
+    color: #ffd500;
+    background-color:#912584    
+}
+.tooltip .tooltip-arrow {
+      border-top-color: #912584;
+}
+
 .font-large{
     font-size: large;
 }
@@ -105,7 +159,11 @@ a {
 .bus-middle {
   background-image:  url("../images/st/bus_swipe_middle.png");
   width: 100px;
+}
 
+.bus-middle-qv2 {
+  background-image:  url("../images/st/bus_swipe_middle.png");
+  width: 100px;
 }
 
 .bus-right {
@@ -161,7 +219,7 @@ a {
 
 
 .panel-body{
-  background-color: #ffffff;
+  background-color: #FFF9E6;
 }
 
 .new-input{
@@ -245,7 +303,7 @@ a {
 }
 
 .container-chart{
-    padding: 30px;
+    padding: 20px;
     margin: 30px;
     border: 0.1em solid #E6E9ED;
 }
@@ -332,46 +390,6 @@ a {
   text-align: center;
 }
 
-
-/* chartist plugin labels*/
-
-.ct-legend {
-    position: relative;
-    z-index: 10;
-
-    li {
-        position: relative;
-        padding-left: 23px;
-        margin-bottom: 3px;
-    }
-
-    li:before {
-        width: 12px;
-        height: 12px;
-        position: absolute;
-        left: 0;
-        content: '';
-        border: 3px solid transparent;
-        border-radius: 2px;
-    }
-
-    li.inactive:before {
-        background: transparent;
-    }
-
-    &.ct-legend-inside {
-        position: absolute;
-        top: 0;
-        right: 0;
-    }
-
-    @for $i from 0 to length($ct-series-colors) {
-        .ct-series-#{$i}:before {
-            background-color: nth($ct-series-colors, $i + 1);
-            border-color: nth($ct-series-colors, $i + 1);
-        }
-    }
-}
 
 .text-bold {
     font-weight: 900!important;
@@ -588,7 +606,7 @@ padding-right: 0px;
 	background-color: rgba(138, 65, 156, 0.701961);
 	padding: 3px 25px 3px;
 	margin-top: 10px;
-	border: 0.1em solid #ffffff;
+	border: 0.1em solid #FFF9E6;
 	color: #ffd500!important;
 	font-family: 'Ubuntu', sans-serif;
   border-radius: 4px;
@@ -606,7 +624,7 @@ padding-right: 0px;
 }
 
 .main-text-dashboard{
-  background-color:  #ffffff;
+  background-color:  #FFF9E6;
   padding: 0px 10px 3px;
   margin-top: 10px;
   color: #3c3c3e!important;

@@ -6,6 +6,7 @@ FeedbackSystem.EvalController = (function() {
 	answer_option_counter = 0,
 	new_question = null,
 	old_answer_values = [],
+	question_types = ['nominal', 'ordinal', '', 'Freitext'],
 	
 	init = function() {				
 	 console.log("EvalController init");
@@ -17,7 +18,11 @@ FeedbackSystem.EvalController = (function() {
 	},
 
 
-	getPageContent = function(url){	
+	getPageContent = function(url){
+		if(url == '/eval/logout'){
+			performLogout(url);		
+		}	
+
 		$.get(url, function( data ){
 											
     		$('#dashboard-content').empty();
@@ -25,39 +30,42 @@ FeedbackSystem.EvalController = (function() {
 
     		switch(url){
     			case('/eval/trip'):{	    				
-    			$(document).ready(function(){	
-    				$('#table-trips > tbody  > tr').each(function(index) {    									
-    					var field = $('#table-trips tr').eq(index+1).find('td').eq(1);
-    					var value = $(field[0]).html();    					
-    					var category = $.grep(travelCategories, function(e){ return e.id == value; });
-    					$(field[0]).html(category[0].type);
+    				$(document).ready(function(){	
+    					$('#table-trips > tbody  > tr').each(function(index, element) {
+    						parseTravelType(element)
+    						formatDate(element);    					
+    					});
+    				});	
     					
-    				});
-    			});	
-    				
-    			$(".btn-trip-active").bootstrapSwitch({size: 'mini',
-    														onColor: 'success',
-    														offColor: 'danger',
-    														onSwitchChange: function(){
-    															onChangeTripStatus(this);
-    														}});
-    			$('#table-trips > tbody  > tr').each(function(index, element) {    			
-    				var trip_id = $(element).data('trip-id');
-    				getQuestionnaireType(trip_id, function(data){
-    					var type = data[0].type_questionnaire;    					
-    					$("#select-q-type-"+trip_id).val(type);	
-    				});
-    			});	
-    			break;
+    				$(".btn-trip-active").bootstrapSwitch({size: 'mini',
+    															onColor: 'success',
+    															offColor: 'danger',
+    															onSwitchChange: function(){
+    																onChangeTripStatus(this);
+    															}});
+    				$('#table-trips > tbody  > tr').each(function(index, element) {    			
+    					var trip_id = $(element).data('trip-id');
+    					getQuestionnaireType(trip_id, function(data){
+    						var type = data[0].type_questionnaire;    					
+    						$("#select-q-type-"+trip_id).val(type);	
+    					});
+    				});	
+    				break;
     			}
     			case('/eval/score'):{
-    			 onLoadCharts();
-    			 break;
+    		     	parseTimeHeader();
+    			 	onLoadCharts();
+    			 	break;
     			} 
     			case('/eval/assignment'):{
     				checkNoActiveTrips(data);
-    			break;	
-    			}   			
+    				break;	
+    			} 
+    			case('/eval/questions'):{
+    				$('#table-questions > tbody > tr').each(function(index, element) {
+    					parseQuestionType(element); 
+    				});
+    			}  			
     		}
 
     		
@@ -84,7 +92,7 @@ FeedbackSystem.EvalController = (function() {
 
 		$('#dashboard-content').on('click', ".btn-delete-trip", function( e ){
 			onDeleteTrip(e, this);
-		 	getPageContent('trip');
+		 	getPageContent('/eval/trip');
 		});
 
 		$('#dashboard-content').on('click', ".btn-edit-trip", function( e ){
@@ -215,7 +223,68 @@ FeedbackSystem.EvalController = (function() {
        	$('#dashboard-content').on('click', '.btn-edit-user', function () {
        	   edit_user = true;
            onModalEditUser(this);
-       	});    
+       	});
+
+       	$('#dashboard-content').on('click', '.tooltip-eval', function () {
+       	   var tooltip = $(this).data('tooltip');
+           initTooltip(this, tooltip);
+           $(this).tooltip('show');
+       	});      
+	},
+
+	performLogout = function(url){
+		$.get(url, function(data){
+			$('body').empty();
+    		$('body').append(data);
+		});
+		return;
+	},
+
+	initTooltip = function(selector, tooltip){
+		var title = "";
+		switch(tooltip){
+			case('status'):{ title = 'Ein Fragebogen kann mittels des Status-Sliders für die jeweilige Reise aktiviert oder deaktiviert werden. Die einzelnen Fragen des Fragebogens können nur im deaktivierten Zustand bearbeitet werden.'; break;}
+			case('qtype'):{title = 'Es ist möglich den Fragebogen in verschiedenen Versionen beantworten zu lassen. In der Hybrid-Version werden abwechselnd Surveytainment- bzw. Standard-Fragebögen an den Nutzer ausgeliefert.'; break;}
+			case('question'):{title = '<b>nominal:</b> Antwortoptionen der Frage können unterschiedliche Ausprägungen ohne natürliche Rangfolge aufweisen ' +
+									   '\n<b>ordinal:</b> Antwortoptionen der Frage besitzen eine natürliche Ausprägung und werden auf einer Skala von "sehr gut" bis "sehr schlecht" beantwortet' +
+									   '\n<b>Freitext:</b> Nutzer können Antworten in einem Freitextfeld beantworten'; break;}
+			default: {title = 'Kein Tooltip gefunden!'; break;}
+		}
+		$(selector).tooltip({
+					   animation: true,                       
+                       container: selector,
+                       placement: 'bottom',
+                       html: true,
+                       title: title 
+                        })  		
+	},
+
+	parseQuestionType = function(selector){
+		var field = $(selector).find('td').eq(2)[0];
+    	var value = $(field).html();   	
+    	var type = question_types[parseInt(value)];    	
+    	$(field).html(type);
+	},
+
+	parseTimeHeader = function(){
+		$(".header-date").each(function(index, element){
+			var value = new Date($(element).html());				
+			$(element).html(value.getDate() + '.' + (value.getMonth() + 1) + '.' +  value.getFullYear());
+		});
+	},
+
+	parseTravelType = function(selector){
+		var field = $(selector).find('td').eq(2)[0];
+    	var value = $(field).html();    					
+    	var category = $.grep(travelCategories, function(e){ return e.id == value; });
+    	$(field).html(category[0].type);
+	},
+
+	formatDate = function(selector){
+		var field = $(selector).find('td').eq(1)[0];
+		var value = new Date($(field).html());				
+		$(field).html(value.getDate() + '.' + (value.getMonth() + 1) + '.' +  value.getFullYear());
+
 	},
 
 	checkNoActiveTrips = function(data){
@@ -408,6 +477,7 @@ FeedbackSystem.EvalController = (function() {
 	onModalTripShow = function(){
 		$("#modal-new-trip").modal('show');
 		loadTravelCategoriesInModal();
+		initDatepickerNew();
 	},
 
 	onModalEditQuestion = function(e, item){
@@ -505,7 +575,7 @@ FeedbackSystem.EvalController = (function() {
 		
 		var url = '/eval/update-question'
 		$.post(url, {data: question, id: question_id}, function( data ){
-			getPageContent('questions');
+			getPageContent('/eval/questions');
 		});
 
 		$("#modal-edit-question").hide('modal');
@@ -517,19 +587,21 @@ FeedbackSystem.EvalController = (function() {
 			var $row = $('#trip-row-' + trip_id);	
 
 			var old_trip_name = $($row.children()[0]).text();
-			var old_trip_type = $($row.children()[1]).text();
-			var old_trip_count = $($row.children()[2]).text();
-			var old_trip_password = $($row.children()[3]).text();
+			var old_trip_date = $($row.children()[1]).text();
+			var old_trip_type = $($row.children()[2]).text();
+			var old_trip_count = $($row.children()[3]).text();
+			var old_trip_password = $($row.children()[4]).text();
 			
 			$("#modal-new-trip").modal('show');
 			loadTravelCategoriesInModal();
-
+			initDatepickerEdit();
 			var result = travelCategories.filter(function( obj ) {				
   				return obj.type == old_trip_type;
 			});					
 
 			$('#new-trip-id').val(trip_id);
 			$('#new-trip-name').val(old_trip_name);
+			$('#new-trip-date').val(old_trip_date);
 			$('#new-trip-type').val(result[0].id);			
 			$('#new-trip-count-travellers').val(parseInt(old_trip_count));
 			$('#new-trip-password').val(old_trip_password);
@@ -539,12 +611,15 @@ FeedbackSystem.EvalController = (function() {
 	onSaveNewTrip = function(e){
 			var trip_id = $('#new-trip-id').val();
 			var new_name = $('#new-trip-name').val();
+			var new_date = convertToDate('#new-trip-date');			
 			var new_type = $('#new-trip-type').val();
 			var new_traveller_count = $('#new-trip-count-travellers').val();
 			var new_password = $('#new-trip-password').val();
+			console.log(new_date)
 
 			var new_trip = {
 				name: new_name,
+				date_start: new_date,
 				type: new_type,
 				count_travellers: new_traveller_count,
 				password: new_password
@@ -554,19 +629,41 @@ FeedbackSystem.EvalController = (function() {
 			if(edit_trip){
 				var url = '/eval/update-trip'
 				$.post(url, {data: new_trip, id: trip_id}, function( data ){
-					getPageContent('trip');
+					getPageContent('/eval/trip');
 				});
 
 			} else {
 				var url = '/eval/save-new-trip'
 				$.post(url, {data: new_trip}, function( data ){
-					getPageContent('trip');
+					getPageContent('/eval/trip');
 
 				});
 			}
 			edit_trip = false;
 			$("#modal-new-trip").hide('modal');
 				
+	},
+
+	convertToDate = function (selector) {
+    	var from = $(selector).val().split(".");
+    	var jsDate = new Date(from[2], from[1] - 1, from[0]);    	
+    	return jsDate.toISOString().slice(0, 19).replace('T', ' ');
+	},
+
+	initDatepickerNew = function(){		
+		var nowTemp = new Date();
+		var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+		$('.datepicker').datepicker({
+			autoclose: true,
+			calendarWeeks: true,
+			format: 'dd.mm.yyyy',
+			language: 'de-DE',
+			todayHighlight: true
+		})		
+	},
+
+	initDatepickerEdit = function(){
+		$('.datepicker').datepicker()
 	},
 
 	onAddRowAnswerOption = function(e){		
@@ -651,7 +748,7 @@ FeedbackSystem.EvalController = (function() {
 			});
 			var url = '/eval/save-new-answer-options'
 			$.post(url, {data: new_answer_options}, function( data ){
-				getPageContent('questions');
+				getPageContent('/eval/questions');
 			});
 
 			
@@ -708,11 +805,13 @@ FeedbackSystem.EvalController = (function() {
 			var question_type = question.type;
 			var url = '/eval/get-question-score';			
 			var backgroundColor = new Array("#2ecc71",
-    										    "#3498db",
-    										    "#95a5a6",
-    										    "#9b59b6",
-    										    "#f1c40f",
-    										    "#e74c3c");
+    										 "#3498db",
+    										 "#95a5a6",
+    										 "#9b59b6",
+    										 "#f1c40f",
+    										 "#e74c3c",
+    										 "#ab82ff",
+    										 "#f1f181");
 
 			$.post(url, {trip_id: trip_id, question_id: question_id}, function(answers){
 				
@@ -786,7 +885,11 @@ FeedbackSystem.EvalController = (function() {
 			var info = '<td><p class="score-avg-info">'+ avg.toFixed(1) +' / 5<p></td>'
 			tr = tr+header+rating+info+'</tr>';			
 			$(element).append(tr);		
-			$("#rating-"+trip_id+"-"+question_id+ "-"+ index).rating({displayOnly: true, step: 0.5});							
+			$("#rating-"+trip_id+"-"+question_id+ "-"+ index).rating({displayOnly: true, size: 'sm', step: 0.5});
+	
+			/*var color = getColor(avg.toFixed(1), 0, 5);
+			var tag = $(info).find("p.score-avg-info").eq(0);			
+			$(tag).css("color", color);*/							
 	},
 
 	calcAvgStarRating = function(array){
@@ -799,18 +902,44 @@ FeedbackSystem.EvalController = (function() {
 
 	},
 
+	getColor = function(value, min, max) {	
+   	 	var hue=((max-(value-min))*120).toString(10);
+   	 	console.log(["hsl(",hue,",100%,50%)"].join(""))
+    	return ["hsl(",hue,",100%,50%)"].join("");
+	}
+
 
 	createNewPieChart = function(element, data){
 	var ctx = $(element);
-	var myChart = new Chart(ctx, {type:'doughnut',
+	var chart = new Chart(ctx, {type:'doughnut',
 								  data: data,
 								  options:
 								  { legend: {
-								   				display: true,
-								  				position: 'right'
-								  				}}
+								   				display: false								  				
+								  			},
+								  	legendCallback: function(chart){								  						
+								  		                var text = []
+								  		                 text.push('<div class="legend-list">');
+               											 text.push('<ul">');               											
+               											 for (var i=0; i<chart.data.datasets[0].data.length; i++) {
+               											     text.push('<li>');               											                											    
+               											     text.push('<div class="legend-square" style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '">' + chart.data.datasets[0].data[i] + '</div>');
+               											     if (chart.data.labels[i]) {
+               											         text.push(chart.data.labels[i]);
+               											     }
+               											     text.push('</li>');
+               											 }
+               											 text.push('</ul>');
+               											 text.push('</div>');               											 
+               											 return text.join("");
+								  }
+
+								  	}
+								  	
+								  
 							});	
-	//myChart.generateLegend();
+	var legend = chart.generateLegend();	
+	$(legend).insertAfter($(element).parent());
 	},
 
 	createLegend = function(chart){

@@ -17,15 +17,15 @@ io.sockets.on('connection', function (socket) {
     });
 
      socket.on('disconnect', function (data) {      
-       var i = allClients.sockets.indexOf(socket);
-       var user_id = allClients.ids[i];
-       console.log("user id", user_id);
-       delete allClients.sockets[i];
-       delete allClients.ids[i];
+      var i = allClients.sockets.indexOf(socket);
+      var user_id = allClients.ids[i];
+      
+      delete allClients.sockets[i];
+      delete allClients.ids[i];
    
       if(user_id != -1){
-            dbhandler.updateMetaCancel(user_id, function(err, result){               
-      });    
+         dbhandler.updateMetaCancel(user_id, function(err, result){               
+         });    
         }
       });
 
@@ -43,10 +43,9 @@ router.get('/', function(req, res, next) {
 })
 
 router.post('/check-login/', function(req, res, next) {	
-    var user_id = req.body.id;    
-    dbhandler.checkLoginCredentials(user_id, function(result){
-      console.log(result);
-      res.send(result);    	
+    var id = req.body.id;    
+    dbhandler.checkLoginCredentials(id, function(result){      
+      res.json({id: result.id, flag_active: result.flag_active});    	
     });
 	
 })

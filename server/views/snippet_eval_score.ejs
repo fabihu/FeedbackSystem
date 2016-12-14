@@ -11,7 +11,7 @@
        <%  } else { %>
         <a class="header-color-yellow"  data-toggle="collapse" data-parent="#accordion" href="#collapse-<%=trip.id%>" aria-expanded="false" aria-controls="collapse-<%=trip.id%>"> 
        <%  } %>
-        <%=trip.name%>
+        <div class="header-date"><%=trip.date_start%></div> - <%=trip.name%>
         </a>
       </h4>
     </div>
@@ -46,7 +46,9 @@
          <div class="row col-md-8 container-chart">
          <h4 class="main-text-header header-score">Auswertung: <%=question.text%></h4>
          <% if (question.type == 0) { %>
+         <div class="canvas-chart">
               <canvas class="chart chart-<%=question.question_id%>" id="chart-<%=trip.id%>-<%=question.question_id%>" data-trip-id="<%=trip.id%>" data-question-id="<%=question.question_id%>"></canvas>
+         </div>
           <%  } %>
          <% if (question.type == 1) { %>
           <table class="chart" id="chart-<%=trip.id%>-<%=question.question_id%>" data-trip-id="<%=trip.id%>" data-question-id="<%=question.question_id%>">            

@@ -8,18 +8,20 @@
     <thead>   
         <tr>                    
             <th>Name</th>
+            <th>Datum</th>
             <th>Typ</th>
             <th>Anzahl Reisende</th>
             <th>Passwort</th>
-            <th>Status</th>
-            <th>Fragebogen</th>
+            <th>Status <span class="glyphicon glyphicon-info-sign tooltip-eval" data-tooltip="status"></span></th>
+            <th>Typ Fragebogen <span class="glyphicon glyphicon-info-sign tooltip-eval" data-tooltip="qtype"></span></th>
             <th class="text-center"></th>
         </tr>
     </thead>
     	<% for (var index in trips) {%>
-    	<% var trip = trips[index]; %>
+    	<% var trip = trips[index]; %>     
             <tr id="trip-row-<%=trip.id%>" data-trip-id="<%=trip.id%>">                
                 <td><%=trip.name%></td>
+                <td><%=trip.date_start%></td>
                 <td><%=trip.type%></td>
                 <td><%=trip.count_travellers%></td>
                 <td><%=trip.password%></td>
@@ -64,6 +66,15 @@
           <div class="form-group">
             <label for="new-trip-name">Name</label>
             <input type="text" class="form-control" id="new-trip-name">
+          </div>
+
+                     
+          <label for="new-trip-date">Datum</label>
+          <div class="input-group padding-bottom-date-input">  
+              <input type="text" class="form-control datepicker" id="new-trip-date" data-date-format="dd.mm.yyyy">
+              <div class="input-group-addon">
+                <span class="glyphicon glyphicon-th"></span>             
+              </div>
           </div>
 
           <div class="form-group">  

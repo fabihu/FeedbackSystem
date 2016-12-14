@@ -8,6 +8,12 @@ router.get('/', IsAuthenticated, function(req, res, next) {
   res.render('eval'); 
 });
 
+router.get('/logout/', function(req, res) {
+  req.session.destroy()
+  req.logout();
+  res.redirect('/login/')
+});
+
 //get page content endpoint
 router.get('/trip/', function(req, res, next) {
   dbhandler.getTrips(function(err, dbTrips){    
