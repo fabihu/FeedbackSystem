@@ -42,6 +42,11 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });  
 })
 
+router.get('/impressum/', function(req, res, next) {
+  res.render('impressum');  
+})
+
+
 router.post('/check-login/', function(req, res, next) {	
     var id = req.body.id;    
     dbhandler.checkLoginCredentials(id, function(result){      

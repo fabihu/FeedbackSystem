@@ -5,12 +5,15 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var passport = require('passport');
+var helmet = require('helmet')
 var flash    = require('connect-flash');
 var session = require('express-session');
 var app = express();
 var http = require('http');
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
+var config = require('./config/config');
+var port = config.port;
 require('./models/passport')(passport);
 
 var index = require('./routes/index')(io);
@@ -28,11 +31,12 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(helmet());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({ cookie: { maxAge: 60000 }, 
-                  secret: 'keyboardcat',
-                  resave: true, 
-                  saveUninitialized: true}));
+                  secret: config.session.secret,
+                  resave: config.session.resave, 
+                  saveUninitialized: config.session.saveUninitialized}));
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash());
@@ -81,6 +85,6 @@ app.use(function(err, req, res, next) {
   });
 });
 
-server.listen(8080)
+server.listen(port)
 module.exports = app;
 

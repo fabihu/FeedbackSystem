@@ -7,6 +7,7 @@ FeedbackSystem.EvalController = (function() {
 	new_question = null,
 	old_answer_values = [],
 	question_types = ['nominal', 'ordinal', '', 'Freitext'],
+	user_name = "",
 	
 	init = function() {				
 	 console.log("EvalController init");
@@ -65,6 +66,41 @@ FeedbackSystem.EvalController = (function() {
     				$('#table-questions > tbody > tr').each(function(index, element) {
     					parseQuestionType(element); 
     				});
+    			} 
+    			case('/eval/users'):{
+    				$.post( "/eval/user_name/", function( data ) {
+  						user_name = data.name;  						
+    					$('#table-users > tbody > tr').each(function(index, element) {
+    						var name = $(element).find('td').eq(0).text();
+    						var buttons = $(element).find('td').eq(2);    						
+    						if(name == user_name) {    				
+    							var password_field = $(element).find('td').eq(1);
+    							var eye_glyphicon = '<div class="glyphicon-eye"><span class="glyphicon glyphicon-eye-open"></span>';
+    							$(password_field).append(eye_glyphicon);
+
+    							$(buttons).find('a').removeClass('not-active').removeAttr('disabled');;
+
+
+    							
+    							$(".glyphicon-eye").on('click', function(){
+    								var type = $(password_field).find('input').prop("type");
+    								if(type == 'password'){
+    									$(".glyphicon-eye").find('span').removeClass("glyphicon-eye-open").addClass("glyphicon-eye-close");
+    									$.post("/eval/password/", function( data ) {    									
+    										$(password_field).find('input').val(data.pw);
+    										$(password_field).find('input').prop("type", "text");					
+    									});
+    								} else {
+    									$(".glyphicon-eye").find('span').removeClass("glyphicon-eye-close").addClass("glyphicon-eye-open");
+    									$(password_field).find('input').val("1234567890");
+    									$(password_field).find('input').prop("type", "password");
+    								}
+    							})
+    						}
+    						
+    					});
+					});
+					
     			}  			
     		}
 

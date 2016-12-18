@@ -1,16 +1,9 @@
 var LocalStrategy   = require('passport-local').Strategy;
-
-var mysql = require('mysql');
-
-var connection = mysql.createConnection({
-                  host     : 'localhost',
-                  user     : 'root',
-                  password : '',
-                  database : 'database'
-                });
+var utils = require('../models/utils');
+var dbhandler = require('../db/dbhandler');
 
 module.exports = function(passport) {
-
+dbhandler.pool.getConnection(function(err, connection) {
     passport.serializeUser(function(user, done) {
         done(null, user.id);
     });
@@ -21,14 +14,12 @@ module.exports = function(passport) {
         });
     });
    
-    passport.use('local-login', new LocalStrategy({
-       
+    passport.use('local-login', new LocalStrategy({       
         usernameField : 'email',
         passwordField : 'password',
         passReqToCallback : true 
     },
-    function(req, email, password, done) { 
-         console.log("test")
+    function(req, email, password, done) {         
          connection.query("SELECT * FROM `users` WHERE `email` = '" + email + "'",function(err,rows){
             if (err)
                 return done(err);
@@ -36,11 +27,11 @@ module.exports = function(passport) {
                 return done(null, false, req.flash('loginMessage', 'Passwort oder Benutzername falsch!')); 
             } 
             
-           
-            if (!( rows[0].password == password))
+           var hash = rows[0].password;
+          
+            if (!(utils.comparePassword(password, hash)))
                 return done(null, false, req.flash('loginMessage', 'Passwort oder Benutzername falsch!')); 
-            
-           
+
             return done(null, rows[0]);         
         
         });
@@ -48,5 +39,5 @@ module.exports = function(passport) {
 
 
     }));
-
+});
 };

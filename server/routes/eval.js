@@ -57,9 +57,18 @@ router.get('/score/', function(req, res, next) {
 
 router.get('/users/', IsAuthenticated, function(req, res, next) {
   dbhandler.getUsers(function(err, dbUsers){   
-    res.render('snippet_eval_users',  {users: dbUsers});
+    res.render('snippet_eval_users',  {users: dbUsers, user_name: req.session.input.email});
   });
 });
+
+router.post("/user_name/", function(req, res){  
+    res.json({ name: req.session.input.email });
+});
+
+router.post("/password/", function(req, res){
+    res.json({ pw: req.session.input.password });
+});
+
 
 router.post('/save-new-user/', function(req, res, next) {
   var mail = req.body.mail;

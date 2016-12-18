@@ -16,10 +16,10 @@
     	<% var user = users[index]; %>
             <tr id="user-row-<%=user.id%>" data-user-id="<%=user.id%>">                
                 <td><%=user.email%></td>
-                <td><%=user.password%></td>
+                <td><input type="password" value="1234567890" readonly/></td>
                 <td class="text-center">
-                  <a href="#" class='btn btn-info   btn-xs btn-edit-user'   id="btn-edit-user-<%=user.id%>"   data-user-id="<%=user.id%>"><span class="glyphicon glyphicon-pencil"></span></a>
-                  <a href="#" class="btn btn-danger btn-xs btn-delete-user" id="btn-delete-user-<%=user.id%>" data-user-id="<%=user.id%>"><span class="glyphicon glyphicon-remove"></span></a>
+                  <a href="#" class='btn btn-info   btn-xs btn-edit-user not-active'   id="btn-edit-user-<%=user.id%>"   data-user-id="<%=user.id%>" disabled><span class="glyphicon glyphicon-pencil"></span></a>
+                  <a href="#" class='btn btn-danger btn-xs btn-delete-user not-active' id="btn-delete-user-<%=user.id%>" data-user-id="<%=user.id%>" disabled><span class="glyphicon glyphicon-remove"></span></a>
                 </td>
 
             </tr>

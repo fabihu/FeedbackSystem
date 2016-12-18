@@ -19,23 +19,15 @@ module.exports = function(passport) {
     // LOGIN ===============================
     // =====================================
     // show the login form
-    router.post('/try-login', passport.authenticate('local-login', {        
+    router.post('/try-login', function(req, res){      
+    req.session.input = req.body;
+    passport.authenticate('local-login', {        
         successRedirect : '/eval', // redirect to the secure profile section
         failureRedirect : '/login', // redirect back to the signup page if there is an error
-        failureFlash : true // allow flash messages
-    }));    
+        failureFlash : true // allow flash messages     
+    })(req, res);;
+});    
 
 
 return router;
 };
-
-// route middleware to make sure
-function isLoggedIn(req, res, next) {
-
-    // if user is authenticated in the session, carry on
-    if (req.isAuthenticated())
-        return next();
-
-    // if they aren't redirect them to the home page
-    res.redirect('/');
-}

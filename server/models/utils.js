@@ -1,3 +1,6 @@
+var bcrypt = require('bcryptjs');
+var salt = bcrypt.genSaltSync(10);
+
 init = function(){
 	console.log("utils init")
 }
@@ -29,5 +32,15 @@ getDateTime = function(){
     return dateTime;
 }
 
+hashPassword = function(password){      
+    return bcrypt.hashSync(password, salt);
+}
+
+comparePassword = function(password, hash){
+    return bcrypt.compareSync(password, hash);
+}
+
+exports.comparePassword = comparePassword;
+exports.hashPassword = hashPassword;
 exports.getDateTime = getDateTime;
 exports.init = init;

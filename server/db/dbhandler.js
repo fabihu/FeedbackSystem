@@ -1,10 +1,11 @@
 var async = require('async');
-var mysql      = require('mysql');
+var mysql = require('mysql');
+var config = require('../config/config');
 var pool   = mysql.createPool({ 
-    host     : 'localhost',
-    user     : 'root',
-    password : '',
-    database : 'database'
+    host     : config.db.host,
+    user     : config.db.user,
+    password : config.db.password,
+    database : config.db.database
 });
 var utils = require('../models/utils');
 
@@ -308,8 +309,8 @@ insertUserAnswers = function(answers){
   }); 
 }
 
-insertNewTrip = function(trip, callback){  
-pool.getConnection(function(err, connection) {           
+insertNewTrip = function(trip, callback){
+pool.getConnection(function(err, connection) {
   var query = connection.query('INSERT INTO ' + TABLE_TRIPS + ' SET ?', trip, function(err, result) {
     if(err){
       console.log(err);
@@ -881,6 +882,7 @@ getUsers = function(callback){
 
 insertNewUser = function(mail, password, callback){
 pool.getConnection(function(err, connection) { 
+      password = utils.hashPassword(password);
       connection.query('INSERT INTO ' + TABLE_USERS + ' (email, password) VALUES (?, ?)', [mail, password],  function(err, dbResponse) {
       if (err) console.log(err);
       connection.release();         
@@ -899,7 +901,8 @@ deleteUser = function(id, callback){
   });
 }
 updateUser = function(id, mail, password, callback){
-  pool.getConnection(function(err, connection) { 
+  pool.getConnection(function(err, connection) {
+      password = utils.hashPassword(password); 
       connection.query('UPDATE ' + TABLE_USERS + ' SET email = ?, password = ? WHERE id = ?', [mail, password, id],  function(err, dbResponse) {
       if (err) console.log(err);
       connection.release();         
@@ -910,6 +913,7 @@ updateUser = function(id, mail, password, callback){
 
 
 exports.init = init;
+exports.pool = pool;
 exports.checkLoginCredentials = checkLoginCredentials;
 exports.getQuestions = getQuestions;
 exports.getQuestionsForTrips = getQuestionsForTrips;

@@ -18,8 +18,23 @@ a {
   color: #3c3c3e;
 }
 
+.margin-nav {
+  margin-top: 20px; 
+}
+
+
 li {list-style-type: none;}
 
+.not-active {
+   pointer-events: none;
+   cursor: default;
+}
+
+.glyphicon-eye {
+    padding-left: 10px;
+    vertical-align: middle;
+    display: inline-block;
+}
 
 .canvas-chart{
       padding-top: 10px;
@@ -499,6 +514,12 @@ tr.row-no-border-top td{
     border-radius: 4px;
 }
 
+.li-main {
+    border-bottom: 2px solid;
+    border-bottom-color: #fdd714;
+    margin-top: -15px;
+}
+
 .nav>li>a:hover {
     color: #fdd714;
     background-color: #c96ebe;    
@@ -666,6 +687,11 @@ padding-right: 0px;
 
 .text-color-yellow{
 	color: #ffd500!important;
+}
+
+
+.navbar-nav {
+  margin:0px;
 }
 
 .navbar-default {
