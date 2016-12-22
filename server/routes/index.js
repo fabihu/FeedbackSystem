@@ -155,6 +155,29 @@ router.post('/update-meta-cancel/', function(req, res, next) {
 
 })
 
+router.post('/update-user-gender/', function(req, res, next) {
+  var user_id = req.body.user_id;
+  var gender = req.body.gender;  
+  dbhandler.updateUserGender(user_id, gender, function(err, result){
+    res.json({data: "ok"});
+  });
+})
+
+router.post('/update-user-age/', function(req, res, next) {
+  var user_id = req.body.user_id;
+  var age = req.body.age;  
+  dbhandler.updateUserAgeGroup(user_id, age, function(err, result){
+    res.json({data: "ok"});
+  });
+})
+
+router.post('/update-user-exp/', function(req, res, next) {
+  var user_id = req.body.user_id;
+  var exp = req.body.exp;  
+  dbhandler.updateUserExp(user_id, exp, function(err, result){
+    res.json({data: "ok"});
+  });
+})
 
 filterAnswers = function(id, arr){
   

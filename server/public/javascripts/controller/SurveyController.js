@@ -30,6 +30,7 @@ FeedbackSystem.SurveyController = (function() {
       onCustomCheckboxClick(this);
     });
 
+  
     
     initListener();
     getSelectedAnswers();
@@ -49,6 +50,39 @@ FeedbackSystem.SurveyController = (function() {
       e.preventDefault();
       onBtnCheckboxClick(this);
     });
+
+    $('.btn-gender').on('click', function(e){
+      e.preventDefault();       
+      onCustomCheckboxGenderClick(this);
+    });
+
+    $('.btn-age').on('click', function(e){
+      e.preventDefault();       
+      onCustomCheckboxAgeClick(this);
+    });
+
+    $('.btn-exp').on('click', function(e){
+      e.preventDefault();       
+      onCustomCheckboxExpClick(this);
+    });
+
+    $('.btn-next-gender').on('click', function(e){
+      e.preventDefault();       
+      onGenderNextClick(this);
+    });
+
+    $('.btn-next-age').on('click', function(e){
+      e.preventDefault();       
+      onAgeNextClick(this);
+    });
+
+    $('.btn-next-exp').on('click', function(e){
+      e.preventDefault();       
+      onExpNextClick(this);
+    });
+    
+   
+   
   },
 
   handleConnect = function(){
@@ -65,23 +99,121 @@ FeedbackSystem.SurveyController = (function() {
    handleDisconnect();
   },
 
-  onCustomCheckboxClick = function(element){
+onCustomCheckboxClick = function(element){
     var span = $(element).find("span");
+    if($(span).hasClass('glyphicon glyphicon-ok')){
+      $(span).removeClass('glyphicon glyphicon-ok').addClass('glyphicon glyphicon-none');  
+    } else {
+      $(span).removeClass('glyphicon glyphicon-none').addClass('glyphicon glyphicon-ok');  
+    }
 
-      if($(span).hasClass('glyphicon glyphicon-ok')){
-        $(span).removeClass('glyphicon glyphicon-ok')
-        $(span).addClass('glyphicon glyphicon-none');
-      } else {
-         $(span).removeClass('glyphicon glyphicon-none')     
-        $(span).addClass('glyphicon glyphicon-ok');
-      }
-  },  
+    //moved from onBtnCheckboxClick check if works
+    var checked = $(element).data("checked");
 
-  onFadeInContainer = function(id){
+    if(checked){
+      $(element).attr("data-checked", false);
+      $(element).data("checked", false);
+    } else {
+      $(element).attr("data-checked", true);
+      $(element).data("checked", true);
+    }
+},
+
+onGenderNextClick = function(element){
+  var container = $(element).parent();
+  var checked = $(container).find('.row').find('button').filter('button[data-checked="true"]');
+  var gender = $(checked).data("val");
+
+  updateUserGender(gender);
+  fadeOutGenderContainer();
+  fadeInAgeContainer();
+},
+
+onAgeNextClick = function(element){
+  var container = $(element).parent();
+  var checked = $(container).find('.row').find('button').filter('button[data-checked="true"]');
+  var age = $(checked).data("val");
+
+  updateUserAge(age);
+  fadeOutAgeContainer();
+  fadeInExpContainer();
+},
+
+onExpNextClick = function(element){
+  var container = $(element).parent();
+  var checked = $(container).find('.row').find('button').filter('button[data-checked="true"]');
+  var exp = $(checked).data("val");
+
+  updateUserExp(exp);
+  fadeOutExpContainer();
+  fadeInSurveyContainer();
+  $(document).trigger('startTimer'); 
+},
+
+fadeInSurveyContainer = function(){
+//trigger Timer
+$(".survey-container").first().removeClass("invis").addClass("visible").addClass("animated fadeInDown");   
+},
+
+onCustomCheckboxGenderClick = function(element){
+    var span = $(element).find("span");   
+    $(".btn-gender span").removeClass('glyphicon glyphicon-ok').addClass('glyphicon glyphicon-none');
+    $(".btn-gender").data("checked", false).attr("data-checked", false);
+    $(span).removeClass('glyphicon glyphicon-none').addClass('glyphicon glyphicon-ok');
+    $(element).data("checked", true).attr("data-checked", true);
+},
+
+onCustomCheckboxAgeClick = function(element){
+    var span = $(element).find("span");
+    $(".btn-age span").removeClass('glyphicon glyphicon-ok').addClass('glyphicon glyphicon-none');
+    $(".btn-age").data("checked", false).attr("data-checked", false);
+    $(span).removeClass('glyphicon glyphicon-none').addClass('glyphicon glyphicon-ok');
+    $(element).data("checked", true).attr("data-checked", true);
+},
+
+onCustomCheckboxExpClick = function(element){
+    var span = $(element).find("span");
+    $(".btn-exp span").removeClass('glyphicon glyphicon-ok').addClass('glyphicon glyphicon-none');
+    $(".btn-exp").data("checked", false).attr("data-checked", false);
+    $(span).removeClass('glyphicon glyphicon-none').addClass('glyphicon glyphicon-ok');
+    $(element).data("checked", true).attr("data-checked", true);
+},
+
+onFadeInContainer = function(id){
    $('#container-questions-'+id).removeClass("invis");
-   $('#container-questions-'+id).addClass("visible");
-  
+   $('#container-questions-'+id).addClass("visible");  
    $('#container-questions-'+id).addClass("animated fadeInDown");   
+},
+
+fadeOutGenderContainer = function(){
+  $('#container-gender').removeClass("animated fadeInDown").addClass("animated fadeOutDown");
+  setTimeout(function(){    
+    $('#container-gender').remove();
+  }, 700); 
+},
+
+fadeOutAgeContainer = function(){
+  $('#container-age').removeClass("animated fadeInDown").addClass("animated fadeOutDown");
+  setTimeout(function(){    
+    $('#container-age').remove();
+  }, 700); 
+},
+
+fadeOutExpContainer = function(){
+  $('#container-experience').removeClass("animated fadeInDown").addClass("animated fadeOutDown");
+  setTimeout(function(){    
+    $('#container-experience').remove();
+  }, 700); 
+},
+
+fadeInAgeContainer = function(){
+  $('#container-age').removeClass("invis");
+  $('#container-age').addClass("visible").addClass("animated fadeInDown");   
+},
+
+fadeInExpContainer = function(){
+  $('#container-experience').removeClass("invis");
+  $('#container-experience').addClass("visible").addClass("animated fadeInDown");   
 },
 
 onGetTripId = function(event, trip_id){    
@@ -93,16 +225,8 @@ onGetUserId = function(event, user_id){
 },
 
 onBtnCheckboxClick = function(element){
-  var checked = $(element).data("checked");
 
-  if(checked){
-    $(element).attr("data-checked", false);
-    $(element).data("checked", false);
-  } else {
-    $(element).attr("data-checked", true);
-     $(element).data("checked", true);
-  }
- },
+},
 
 getSelectedAnswers = function(){
 $buttonNext.click(function(){  
@@ -230,10 +354,31 @@ updateMetaFinish = function(){
   $.post(url, {user_id: userId, trip_id: tripId}, function( data ) {
     
   });
+},
+
+updateUserGender = function(gender){
+ var url = '/update-user-gender/'; 
+ $.post(url, {user_id: userId, gender: gender}, function( data ) {
+    
+ });
+},
+
+updateUserAge = function(age){
+var url = '/update-user-age/'; 
+ $.post(url, {user_id: userId, age: age}, function( data ) {
+    
+ });
+},
+
+updateUserExp = function(exp){
+var url = '/update-user-exp/'; 
+ $.post(url, {user_id: userId, exp: exp}, function( data ) {
+    
+ });
 };
   
-  that.init = init;
-  that.onInitSurvey = onInitSurvey;
-  return that;
+that.init = init;
+that.onInitSurvey = onInitSurvey;
+return that;
 
 }());

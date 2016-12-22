@@ -1,15 +1,88 @@
 
     <div id="temp-qtype" class="invis" data-qtype="<%=type%>"></div>
+
+    <div class="row col-md-12 container main-text demograph-gender" id='container-gender'>     
+      <h2>Sind Sie männlich oder weiblich? </h2>
+        <div  class="row">     
+          <button class="btn-checkbox-dem btn-lg btn-gender" id="check-male" data-checked="false" data-val="m"><span class="glyphicon glyphicon-none"></span></button>
+          <label class="question-answer-option col-md-4" for="check-male"> männlich </label>
+        </div>
+
+      <div  class="row"> 
+         <button class="btn-checkbox-dem btn-lg btn-gender" id="check-female" data-checked="false" data-val="f"><span class="glyphicon glyphicon-none"></span> </button>                
+         <label class="question-answer-option col-md-4" for="check-female"> weiblich </label>
+      </div>
+
+      <div  class="row"> 
+        <button class="btn-checkbox-dem btn-lg btn-gender" id="check-na" data-checked="false" data-val="n"><span class="glyphicon glyphicon-none"></span></button>
+        <label class="question-answer-option col-md-4" for="check-na"> keine Angaben </label>
+      </div>
+      <button class="btn-next-dem btn-next-gender" id="button-next-gender">Weiter ></button>
+      </div>
+
+       <div class="row col-md-12 container main-text demograph-age invis" id='container-age'>     
+        <h2> Welche der folgenden Kategorien gehört Ihrem Alter an? </h2>
+        <div class="row"> 
+         <button class="btn-checkbox-dem btn-lg btn-age" id="check-y-0" data-checked="false" data-val="0"><span class="glyphicon glyphicon-none"></span></button>
+         <label class="question-answer-option col-md-4" for="check-y-0"> jünger als 20 </label>
+        </div>
+        <div  class="row"> 
+         <button class="btn-checkbox-dem btn-lg btn-age" id="check-y-1" data-checked="false" data-val="1"><span class="glyphicon glyphicon-none"></span></button>
+         <label class="question-answer-option col-md-4" for="check-y-1"> 20-29 </label>
+        </div>
+        <div  class="row"> 
+         <button class="btn-checkbox-dem btn-lg btn-age" id="check-y-2" data-checked="false" data-val="2"><span class="glyphicon glyphicon-none"></span></button>
+         <label class="question-answer-option col-md-4" for="check-y-2"> 30-39 </label>
+        </div>
+        <div  class="row"> 
+         <button class="btn-checkbox-dem btn-lg btn-age" id="check-y-3" data-checked="false" data-val="3"><span class="glyphicon glyphicon-none"></span></button>
+         <label class="question-answer-option col-md-4" for="check-y-3"> 40-49 </label>
+        </div>
+        <div  class="row"> 
+         <button class="btn-checkbox-dem btn-lg btn-age" id="check-y-4" data-checked="false" data-val="4"><span class="glyphicon glyphicon-none"></span></button>
+         <label class="question-answer-option col-md-4" for="check-y-4"> 50-59 </label>
+        </div>
+        <div  class="row"> 
+         <button class="btn-checkbox-dem btn-lg btn-age" id="check-y-5" data-checked="false" data-val="5"><span class="glyphicon glyphicon-none"></span></button>
+         <label class="question-answer-option col-md-4" for="check-y-5"> 60-69 </label>
+        </div>
+        <div  class="row"> 
+         <button class="btn-checkbox-dem btn-lg btn-age" id="check-y-6" data-checked="false" data-val="6"><span class="glyphicon glyphicon-none"></span></button>
+         <label class="question-answer-option col-md-4" for="check-y-6"> älter als 69 </label>
+        </div>
+         <button class="btn-next-dem btn-next-age" id="button-next-age">Weiter ></button>  
+      </div>
+
+      <div class="row col-md-12 container main-text demograph-age invis" id='container-experience'>     
+        <h2> Wie viel Erfahrung besitzen Sie im Umgang mit Computern? </h2>
+        <div class="row"> 
+         <button class="btn-checkbox-dem btn-lg btn-exp" id="check-exp-0" data-checked="false" data-val="0"><span class="glyphicon glyphicon-none"></span></button>
+         <label class="question-answer-option col-md-4" for="check-exp-0"> sehr wenig </label>
+        </div>
+        <div  class="row"> 
+         <button class="btn-checkbox-dem btn-lg btn-exp" id="check-exp-1" data-checked="false" data-val="1"><span class="glyphicon glyphicon-none"></span></button>
+         <label class="question-answer-option col-md-4" for="check-exp-1"> wenig </label>
+        </div>
+        <div  class="row"> 
+         <button class="btn-checkbox-dem btn-lg btn-exp" id="check-exp-2" data-checked="false" data-val="2"><span class="glyphicon glyphicon-none"></span></button>
+         <label class="question-answer-option col-md-4" for="check-exp-2"> durchschnittlich </label>
+        </div>
+        <div  class="row"> 
+         <button class="btn-checkbox-dem btn-lg btn-exp" id="check-exp-3" data-checked="false" data-val="3"><span class="glyphicon glyphicon-none"></span></button>
+         <label class="question-answer-option col-md-4" for="check-exp-3"> viel </label>
+        </div>
+        <div  class="row"> 
+         <button class="btn-checkbox-dem btn-lg btn-exp" id="check-exp-4" data-checked="false" data-val="4"><span class="glyphicon glyphicon-none"></span></button>
+         <label class="question-answer-option col-md-4" for="check-exp-4"> sehr viel </label>
+        </div>
+         <button class="btn-next-dem btn-next-exp" id="button-next-exp">Weiter ></button>  
+      </div>
+
+    </div>
     <% for(var i=0; i<data.length; i++) { %>
       <% var question = data[i].question; %>     
-      <% if (i==0){ %>
-        <div class="row col-md-12 container main-text" id='container-questions-<%=question.id%>' data-question-id='<%=question.id%>'>
-      <% } else { %>
-        <div class="row col-md-12 container main-text invis" id='container-questions-<%=question.id%>' data-question-id='<%=question.id%>'>
-      <% } %>    
-
-        <h2 class="question-header"><%=question.text%></h2>
-            
+      <div class="row col-md-12 container main-text invis survey-container" id='container-questions-<%=question.id%>' data-question-id='<%=question.id%>'>
+      <h2 class="question-header"><%=question.text%></h2>            
       
       <form class="form-horizontal">
         
@@ -19,8 +92,7 @@
       <% if(question.type == 0) {%>  
                   <form role="form">                           
 
-                    <div class="padding-star-rating"> 
-                     
+                    <div class="padding-star-rating">                      
                                            
                         <button class="btn-checkbox btn-lg answer-options-<%=question.id%>" id="answer-options-check-<%=answer.id%>" data-answer-id="<%=answer.id%>" data-question-id="<%=question.id%>" data-checked="false">
                           <span class="glyphicon glyphicon-none"></span>

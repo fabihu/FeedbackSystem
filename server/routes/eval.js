@@ -291,6 +291,27 @@ router.post('/get-sum-participants-cancel/', function(req, res, next) {
 });
 
 
+router.post('/get-gender-participants/', function(req, res, next) {
+ var trip_id = req.body.trip_id; 
+ dbhandler.getGenderParticpants(trip_id, function(err, result){    
+   res.json(result);
+  }); 
+});
+
+router.post('/get-age-participants/', function(req, res, next) {
+ var trip_id = req.body.trip_id; 
+ dbhandler.getAgeParticpants(trip_id, function(err, result){    
+   res.json(result);
+  }); 
+});
+
+router.post('/get-experience-participants/', function(req, res, next) {
+ var trip_id = req.body.trip_id; 
+ dbhandler.getExpParticpants(trip_id, function(err, result){    
+   res.json(result);
+  }); 
+});
+
 formatAssignmentData = function(arr1, arr2, allActives) {
   var result = [];  
 

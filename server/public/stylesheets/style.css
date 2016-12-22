@@ -4,13 +4,14 @@ body {
   transition: background-image 1s linear;
   padding-top: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-
-  background-size: cover;
+  overflow: scroll;
   background-attachment: fixed;
   background-position: center center;
+  height: 125%;
+  min-height: 100%;
   @media (max-width: @iphone-screen) {
       background-attachment: scroll;
-    }
+  }
 }
 
 a {
@@ -22,6 +23,44 @@ a {
   margin-top: 20px; 
 }
 
+.tutorial-type-0, .tutorial-type-1, .tutorial-type-2{  
+    width: 65%;
+    height: 250px;
+    position: absolute;
+    background-size: contain;
+    background-repeat: no-repeat;
+
+}
+
+.tutorial-type-0{
+  background-image: url("../images/bent-arrow-0.png");
+  bottom: -5%;
+  left: 0%;
+}
+
+.tutorial-type-1{
+  background-image: url("../images/bent-arrow-1.png");
+  top: 20%;
+  left: 30%;
+}
+
+.tutorial-type-2{
+  background-image: url("../images/bent-arrow-2.png");
+  bottom: -33%;
+  left: 0%;
+}
+
+
+.glyph-collapse {
+  color: #E6E9ED;
+}
+
+.btn-collapse-right{
+    float: right;
+    margin-right: 10px;
+    background-color: #FFF9E6;
+    border: 2px solid #E6E9ED;
+}
 
 li {list-style-type: none;}
 
@@ -37,12 +76,18 @@ li {list-style-type: none;}
 }
 
 .canvas-chart{
-      padding-top: 10px;
+  padding-top: 10px;
   display:inline-block!important; 
   width:450px;
   height: 250px;
-  vertical-align: middle;
-  
+  vertical-align: middle;  
+}
+
+.canvas-chart-dem {
+  padding-top: 10px;
+  width:450px;
+  height: 250px;
+  vertical-align: middle;  
 }
 
 .legend-list{
@@ -139,9 +184,9 @@ li {list-style-type: none;}
 }
 
 .qv-2 {
-  margin: 20px;
+  margin: 5px;
   border: 0.1em solid #ffd500;
-  padding: 12px;
+  padding: 10px;
 }
 
 .glow {
@@ -274,13 +319,18 @@ li {list-style-type: none;}
 .glyphicon-none:before {
     content: "\2122";
     color: transparent !important;
+    padding: 8px;
 }
 
-.btn-checkbox {
+.btn-checkbox, .btn-checkbox-dem {
     background-color: rgba(138, 65, 156, 0);
     border: 0.1em solid #ffd500;
     border-radius: 1px;
     margin: 5px;
+}
+
+.btn-checkbox-dem {
+    margin-left: 20px;
 }
 
 ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
@@ -318,8 +368,8 @@ li {list-style-type: none;}
 }
 
 .container-chart{
-    padding: 20px;
-    margin: 30px;
+    padding: 15px;
+    margin: 10px;
     border: 0.1em solid #E6E9ED;
 }
 
@@ -386,7 +436,7 @@ li {list-style-type: none;}
 /* style icon */
 .inner-addon .glyphicon {
   position: absolute;
-  padding: 10px;
+  padding: 9px;
   pointer-events: none;
 }
 
@@ -396,7 +446,7 @@ li {list-style-type: none;}
 
 /* add padding  */
 .left-addon input  {
- font-size: 13px!important; 
+ font-size: 18px!important; 
  padding-left:  45px;
 }
 .right-addon input { padding-right: 45px; }
@@ -561,7 +611,7 @@ tr.row-no-border-top td{
     text-align: center;
  }
 
-.button-next {
+.button-next, .btn-next-dem, .button-next-st {
     border-radius: 25px;
     cursor: pointer;
     font-weight: 400!important;
@@ -579,20 +629,7 @@ tr.row-no-border-top td{
 }
 
 .button-next-st {
-    border-radius: 25px;
-    cursor: pointer;
-    font-weight: 400!important;
-    color: #ffd500!important;
-    font-size: 20px!important;
-    padding: 5px 20px 5px 20px;
-    margin-right: 20px;
-    margin-bottom: 10px;
-    border: 0.1em solid #ffd500;
-    text-decoration: none!important;
-    background: #912584;
-    letter-spacing: 1px;
-    text-align: center;
-    float: right;
+    margin-right: 0px;   
 }
 .button-submit-sug {
     position: absolute;
@@ -625,12 +662,12 @@ padding-right: 0px;
 
 .main-text {
 	background-color: rgba(138, 65, 156, 0.701961);
-	padding: 3px 25px 3px;
-	margin-top: 10px;
+	padding: 3px 20px 3px;
 	border: 0.1em solid #FFF9E6;
 	color: #ffd500!important;
 	font-family: 'Ubuntu', sans-serif;
   border-radius: 4px;
+  margin-top: 20px!important;
 }
 
 .main-text-padding{
@@ -641,7 +678,8 @@ padding-right: 0px;
   font-family: 'Ubuntu', sans-serif;
   border-radius: 4px;
   position: fixed;
-  bottom: 0;  
+  bottom: 0;
+  z-index: 1;  
 }
 
 .main-text-dashboard{
@@ -680,6 +718,7 @@ padding-right: 0px;
 .question-answer-option {
     font-weight: 300;
     line-height: 1.4;
+    padding-left: 20px;
 }
 
 .login-controls-padding-top{

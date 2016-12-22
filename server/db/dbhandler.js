@@ -850,7 +850,7 @@ getSumParticipants = function(trip_id, callback){
 
 getSumParticipantsCancel = function(trip_id, callback){
    pool.getConnection(function(err, connection) { 
-      connection.query('SELECT COUNT(id) AS sum FROM ' + TABLE_USER_META + ' WHERE trip_id = ? AND status="canceld" OR status="pending"', [trip_id],  function(err, dbResponse) {
+      connection.query('SELECT COUNT(id) AS sum FROM ' + TABLE_USER_META + ' WHERE trip_id = ? AND status="canceld"', [trip_id],  function(err, dbResponse) {
       if (err) console.log(err);
       connection.release();            
       callback(err, dbResponse);
@@ -911,6 +911,68 @@ updateUser = function(id, mail, password, callback){
   });
 }
 
+updateUserGender = function(id, gender, callback){
+  pool.getConnection(function(err, connection) {
+   connection.query('UPDATE ' + TABLE_USER_META + ' SET gender = ? WHERE id = ?', [gender, id],  function(err, dbResponse) {
+     if (err) console.log(err);
+     connection.release();         
+     callback(err, dbResponse);
+    }); 
+  });
+}
+
+updateUserAgeGroup = function(id, age, callback){
+  pool.getConnection(function(err, connection) {
+   connection.query('UPDATE ' + TABLE_USER_META + ' SET age_group = ? WHERE id = ?', [age, id],  function(err, dbResponse) {
+     if (err) console.log(err);
+     connection.release();         
+     callback(err, dbResponse);
+    }); 
+  });
+}
+
+updateUserExp = function(id, exp, callback){
+  pool.getConnection(function(err, connection) {
+   connection.query('UPDATE ' + TABLE_USER_META + ' SET experience = ? WHERE id = ?', [exp, id],  function(err, dbResponse) {
+     if (err) console.log(err);
+     connection.release();         
+     callback(err, dbResponse);
+    }); 
+  });
+}
+
+getGenderParticpants = function(trip_id, callback){
+   pool.getConnection(function(err, connection) { 
+      connection.query('SELECT count(id) AS value, gender FROM ' + TABLE_USER_META + ' WHERE trip_id = ? GROUP BY gender', [trip_id],  function(err, dbResponse) {
+      if (err) console.log(err);     
+      connection.release();         
+      callback(err, dbResponse);
+     });
+  });
+}
+
+getAgeParticpants = function(trip_id, callback){
+   pool.getConnection(function(err, connection) { 
+      connection.query('SELECT count(id) AS value, age_group FROM ' + TABLE_USER_META + ' WHERE trip_id = ? GROUP BY age_group', [trip_id],  function(err, dbResponse) {
+      if (err) console.log(err);     
+      connection.release();         
+      callback(err, dbResponse);
+     });
+  });
+}
+
+getExpParticpants = function(trip_id, callback){
+   pool.getConnection(function(err, connection) { 
+      connection.query('SELECT count(id) AS value, experience FROM ' + TABLE_USER_META + ' WHERE trip_id = ? GROUP BY experience', [trip_id],  function(err, dbResponse) {
+      if (err) console.log(err);     
+      connection.release();         
+      callback(err, dbResponse);
+     });
+  });
+}
+
+
+
 
 exports.init = init;
 exports.pool = pool;
@@ -954,7 +1016,13 @@ exports.getAvgTimeForQuestion = getAvgTimeForQuestion;
 exports.getSumParticipants = getSumParticipants;
 exports.getSumParticipantsCancel = getSumParticipantsCancel;
 exports.getSumParticipantsFinish = getSumParticipantsFinish;
+exports.getGenderParticpants = getGenderParticpants;
 exports.getUsers = getUsers;
 exports.insertNewUser = insertNewUser;
 exports.deleteUser = deleteUser;
 exports.updateUser = updateUser;
+exports.updateUserGender = updateUserGender;
+exports.updateUserAgeGroup = updateUserAgeGroup;
+exports.updateUserExp = updateUserExp;
+exports.getAgeParticpants = getAgeParticpants;
+exports.getExpParticpants = getExpParticpants;

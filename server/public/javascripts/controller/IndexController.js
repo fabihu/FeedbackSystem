@@ -16,6 +16,14 @@ FeedbackSystem.IndexController = (function() {
 		$('#container-info').addClass('animated slideInDown');
 		$('#container-login-controls').addClass('animated slideInDown');
 
+		$('#InputTravelId').focusin(function(){			
+			$("#container-info").addClass("animated slideOutDown");
+		})
+
+		$('#InputTravelId').focusout(function(){		
+			$("#container-info").removeClass('animated slideInDown').removeClass("animated slideOutDown").addClass("animated fadeInUp");
+		})
+		
 		onClickButtonSubmit();
 	},
 
@@ -52,11 +60,9 @@ FeedbackSystem.IndexController = (function() {
 								$('#container-info').remove();
 							
 								if(qtype_id == 0){
-									$(document).trigger('initSurvey');
-									$(document).trigger('startTimer');							
+									$(document).trigger('initSurvey');																
 								} else {
-									$(document).trigger('initSurveyST');
-									$(document).trigger('startTimerST');	
+									$(document).trigger('initSurveyST');										
 								}
 								$(document).trigger('getTripId', id);
 								}, 800);

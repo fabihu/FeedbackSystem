@@ -26,14 +26,17 @@
         <% var question = trip.questions[index]; %>       
         <% if (index == 0) { %>
          <div class="row col-md-8 container-chart">
+         <button class="btn-collapse-right"  data-toggle="collapse" data-target="#info-common-<%=trip.id%>"> <span class="glyphicon glyphicon glyphicon-minus glyph-collapse"></span></button>
+         <h4 class="main-text-header header-score">Allgemein</h4>
+         <div class="collapse in" id="info-common-<%=trip.id%>">
 
-              <h4 class="main-text-header header-score">Allgemein</h4>
+
               <span class="col-md-1 glyphicon glyphicon glyphicon-user"></span>
               <div class="col-md-11 t-score">
               
-               <div> Insgesamt haben <b id="info-sum-participants">x</b> Personen den Fragebogen bearbeitet</div> 
-               <div><b id="info-sum-participants-finish">x</b> Reisende haben den Fragebogen vollständig beantwortet</div>
-               <div><b id="info-sum-participants-cancel">x</b> Reisende haben den Fragebogen vorzeitig beendet</div> 
+               <div> Insgesamt haben <b id="info-sum-participants-<%=trip.id%>">x</b> Personen den Fragebogen bearbeitet. (davon <b id="info-sum-male-<%=trip.id%>">x</b> männlich, <b id="info-sum-female-<%=trip.id%>">x</b> weiblich, <b id="info-sum-na-<%=trip.id%>">x</b> k.A.)</div> 
+               <div><b id="info-sum-participants-finish-<%=trip.id%>">x</b> Reisende haben den Fragebogen vollständig beantwortet</div>
+               <div><b id="info-sum-participants-cancel-<%=trip.id%>">x</b> Reisende haben den Fragebogen vorzeitig beendet</div> 
                 <br/>
             </div>
            <span class="col-md-1 glyphicon glyphicon glyphicon-time"></span>
@@ -42,9 +45,28 @@
             </div>            
 
          </div>
-         <%  } %>  
+         </div>
+
          <div class="row col-md-8 container-chart">
-         <h4 class="main-text-header header-score">Auswertung: <%=question.text%></h4>
+            <button class="btn-collapse-right"  data-toggle="collapse" data-target="#container-demograf-inf-<%=trip.id%>"> <span class="glyphicon glyphicon glyphicon-minus glyph-collapse"></span></button>
+            <h4 class="main-text-header header-score">Demografische Daten</h4>
+            <div class="collapse in" id="container-demograf-inf-<%=trip.id%>">
+
+              <b>Altersgruppen</b>
+              <div class="canvas-chart-dem" ><canvas id="age-dem-container-<%=trip.id%>"></canvas></div>
+               <b>Erfahrung mit Computern</b>
+              <div class="canvas-chart-dem" ><canvas id="exp-dem-container-<%=trip.id%>"></canvas></div>
+
+            </div>
+         </diV>
+
+         <%  } %> 
+
+         <div class="row col-md-8 container-chart">
+         <button class="btn-collapse-right"  data-toggle="collapse" data-target="#container-question-<%=trip.id%>-<%=question.question_id%>"> <span class="glyphicon glyphicon glyphicon-minus glyph-collapse"></span></button>
+         
+         <h4 class="main-text-header header-score">Auswertung: <%=question.text%></h4>    
+         <div class="collapse in" id="container-question-<%=trip.id%>-<%=question.question_id%>">    
          <% if (question.type == 0) { %>
          <div class="canvas-chart">
               <canvas class="chart chart-<%=question.question_id%>" id="chart-<%=trip.id%>-<%=question.question_id%>" data-trip-id="<%=trip.id%>" data-question-id="<%=question.question_id%>"></canvas>
@@ -57,8 +79,9 @@
         <% if (question.type == 3) { %>
           <div class="chart chart-<%=question.question_id%> text-container" id="chart-<%=trip.id%>-<%=question.question_id%>"  data-trip-id="<%=trip.id%>" data-question-id="<%=question.question_id%>"></div>
          <%  } %>
-         </div>    
-        <%  } %>
+         </div>
+       </div>
+        <% } %>    
       </div>
     </div>
   </div>

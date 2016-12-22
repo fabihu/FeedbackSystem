@@ -44,7 +44,7 @@ initComponents = function(){
 		e.preventDefault();
 		var next_id = $(this).parent().next('.container').data('question-id');		
 		var id =  $(this).data('question-id');
-		if ($(this).hasClass('button-next-qtype-1')){
+		if ($(this).hasClass('button-next-qtype-1')){			
 		  onButtonNextTypeOneClick(this, id, next_id);	 
 		} else {
 		  onButtonNextClick(this, id, next_id);			
@@ -79,6 +79,36 @@ initComponents = function(){
 		isDown = false;				
 	});
 
+	$('#survey-container').on('click', '.btn-gender', function(e){
+      e.preventDefault();       
+      onCustomCheckboxGenderClick(this);
+    });
+
+    $('#survey-container').on('click', '.btn-age', function(e){
+      e.preventDefault();       
+      onCustomCheckboxAgeClick(this);
+    });
+
+
+    $('#survey-container').on('click', '.btn-exp', function(e){
+      e.preventDefault();       
+      onCustomCheckboxExpClick(this);
+    });
+
+    $('#survey-container').on('click', '.btn-next-gender', function(e){
+      e.preventDefault();       
+      onGenderNextClick(this);
+    });
+
+    $('#survey-container').on('click', '.btn-next-age', function(e){
+      e.preventDefault();       
+      onAgeNextClick(this);
+    });
+
+    $('#survey-container').on('click', '.btn-next-exp', function(e){
+      e.preventDefault();       
+      onExpNextClick(this);
+    });
 
 },
 
@@ -99,6 +129,97 @@ unbindWindowClose = function(){
   $(document).unbind("leavePageST");
     window.onbeforeunload = function(){return null};
     window.unload = function(){return null};
+},
+
+onGenderNextClick = function(element){
+  var container = $(element).parent();
+  var checked = $(container).find('.row').find('button').filter('button[data-checked="true"]');
+  var gender = $(checked).data("val");
+
+  updateUserGender(gender);
+  fadeOutGenderContainer();
+  fadeInAgeContainer();
+},
+
+onAgeNextClick = function(element){
+  var container = $(element).parent();
+  var checked = $(container).find('.row').find('button').filter('button[data-checked="true"]');
+  var age = $(checked).data("val");
+
+  updateUserAge(age);
+  fadeOutAgeContainer();
+  fadeInExpContainer();
+},
+
+onExpNextClick = function(element){
+  var container = $(element).parent();
+  var checked = $(container).find('.row').find('button').filter('button[data-checked="true"]');
+  var exp = $(checked).data("val");
+
+  updateUserExp(exp);
+  fadeOutExpContainer();
+  fadeInSurveyContainer();
+  $(document).trigger('startTimerST'); 
+},
+
+fadeInSurveyContainer = function(){
+//trigger Timer
+$(".surveyst-container").first().removeClass("invis").addClass("visible").addClass("animated fadeInDown");   
+},
+
+onCustomCheckboxGenderClick = function(element){
+    var span = $(element).find("span");   
+    $(".btn-gender span").removeClass('glyphicon glyphicon-ok').addClass('glyphicon glyphicon-none');
+    $(".btn-gender").data("checked", false).attr("data-checked", false);
+    $(span).removeClass('glyphicon glyphicon-none').addClass('glyphicon glyphicon-ok');
+    $(element).data("checked", true).attr("data-checked", true);
+},
+
+onCustomCheckboxAgeClick = function(element){
+    var span = $(element).find("span");
+    $(".btn-age span").removeClass('glyphicon glyphicon-ok').addClass('glyphicon glyphicon-none');
+    $(".btn-age").data("checked", false).attr("data-checked", false);
+    $(span).removeClass('glyphicon glyphicon-none').addClass('glyphicon glyphicon-ok');
+    $(element).data("checked", true).attr("data-checked", true);
+},
+
+onCustomCheckboxExpClick = function(element){
+    var span = $(element).find("span");
+    $(".btn-exp span").removeClass('glyphicon glyphicon-ok').addClass('glyphicon glyphicon-none');
+    $(".btn-exp").data("checked", false).attr("data-checked", false);
+    $(span).removeClass('glyphicon glyphicon-none').addClass('glyphicon glyphicon-ok');
+    $(element).data("checked", true).attr("data-checked", true);
+},
+
+fadeOutGenderContainer = function(){
+  $('#container-gender').removeClass("animated fadeInDown").addClass("animated fadeOutDown");
+  setTimeout(function(){    
+    $('#container-gender').remove();
+  }, 700); 
+},
+
+fadeOutAgeContainer = function(){
+  $('#container-age').removeClass("animated fadeInDown").addClass("animated fadeOutDown");
+  setTimeout(function(){    
+    $('#container-age').remove();
+  }, 700); 
+},
+
+fadeOutExpContainer = function(){
+  $('#container-experience').removeClass("animated fadeInDown").addClass("animated fadeOutDown");
+  setTimeout(function(){    
+    $('#container-experience').remove();
+  }, 700); 
+},
+
+fadeInAgeContainer = function(){
+  $('#container-age').removeClass("invis");
+  $('#container-age').addClass("visible").addClass("animated fadeInDown");   
+},
+
+fadeInExpContainer = function(){
+  $('#container-experience').removeClass("invis");
+  $('#container-experience').addClass("visible").addClass("animated fadeInDown");   
 },
 
 initDraggable = function(){	
@@ -145,12 +266,11 @@ onBtnArrPress = function(element){
 },
 
 moveBus = function(element){
-
 var offset = $('.bus-container').offset();
 var new_offset_left = offset.left - 25;
 var new_offset_right = offset.left + 25;
 
-if($(element).hasClass('btn-arr-left')){
+if($(element).hasClass('btn-arr-right')){
 	if(!(new_offset_left <= -650)){
 		$('.bus-container').css({'left': "-=" + 25});
 	} else {
@@ -158,7 +278,7 @@ if($(element).hasClass('btn-arr-left')){
 	}
 }
 
-if($(element).hasClass('btn-arr-right')) {
+if($(element).hasClass('btn-arr-left')) {
 	if(!(new_offset_right > 150)){
 	  $('.bus-container').css({'left': "+=" + 25});
 	} else {
@@ -204,9 +324,10 @@ onDropBus = function(element){
 	var next_question_id = $('#answer-container-'+ answer_id).parent().next('div').data('question-id');
 	var question_id = $('#answer-container-'+ answer_id).parent().data('question-id');	
 	var value = $( element ).data("value");
-	var type = 1;
+	var type = 1;	
 
 	var answer = createSingleUserAnswer(question_id, answer_id, type, value);
+
 	collection_answers.push(answer);
 
 	if (next_id) {
@@ -222,6 +343,7 @@ onDropBus = function(element){
 		stopTimerST(question_id);
 		showNextQuestion(question_id, next_question_id);
 	}
+	removeTutorials(0);
 },
 
 onButtonNextClick = function(element, id, next_id){
@@ -255,6 +377,7 @@ if(question_type == 3) {
     collection_answers.push(answer);  
 }
 
+ removeTutorials(2);
  stopTimerST(question_id);
  showNextQuestion(id, next_id);
 },
@@ -277,6 +400,7 @@ onButtonNextTypeOneClick = function(element, id, next_id){
  	var answer = createSingleUserAnswer(question_id, answer_id, type, value); 
  	collection_answers.push(answer); 	
  });
+ removeTutorials(1);
  stopTimerST(question_id);
  showNextQuestion(id, next_id);
 },
@@ -385,6 +509,31 @@ var url = '/update-meta-finish/';
 	$.post(url, {user_id: userId, trip_id: tripId}, function( data ) {
 		
 	});
+},
+
+updateUserGender = function(gender){
+ var url = '/update-user-gender/'; 
+ $.post(url, {user_id: userId, gender: gender}, function( data ) {
+    
+ });
+},
+
+updateUserAge = function(age){
+var url = '/update-user-age/'; 
+ $.post(url, {user_id: userId, age: age}, function( data ) {
+    
+ });
+},
+
+updateUserExp = function(exp){
+var url = '/update-user-exp/'; 
+ $.post(url, {user_id: userId, exp: exp}, function( data ) {
+    
+ });
+},
+
+removeTutorials = function(type){
+	$('.tutorial-type-'+type).remove();
 };
 
 that.init = init;

@@ -8,6 +8,8 @@ FeedbackSystem.EvalController = (function() {
 	old_answer_values = [],
 	question_types = ['nominal', 'ordinal', '', 'Freitext'],
 	user_name = "",
+	labels_age_group = ["< 20", "20-29", "30-39", "40-49", "50-59", "60-69", "> 69"],
+	labels_exp = ["sehr wenig", "wenig", "durchschnittlich", "gut", "sehr gut"],
 	
 	init = function() {				
 	 console.log("EvalController init");
@@ -852,7 +854,8 @@ FeedbackSystem.EvalController = (function() {
 			$.post(url, {trip_id: trip_id, question_id: question_id}, function(answers){
 				
 				if(answers.length == 0) return;
-					displayCommonInfo(trip_id, question_id);				
+					displayCommonInfo(trip_id, question_id);
+					createDemografInfo(trip_id);				
 				if(question_type == 0){
 				var text_labels = $.map(labels, function (label) {												               
                                                     return label.text;                                                                                                  
@@ -922,10 +925,83 @@ FeedbackSystem.EvalController = (function() {
 			tr = tr+header+rating+info+'</tr>';			
 			$(element).append(tr);		
 			$("#rating-"+trip_id+"-"+question_id+ "-"+ index).rating({displayOnly: true, size: 'sm', step: 0.5});
-	
-			/*var color = getColor(avg.toFixed(1), 0, 5);
-			var tag = $(info).find("p.score-avg-info").eq(0);			
-			$(tag).css("color", color);*/							
+	},
+
+	createNewBarChart = function(element, data, options){
+			var ctx = $(element);			
+			var chart = new Chart(ctx, {type: 'bar', data: data, options: options});
+			chart.generateLegend();								  
+	},
+
+	createDemografInfo = function(trip_id){
+		var backgroundColor = new Array("#2ecc71",
+    										 "#3498db",
+    										 "#95a5a6",
+    										 "#9b59b6",
+    										 "#f1c40f",
+    										 "#e74c3c",
+    										 "#ab82ff",
+    										 "#f1f181");
+		var options = {
+				legend:{
+					display: false
+				},
+				scales: {
+    					xAxes: [{ gridLines: {
+    					                display:false
+    					            }}],
+    					yAxes: [{ gridLines: {
+    					                display:false
+    					            }}]
+    					}
+						
+		}
+		createAgeChart(trip_id, backgroundColor, options);
+		createExpChart(trip_id, backgroundColor, options);
+	},
+
+	createAgeChart = function(trip_id, color, options){
+		var chart = $('#age-dem-container-'+trip_id);
+		getAgeParticipants(trip_id, function(result){
+			var sum_data = [0, 0, 0, 0, 0, 0, 0]
+			$.each(result, function(index, object){
+				sum_data[object.age_group] = object.value;			
+				var data = {
+    			labels: labels_age_group,
+    			datasets: [
+    			    {   
+    			    	label: "Summe", 		       
+    			        backgroundColor: color,
+    			        data: sum_data
+    			    }
+    			]
+				};
+				createNewBarChart(chart, data, options);
+			});
+		});
+
+		
+	},
+
+	createExpChart = function(trip_id, color, options){
+		var chart = $('#exp-dem-container-'+trip_id);
+		getExpParticipants(trip_id, function(result){
+			var sum_data = [0, 0, 0, 0, 0, 0, 0]
+			$.each(result, function(index, object){
+				sum_data[object.experience] = object.value;			
+				var data = {
+    			labels: labels_exp,
+    			datasets: [
+    			    {   
+    			    	label: "Summe", 		       
+    			        backgroundColor: color,
+    			        data: sum_data
+    			    }
+    			]
+				};
+				createNewBarChart(chart, data, options);
+			});
+		});
 	},
 
 	calcAvgStarRating = function(array){
@@ -935,7 +1011,6 @@ FeedbackSystem.EvalController = (function() {
 			sum += value;
 		}		
 		return sum/array.length;
-
 	},
 
 	getColor = function(value, min, max) {	
@@ -995,22 +1070,36 @@ FeedbackSystem.EvalController = (function() {
 
 	displayCommonInfo = function(trip_id, question_id){
 		getAvgTimeForQuestion(trip_id, question_id, function(time){
-			var currentVal = $('#info-avg-time').text();
+			var currentVal = $('#info-avg-time-'+trip_id).text();
 			var newVal = parseFloat(time) + parseFloat(currentVal);
 			newVal = newVal.toFixed(2);
-			$('#info-avg-time').text(newVal);
+			$('#info-avg-time-'+trip_id).text(newVal);
 		});
 
 		getSumParticipants(trip_id, function(sum){			
-			$('#info-sum-participants').text(sum);
+			$('#info-sum-participants-'+trip_id).text(sum);
 		})
 		
 		getSumParticipantsFinish(trip_id, function(sum){			
-			$('#info-sum-participants-finish').text(sum);
+			$('#info-sum-participants-finish-'+trip_id).text(sum);
 		})
 
 		getSumParticipantsCancel(trip_id, function(sum){			
-			$('#info-sum-participants-cancel').text(sum);
+			$('#info-sum-participants-cancel-'+trip_id).text(sum);
+		})
+
+		getGenderParticipants(trip_id, function(data){		
+			$.each(data, function(index, object){
+				var gender = object.gender;
+				var value = object.value;
+				if(gender == 'm'){
+					$('#info-sum-male-'+trip_id).text(value);
+				} else if(gender == 'f'){
+					$('#info-sum-female-'+trip_id).text(value);
+				} else {
+					$('#info-sum-na-'+trip_id).text(value);
+				}
+			})
 		})
 	},
 
@@ -1032,6 +1121,26 @@ FeedbackSystem.EvalController = (function() {
 		var url = '/eval/get-sum-participants';
 		$.post(url, {trip_id: trip_id}, function( data ){			
 			callback(data[0].sum);
+		});
+	},
+
+	getGenderParticipants = function(trip_id, callback){
+		var url = '/eval/get-gender-participants';
+		$.post(url, {trip_id: trip_id}, function( data ){			
+			callback(data);
+		});
+	},
+
+	getAgeParticipants = function(trip_id, callback){
+		var url = '/eval/get-age-participants';
+		$.post(url, {trip_id: trip_id}, function( data ){				
+			callback(data);
+		});
+	},
+	getExpParticipants = function(trip_id, callback){
+		var url = '/eval/get-experience-participants';
+		$.post(url, {trip_id: trip_id}, function( data ){			
+			callback(data);
 		});
 	},
 
