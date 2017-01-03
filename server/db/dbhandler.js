@@ -1,7 +1,11 @@
 var async = require('async');
 var mysql = require('mysql');
 var config = require('../config/config');
-var pool   = mysql.createPool({ 
+var pool   = mysql.createPool({
+    connectionLimit : 1000,
+    connectTimeout  : 60 * 60 * 1000,
+    aquireTimeout   : 60 * 60 * 1000,
+    timeout         : 60 * 60 * 1000, 
     host     : config.db.host,
     user     : config.db.user,
     password : config.db.password,
@@ -22,19 +26,25 @@ var TABLE_USER_META = 'user_meta';
 var TABLE_TIME_QUESTION = 'time_question';
 var TABLE_USERS = 'users';
 
+var running = false;
+
 init = function(){ 
   console.log('DB init');  
   pool.getConnection(function(err, connection) {
    
     if (err) {
+      running = false;
       console.error('error connecting: ' + err);
       return;
     }
+    running = true;
     console.log('connected as id #' + connection.threadId);
-    connection.release();
-   
-  });
-  
+    connection.release();   
+  });  
+}
+
+dbIsRunning = function(){
+  return running;
 }
 
 checkLoginCredentials = function(user_id, callback){
@@ -1026,3 +1036,4 @@ exports.updateUserAgeGroup = updateUserAgeGroup;
 exports.updateUserExp = updateUserExp;
 exports.getAgeParticpants = getAgeParticpants;
 exports.getExpParticpants = getExpParticpants;
+exports.dbIsRunning = dbIsRunning;

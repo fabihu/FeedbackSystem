@@ -1,12 +1,7 @@
-// load all the things we need
-
-
-//connection.query('USE database');	
-
-// expose this function to our app using module.exports
 module.exports = function(passport) {
     var express = require('express');
-    var router = express.Router();    
+    var router = express.Router();
+    var dbhandler = require('../db/dbhandler');    
  
       // =====================================
     // HOME PAGE (with login links) ========
@@ -21,11 +16,18 @@ module.exports = function(passport) {
     // show the login form
     router.post('/try-login', function(req, res){      
     req.session.input = req.body;
-    passport.authenticate('local-login', {        
-        successRedirect : '/eval', // redirect to the secure profile section
-        failureRedirect : '/login', // redirect back to the signup page if there is an error
-        failureFlash : true // allow flash messages     
-    })(req, res);;
+    dbhandler.init();
+   
+    if(dbhandler.dbIsRunning()){
+        passport.authenticate('local-login', {        
+            successRedirect : '/eval', // redirect to the secure profile section
+            failureRedirect : '/login', // redirect back to the signup page if there is an error
+            failureFlash : true // allow flash messages     
+        })(req, res);
+    } else {
+        console.log("flash message")
+       res.render('login.ejs', { message: 'Dienst zur Zeit nicht verfügbar. Bitte benachrichtigen Sie den Administrator!' });
+    }
 });    
 
 

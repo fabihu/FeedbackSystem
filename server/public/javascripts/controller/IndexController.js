@@ -27,14 +27,19 @@ FeedbackSystem.IndexController = (function() {
 		onClickButtonSubmit();
 	},
 
-	onClickButtonSubmit = function(){
-		$txtUserTravelID = $('#InputTravelId');		
-		
+	onClickButtonSubmit = function(){		
 		$submitButton.on('click', function(e){
 			e.preventDefault();
-			var travel_id = $txtUserTravelID.val();
+			var travel_id = $('#InputTravelId').val();
 			
 			$.post("/check-login/", {id: travel_id}, function(data){
+				console.log(data.err_code);
+
+				if(data.err_code == 503){
+					var text = '<div class="alert alert-danger">Dienst zur Zeit nicht verfügbar. Bitte benachrichtigen Sie den Administrator!</div>';
+					$('#container-login-controls').append(text);
+					return;
+				} 
 
       			var credentials_ok = (data.flag_active == 1) ? true:false;	
 				

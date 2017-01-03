@@ -3,6 +3,7 @@ var utils = require('../models/utils');
 var dbhandler = require('../db/dbhandler');
 
 module.exports = function(passport) {
+
 dbhandler.pool.getConnection(function(err, connection) {
     passport.serializeUser(function(user, done) {
         done(null, user.id);
@@ -40,4 +41,5 @@ dbhandler.pool.getConnection(function(err, connection) {
 
     }));
 });
+
 };
