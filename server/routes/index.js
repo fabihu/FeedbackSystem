@@ -50,7 +50,10 @@ router.get('/impressum/', function(req, res, next) {
 router.post('/check-login/', function(req, res, next) {	
     var id = req.body.id;
 
-    if(!dbhandler.dbIsRunning()){ res.json({id: null, flag_active: null, err_code: 503}); return; }     
+    if(!dbhandler.dbIsRunning()){
+     res.json({id: null, flag_active: null, err_code: 503});
+     return;
+    }     
                  
     dbhandler.checkLoginCredentials(id, function(result){
       res.json({id: result.id, flag_active: result.flag_active, err_code: null});     

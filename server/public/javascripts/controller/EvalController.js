@@ -68,6 +68,7 @@ FeedbackSystem.EvalController = (function() {
     				$('#table-questions > tbody > tr').each(function(index, element) {
     					parseQuestionType(element); 
     				});
+    				break;
     			} 
     			case('/eval/users'):{
     				$.post( "/eval/user_name/", function( data ) {
@@ -102,6 +103,7 @@ FeedbackSystem.EvalController = (function() {
     						
     					});
 					});
+				break;
 					
     			}  			
     		}

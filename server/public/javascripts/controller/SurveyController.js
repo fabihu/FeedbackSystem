@@ -20,7 +20,7 @@ FeedbackSystem.SurveyController = (function() {
   onInitSurvey = function(){ 
     socket = io('http://localhost:8080');  
     $containerQuestions = $('#container-questions');
-    $buttonNext = $("button[name=button-next");
+    $buttonNext = $(".button-next");
 
     $('.rating').rating({ showClear:false,
                           showCaption: false });

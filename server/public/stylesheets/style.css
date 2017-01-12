@@ -9,6 +9,7 @@ body {
   background-position: center center;
   height: 125%;
   min-height: 100%;
+  background-size: cover;
   @media (max-width: @iphone-screen) {
       background-attachment: scroll;
   }
@@ -30,6 +31,11 @@ a {
     background-size: contain;
     background-repeat: no-repeat;
 
+}
+
+.overflow-fix{
+    overflow-x: scroll;
+    height: 50%;
 }
 
 .tutorial-type-0{
@@ -331,6 +337,8 @@ li {list-style-type: none;}
 
 .btn-checkbox-dem {
     margin-left: 20px;
+    width: 50px;
+    height: 50px;
 }
 
 ::-webkit-input-placeholder { /* WebKit, Blink, Edge */

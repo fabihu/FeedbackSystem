@@ -24,8 +24,7 @@ module.exports = function(passport) {
             failureRedirect : '/login', // redirect back to the signup page if there is an error
             failureFlash : true // allow flash messages     
         })(req, res);
-    } else {
-        console.log("flash message")
+    } else {        
        res.render('login.ejs', { message: 'Dienst zur Zeit nicht verfügbar. Bitte benachrichtigen Sie den Administrator!' });
     }
 });    
