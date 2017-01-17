@@ -33,18 +33,29 @@ init = function(){
   pool.getConnection(function(err, connection) {
    
     if (err) {
-      running = false;
+      //running = false;
       console.error('error connecting: ' + err);
       return;
     }
-    running = true;
+    //running = true;
     console.log('connected as id #' + connection.threadId);
     connection.release();   
   });  
 }
 
-dbIsRunning = function(){
-  return running;
+dbIsRunning = function(callback){
+  pool.getConnection(function(err, connection) {   
+    if (err) {      
+      console.error('database offline: ' + err);
+      
+      callback(false);
+      return;
+    }   
+    console.log("db running");
+    callback(true);
+    connection.release();   
+  });  
+ 
 }
 
 checkLoginCredentials = function(user_id, callback){
@@ -860,7 +871,7 @@ getSumParticipants = function(trip_id, callback){
 
 getSumParticipantsCancel = function(trip_id, callback){
    pool.getConnection(function(err, connection) { 
-      connection.query('SELECT COUNT(id) AS sum FROM ' + TABLE_USER_META + ' WHERE trip_id = ? AND status="canceld"', [trip_id],  function(err, dbResponse) {
+      connection.query('SELECT COUNT(id) AS sum FROM ' + TABLE_USER_META + ' WHERE trip_id = ? AND status="canceld" OR status="pending"', [trip_id],  function(err, dbResponse) {
       if (err) console.log(err);
       connection.release();            
       callback(err, dbResponse);

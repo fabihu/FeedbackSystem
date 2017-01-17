@@ -16,17 +16,18 @@ module.exports = function(passport) {
     // show the login form
     router.post('/try-login', function(req, res){      
     req.session.input = req.body;
-    dbhandler.init();
-   
-    if(dbhandler.dbIsRunning()){
-        passport.authenticate('local-login', {        
-            successRedirect : '/eval', // redirect to the secure profile section
-            failureRedirect : '/login', // redirect back to the signup page if there is an error
-            failureFlash : true // allow flash messages     
-        })(req, res);
-    } else {        
-       res.render('login.ejs', { message: 'Dienst zur Zeit nicht verfügbar. Bitte benachrichtigen Sie den Administrator!' });
-    }
+   //dbhandler.init();
+    dbhandler.dbIsRunning(function(running){  
+        if(running){
+            passport.authenticate('local-login', {        
+                successRedirect : '/eval', // redirect to the secure profile section
+                failureRedirect : '/login', // redirect back to the signup page if there is an error
+                failureFlash : true // allow flash messages     
+            })(req, res);
+        } else {        
+           res.render('login.ejs', { message: 'Dienst zur Zeit nicht verfügbar. Bitte benachrichtigen Sie den Administrator!' });
+        }
+    });
 });    
 
 
