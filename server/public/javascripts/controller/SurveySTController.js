@@ -7,10 +7,12 @@ start = 0,
 isDown = false,
 interval = 0,
 socket = null,
+URL_ATTRAKDIFF_SURVEYTAINMENT = 'https://esurvey.uid.com/survey/#bac4c181-e87c-47fe-ae39-f2ab352a63e2',
+URL_DEPLOYMENT_SERVER = 'http://localhost:8080',
 
 init = function() {
   	console.log("SurveySTController init");  	
-;   $(document).on("initSurveyST", onInitSTSurvey);
+    $(document).on("initSurveyST", onInitSTSurvey);
     $(document).on("getTripId", onGetTripId);
     $(document).on("getUserId", onGetUserId);
     $(document).on("startTimerST", onStartTimerST);
@@ -22,7 +24,7 @@ init = function() {
 onInitSTSurvey = function(){
 	initDraggable();
 	initDroppable();
-	socket = io('http://localhost:8080');
+	socket = io(URL_DEPLOYMENT_SERVER);
 	handleConnect();     
 },
 
@@ -95,17 +97,17 @@ initComponents = function(){
       onCustomCheckboxExpClick(this);
     });
 
-    $('#survey-container').on('click', '.btn-next-gender', function(e){
+    $('#survey-container').on('click', '.btn-next-gender-st', function(e){
       e.preventDefault();       
       onGenderNextClick(this);
     });
 
-    $('#survey-container').on('click', '.btn-next-age', function(e){
+    $('#survey-container').on('click', '.btn-next-age-st', function(e){
       e.preventDefault();       
       onAgeNextClick(this);
     });
 
-    $('#survey-container').on('click', '.btn-next-exp', function(e){
+    $('#survey-container').on('click', '.btn-next-exp-st', function(e){
       e.preventDefault();       
       onExpNextClick(this);
     });
@@ -138,7 +140,7 @@ onGenderNextClick = function(element){
 
   updateUserGender(gender);
   fadeOutGenderContainer();
-  fadeInAgeContainer();
+  setTimeout(fadeInAgeContainer, 700);   
 },
 
 onAgeNextClick = function(element){
@@ -148,7 +150,7 @@ onAgeNextClick = function(element){
 
   updateUserAge(age);
   fadeOutAgeContainer();
-  fadeInExpContainer();
+  setTimeout(fadeInExpContainer, 700);
 },
 
 onExpNextClick = function(element){
@@ -158,13 +160,13 @@ onExpNextClick = function(element){
 
   updateUserExp(exp);
   fadeOutExpContainer();
-  fadeInSurveyContainer();
+  setTimeout(fadeInSurveyContainer, 700);
   $(document).trigger('startTimerST'); 
 },
 
 fadeInSurveyContainer = function(){
-//trigger Timer
-$(".surveyst-container").first().removeClass("invis").addClass("visible").addClass("animated fadeInDown");   
+	//trigger Timer
+	$(".surveyst-container").first().removeClass("invis").addClass("visible").addClass("animated fadeInDown");   
 },
 
 onCustomCheckboxGenderClick = function(element){
@@ -411,8 +413,10 @@ sendAnswers = function(question_id){
 	$.post('/receive-answers/', {data: collection_answers}, function( data ) {
     	console.log("server received answers");
     	var message = '<div id="container-credits" class="container main-text margin-credits animated fadeInDown"><label class="lbl-suggestions" for="text-suggestion">Vielen Dank für Ihre Teilnahme an unserer Umfrage. <br/>'+
-    	'Wir hoffen, dass wir Sie auch in Zukunft auf weiteren Reisen begrüßen dürfen! </label></div>'
+        'Wir hoffen, dass wir Sie auch in Zukunft auf weiteren Reisen begrüßen dürfen! <br/><br/> Bitte nehmen Sie sich einen Augenblick Zeit und bewerten Sie die Präsentation unseres Fragebogens. Dazu werden Sie in '+
+        '<text id="time-redirect">8</text> Sekunden auf eine extere Seite weitergeleitet... </label></div>';
     	$(message).insertAfter('.navbar');
+    	redirectToAttrakDiff();
  	});
 
     $('#container-questions-' + question_id).removeClass("animated fadeInDown");
@@ -421,6 +425,18 @@ sendAnswers = function(question_id){
     	$('#container-questions-' + question_id).remove();
   	}, 700); 
   	
+},
+
+redirectToAttrakDiff = function(){
+setInterval(changeTimeRedirect, 1000);
+var timer = setTimeout(function() {
+            window.location=URL_ATTRAKDIFF_SURVEYTAINMENT;
+        }, 8000);
+},
+
+changeTimeRedirect = function(){
+  var current_time = $('#time-redirect').text();
+  $('#time-redirect').text(parseInt(current_time)-1);
 },
 
 onMiddleClick = function(element){

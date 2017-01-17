@@ -7,6 +7,8 @@ FeedbackSystem.SurveyController = (function() {
   userId = -1,
   socket = null,
   collection_answers = [],
+  URL_ATTRAKDIFF_STANDARD = 'https://esurvey.uid.com/survey/#1fdce83e-c208-4708-8d64-30c631b7e4b6',
+  URL_DEPLOYMENT_SERVER = 'http://localhost:8080',
 
   init = function() {
   	console.log("SurveyController init");   
@@ -18,20 +20,12 @@ FeedbackSystem.SurveyController = (function() {
   },
 
   onInitSurvey = function(){ 
-    socket = io('http://localhost:8080');  
+    socket = io(URL_DEPLOYMENT_SERVER);  
     $containerQuestions = $('#container-questions');
     $buttonNext = $(".button-next");
 
-    $('.rating').rating({ showClear:false,
-                          showCaption: false });
-  
-    $('.btn-checkbox').on('click', function(e){
-      e.preventDefault();       
-      onCustomCheckboxClick(this);
-    });
-
-  
-    
+   
+    initStarRating();
     initListener();
     getSelectedAnswers();
     handleConnect();        
@@ -41,14 +35,15 @@ FeedbackSystem.SurveyController = (function() {
     $(window).unbind('beforeunload');
     $(window).unbind('unload');
     $(document).unbind("leavePage");
-    window.onbeforeunload = function(){return null};
-    window.unload = function(){return null};
+    window.onbeforeunload = function(){return null;};
+    window.unload = function(){return null;};
   },
 
   initListener = function(){
-    $('.btn-checkbox').click(function(e){
-      e.preventDefault();
-      onBtnCheckboxClick(this);
+
+    $('.btn-checkbox').on('click', function(e){
+      e.preventDefault();       
+      onCustomCheckboxClick(this);
     });
 
     $('.btn-gender').on('click', function(e){
@@ -99,6 +94,12 @@ FeedbackSystem.SurveyController = (function() {
    handleDisconnect();
   },
 
+  initStarRating = function(){
+     $('.rating').rating({ showClear:false,
+                            showCaption: false });
+    
+  },
+
 onCustomCheckboxClick = function(element){
     var span = $(element).find("span");
     if($(span).hasClass('glyphicon glyphicon-ok')){
@@ -126,7 +127,7 @@ onGenderNextClick = function(element){
 
   updateUserGender(gender);
   fadeOutGenderContainer();
-  fadeInAgeContainer();
+  setTimeout(fadeInAgeContainer, 700);   
 },
 
 onAgeNextClick = function(element){
@@ -136,7 +137,7 @@ onAgeNextClick = function(element){
 
   updateUserAge(age);
   fadeOutAgeContainer();
-  fadeInExpContainer();
+  setTimeout(fadeInExpContainer, 700);
 },
 
 onExpNextClick = function(element){
@@ -145,8 +146,8 @@ onExpNextClick = function(element){
   var exp = $(checked).data("val");
 
   updateUserExp(exp);
-  fadeOutExpContainer();
-  fadeInSurveyContainer();
+  fadeOutExpContainer(); 
+  setTimeout(fadeInSurveyContainer, 700);
   $(document).trigger('startTimer'); 
 },
 
@@ -239,14 +240,12 @@ $buttonNext.click(function(){
     var checkedButtons = $(".answer-options-"+question_id).filter('button[data-checked="true"]');
     if(checkedButtons.length == 0){  onNoAnswerGiven(this); return;}
     prepareAnswerObjects(checkedButtons, 0); 
-  } else {
+  } else if (question_type == 1) {
     var $radioGroup = $('#container-questions-' + question_id);    
     var radioAnswers = $radioGroup.find("input");
     if(radioAnswers.length == 0) { onNoAnswerGiven(this); return;}
     prepareAnswerObjects( radioAnswers, 1); 
-  }  
-
-  if(question_type == 3){
+  } else if (question_type == 3){
     var textAreaSuggestions = $('#text-suggestions');
     prepareAnswerObjects( textAreaSuggestions, 1);
   }
@@ -260,8 +259,10 @@ $buttonNext.click(function(){
     unbindWindowClose();  
     $.post('/receive-answers/', {data: collection_answers}, function( data ) {
         var message = '<div id="container-credits" class="container main-text margin-credits animated fadeInDown"><label class="lbl-suggestions" for="text-suggestion">Vielen Dank für Ihre Teilnahme an unserer Umfrage. <br/>'+
-        'Wir hoffen, dass wir Sie auch in Zukunft auf weiteren Reisen begrüßen dürfen! </label></div>'
+        'Wir hoffen, dass wir Sie auch in Zukunft auf weiteren Reisen begrüßen dürfen! <br/><br/> Bitte nehmen Sie sich einen Augenblick Zeit und bewerten Sie die Präsentation unseres Fragebogens. Dazu werden Sie in '+
+        '<text id="time-redirect">8</text> Sekunden auf eine extere Seite weitergeleitet... </label></div>';
         $(message).insertAfter('.navbar');
+        redirectToAttrakDiff();
   
     }); 
   }
@@ -277,10 +278,22 @@ $buttonNext.click(function(){
 
 },
 
+redirectToAttrakDiff = function(){
+setInterval(changeTimeRedirect, 1000);
+var timer = setTimeout(function() {
+            window.location=URL_ATTRAKDIFF_STANDARD;
+        }, 8000);
+},
+
+changeTimeRedirect = function(){
+  var current_time = $('#time-redirect').text();
+  $('#time-redirect').text(parseInt(current_time)-1);
+},
+
 onNoAnswerGiven = function(element){
   $(element).tooltip({ animation: true,                       
                        container: element,
-                        title: "Bitte geben Sie eine gültige Bewertung ab!"})
+                        title: "Bitte geben Sie eine gültige Bewertung ab!"});
   $(element).tooltip('show');
 },
 
@@ -325,7 +338,7 @@ initPageLeaveAction = function(){
   $(window).on('unload', function(){    
     $(document).trigger('leavePage');    
   });   
-} 
+}, 
 
 stopTimer = function(question_id){
   var elapsed = (new Date() - start) / 1000;

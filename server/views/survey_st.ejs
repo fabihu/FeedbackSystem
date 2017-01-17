@@ -12,16 +12,16 @@
       </div>
 
       <div  class="row"> 
-        <button class="btn-checkbox-dem btn-lg btn-gender" id="check-na" data-checked="false" data-val="n"><span class="glyphicon glyphicon-none"></span></button>
+        <button class="btn-checkbox-dem btn-lg btn-gender" id="check-na" data-checked="true" data-val="n"><span class="glyphicon glyphicon-ok"></span></button>
         <label class="question-answer-option col-md-4" for="check-na"> keine Angaben </label>
       </div>
-      <button class="btn-next-dem btn-next-gender" id="button-next-gender">Weiter ></button>
+      <button class="btn-next-dem btn-next-gender-st" id="button-next-gender-st">Weiter ></button>
       </div>
 
        <div class="row col-md-12 container main-text demograph-age invis" id='container-age'>     
-        <h2> Welche der folgenden Kategorien gehört Ihrem Alter an? </h2>
+        <h2> Wie alt sind Sie? </h2>
         <div class="row"> 
-         <button class="btn-checkbox-dem btn-lg btn-age" id="check-y-0" data-checked="false" data-val="0"><span class="glyphicon glyphicon-none"></span></button>
+         <button class="btn-checkbox-dem btn-lg btn-age" id="check-y-0" data-checked="true" data-val="0"><span class="glyphicon glyphicon-ok"></span></button>
          <label class="question-answer-option col-md-4" for="check-y-0"> jünger als 20 </label>
         </div>
         <div  class="row"> 
@@ -48,7 +48,7 @@
          <button class="btn-checkbox-dem btn-lg btn-age" id="check-y-6" data-checked="false" data-val="6"><span class="glyphicon glyphicon-none"></span></button>
          <label class="question-answer-option col-md-4" for="check-y-6"> älter als 69 </label>
         </div>
-         <button class="btn-next-dem btn-next-age" id="button-next-age">Weiter ></button>  
+         <button class="btn-next-dem btn-next-age-st" id="button-next-age">Weiter ></button>  
       </div>
 
       <div class="row col-md-12 container main-text demograph-age invis" id='container-experience'>     
@@ -62,7 +62,7 @@
          <label class="question-answer-option col-md-4" for="check-exp-1"> wenig </label>
         </div>
         <div  class="row"> 
-         <button class="btn-checkbox-dem btn-lg btn-exp" id="check-exp-2" data-checked="false" data-val="2"><span class="glyphicon glyphicon-none"></span></button>
+         <button class="btn-checkbox-dem btn-lg btn-exp" id="check-exp-2" data-checked="true" data-val="2"><span class="glyphicon glyphicon-ok"></span></button>
          <label class="question-answer-option col-md-4" for="check-exp-2"> durchschnittlich </label>
         </div>
         <div  class="row"> 
@@ -73,16 +73,17 @@
          <button class="btn-checkbox-dem btn-lg btn-exp" id="check-exp-4" data-checked="false" data-val="4"><span class="glyphicon glyphicon-none"></span></button>
          <label class="question-answer-option col-md-4" for="check-exp-4"> sehr viel </label>
         </div>
-         <button class="btn-next-dem btn-next-exp" id="button-next-exp">Weiter ></button>  
+         <button class="btn-next-dem btn-next-exp-st" id="button-next-exp">Weiter ></button>  
       </div>
 
     </div>
     <% for(var i=0; i<data.length; i++) { %>
       <% var question = data[i].question; %>
+
       <div class="col-md-12 container main-text invis surveyst-container" id='container-questions-<%=question.id%>' data-question-id='<%=question.id%>'>
 
 
-        <h2 class="question-header"><%=question.text%></h2>
+        <h3 class="question-header"><%=question.text%></h3>
             
         <% if(question.type == 0) {%>  
        <div id="bus-type-0-draggable" class="bus-container">
@@ -95,21 +96,22 @@
     
       <% for(var index in question.answers) { %>
       <% var answer = question.answers[index][0]; %>
+      <% var length = question.answers.length; %>
+      <% console.log(length); %>
       <% if(question.type == 0) {%>
         <div id="bus-middle" class="bus bus-middle" data-answer-id="<%=answer.id%>" data-checked="false">
         <p class="bus-answer-field p-padding"> <%=answer.text%></p>
         </div>
-      <% } %>     
+      <% } %>
 
-
-        <% if(question.type == 1) { %>
-         
+        <% if(question.type == 1) { %>        
          
           <% if (even_odd==0){ %>
 
           <% if (index==0){ %>
           <div id="answer-container-<%=answer.id%>" data-answer-id="<%=answer.id%>"> 
-          <h4><%=answer.text%></h4>
+              <h3><%=answer.text%></h3>
+              <h3>(<%=parseInt(index)+1%> / <%=length%>)</h3>
               <div class="container-elements">             
                   <div id="container-draggable" class="container-draggable">
                     <div id="bus-type-1-draggable" class="ui-widget-content ui-draggable demo-1"> </div>    
@@ -148,7 +150,8 @@
           <% } else { %>
             <div id="answer-container-<%=answer.id%>" class="invis" data-answer-id="<%=answer.id%>">
               <div class="container-elements">
-                 <h4><%=answer.text%></h4>
+                 <h3><%=answer.text%></h3>
+                 <h3>(<%=parseInt(index)+1%> / <%=length%>)</h3>
                  <div id="container-draggable" class="container-draggable">
                     <div id="bus-type-1-draggable" class="ui-widget-content ui-draggable demo-1"> </div>    
                   </div> 
