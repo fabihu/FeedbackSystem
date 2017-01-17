@@ -871,7 +871,7 @@ getSumParticipants = function(trip_id, callback){
 
 getSumParticipantsCancel = function(trip_id, callback){
    pool.getConnection(function(err, connection) { 
-      connection.query('SELECT COUNT(id) AS sum FROM ' + TABLE_USER_META + ' WHERE trip_id = ? AND status="canceld" OR status="pending"', [trip_id],  function(err, dbResponse) {
+      connection.query('SELECT COUNT(id) AS sum FROM ' + TABLE_USER_META + ' WHERE trip_id = ? GROUP BY status HAVING status = "canceld"', [trip_id],  function(err, dbResponse) {
       if (err) console.log(err);
       connection.release();            
       callback(err, dbResponse);
@@ -881,7 +881,7 @@ getSumParticipantsCancel = function(trip_id, callback){
 
 getSumParticipantsFinish = function(trip_id, callback){
    pool.getConnection(function(err, connection) { 
-      connection.query('SELECT COUNT(id) AS sum FROM ' + TABLE_USER_META + ' WHERE trip_id = ? AND status="finished"', [trip_id],  function(err, dbResponse) {
+      connection.query('SELECT COUNT(id) AS sum FROM ' + TABLE_USER_META + '  WHERE trip_id = ? GROUP BY status HAVING status="finished"', [trip_id],  function(err, dbResponse) {
       if (err) console.log(err);
       connection.release();
          

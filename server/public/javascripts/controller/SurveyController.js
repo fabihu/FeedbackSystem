@@ -181,9 +181,7 @@ onCustomCheckboxExpClick = function(element){
 },
 
 onFadeInContainer = function(id){
-   $('#container-questions-'+id).removeClass("invis");
-   $('#container-questions-'+id).addClass("visible");  
-   $('#container-questions-'+id).addClass("animated fadeInDown");   
+   $('#container-questions-'+id).removeClass("invis").addClass("visible").addClass("animated fadeInDown");
 },
 
 fadeOutGenderContainer = function(){
@@ -225,10 +223,6 @@ onGetUserId = function(event, user_id){
     userId = parseInt(user_id);
 },
 
-onBtnCheckboxClick = function(element){
-
-},
-
 getSelectedAnswers = function(){
 $buttonNext.click(function(){  
   var question_id =  $(this).data("question-id");
@@ -251,7 +245,7 @@ $buttonNext.click(function(){
   }
 
   stopTimer(question_id);
-  onFadeInContainer(next_question_id);  
+  setTimeout(onFadeInContainer(next_question_id), 700);  
   $(document).trigger("startTimer"); 
 
   if(last_question){

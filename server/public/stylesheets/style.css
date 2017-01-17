@@ -112,7 +112,7 @@ button {
 
 .tutorial-type-1{
   background-image: url("../images/bent-arrow-1.png");
-  top: 20%;
+  top: 6%;
   left: 30%;
 }
 
@@ -524,7 +524,7 @@ li {list-style-type: none;}
 
 /* add padding  */
 .left-addon input  {
- font-size: 18px!important; 
+ font-size: 13px!important; 
  padding-left:  45px;
 }
 .right-addon input { padding-right: 45px; }
