@@ -49,16 +49,15 @@ router.get('/impressum/', function(req, res, next) {
 
 router.post('/check-login/', function(req, res, next) {	
     var id = req.body.id;
-
-    if(!dbhandler.dbIsRunning()){
-     res.json({id: null, flag_active: null, err_code: 503});
-     return;
-    }     
-                 
-    dbhandler.checkLoginCredentials(id, function(result){
-      res.json({id: result.id, flag_active: result.flag_active, err_code: null});     
-    });
-	
+    dbhandler.dbIsRunning(function(running){
+      if(running){
+          dbhandler.checkLoginCredentials(id, function(result){
+             res.json({id: result.id, flag_active: result.flag_active, err_code: null});     
+          });  
+      } else {
+          res.json({id: null, flag_active: null, err_code: 503});    
+      }
+    })    
 })
 
 router.post('/get-questions/', function(req, res, next) {
