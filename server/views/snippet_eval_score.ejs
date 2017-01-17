@@ -1,9 +1,8 @@
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 <% var i = 0; %>
 <% for (var index in data) {%>
-<% var trip = data[index].trip; %>
-  
-  <div class="panel panel-default">
+<% var trip = data[index].trip; %>  
+  <div class="panel panel-default panel-tab">
     <div class="panel-heading" role="tab" id="heading-<%=trip.id%>">
       <h4 class="panel-title">
        <% if (i == 0) { %>
@@ -41,8 +40,13 @@
             </div>
            <span class="col-md-1 glyphicon glyphicon glyphicon-time"></span>
            <div class="col-md-11 t-score">
-              <div>Für die Beantwortung des Fragebogens haben die Kunden durchschnittlich <b id="info-avg-time">0</b> Sekunden benötigt</div> 
-            </div>            
+             <div>Für die Beantwortung des Fragebogens haben die Teilnehmer durchschnittlich <b id="info-avg-time-<%=trip.id%>" data-seconds='0'>0</b> benötigt</div> 
+           </div>
+           <br/>
+           <span class="col-md-1 glyphicon glyphicon-comment"></span>
+           <div class="col-md-11 t-score">
+             <div>Der ausgelieferte Fragebogen war vom Typ: <b id="info-avg-qtype-<%=trip.id%>">0</b></div> 
+           </div>                
 
          </div>
          </div>

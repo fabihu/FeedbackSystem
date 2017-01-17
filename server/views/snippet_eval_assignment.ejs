@@ -26,23 +26,26 @@
         <div class="container">
     <br />
     <div class="row">
-
+        
         <div class="dual-list list-left col-md-5">
+        <div class="main-text text-center">
+            <h4>Aktive Fragen</h4>
+        </div>
             <div class="well text-right">
                 <div class="row">
                     <div class="col-md-8">
                         <div class="input-group">
-                            <span class="input-group-addon glyphicon glyphicon-search"></span>
-                            <input type="text" name="SearchDualList" class="form-control" placeholder="Suche..." />
+                            <span class="input-group-addon glyphicon glyphicon-assignment glyphicon-search"></span>
+                            <input type="text" name="SearchDualList" class="form-control form-assignment" placeholder="Suche..." />
                         </div>
                     </div>
 
                     <div class="cold-md-2">
                         <div class="list-order-arrows col-md-1 text-center">
-                            <button class="btn btn-default btn-sm move-up"  data-trip-id="<%=trip.id%>" >
+                            <button class="btn btn-default btn-assignment btn-sm move-up"  data-trip-id="<%=trip.id%>" >
                                 <span class="glyphicon glyphicon-chevron-up"></span>
                             </button>
-                            <button class="btn btn-default btn-sm move-down"  data-trip-id="<%=trip.id%>" >
+                            <button class="btn btn-default btn-assignment btn-sm move-down"  data-trip-id="<%=trip.id%>" >
                                 <span class="glyphicon glyphicon-chevron-down"></span>
                             </button>
                         </div>
@@ -50,7 +53,7 @@
 
                     <div class="col-md-2">
                         <div class="btn-group">
-                            <a class="btn btn-default selector" title="select all"><i class="glyphicon glyphicon-unchecked"></i></a>
+                            <a class="btn btn-default btn-assignment selector" title="select all"><i class="glyphicon glyphicon-unchecked"></i></a>
                         </div>
                     </div>
                 </div>
@@ -60,7 +63,7 @@
       
         <% for (var index in questionset) {%>
         <% var question = questionset[index][0]; %>                                
-                  <li class="list-group-item trip-<%=trip.id%>" data-trip-id="<%=trip.id%>" data-question-id="<%=question.question_id%>" data-question-version="<%=question.question_version%>"><%=question.text%></li>
+                  <li class="list-group-item li-assignment trip-<%=trip.id%>" data-trip-id="<%=trip.id%>" data-question-id="<%=question.question_id%>" data-question-version="<%=question.question_version%>"><%=question.text%></li>
         <% } %>  
     
                   
@@ -72,27 +75,30 @@
 
 
         <div class="list-arrows col-md-1 text-center">
-            <button class="btn btn-default btn-sm move-left"  data-trip-id="<%=trip.id%>" >
+            <button class="btn btn-default btn-assignment btn-sm move-left"  data-trip-id="<%=trip.id%>" >
                 <span class="glyphicon glyphicon-chevron-left"></span>
             </button>
 
-            <button class="btn btn-default btn-sm move-right"  data-trip-id="<%=trip.id%>" >
+            <button class="btn btn-default btn-assignment btn-sm move-right"  data-trip-id="<%=trip.id%>" >
                 <span class="glyphicon glyphicon-chevron-right"></span>
             </button>
         </div>
-
+       
         <div class="dual-list list-right col-md-5">
+        <div class="main-text text-center">
+            <h4>Verfügbare Fragen</h4>
+        </div>
             <div class="well">
                 <div class="row">
                     <div class="col-md-2">
                         <div class="btn-group">
-                            <a class="btn btn-default selector" title="select all"><i class="glyphicon glyphicon-unchecked"></i></a>
+                            <a class="btn btn-default btn-assignment selector" title="select all"><i class="glyphicon glyphicon-unchecked"></i></a>
                         </div>
                     </div>
                     <div class="col-md-10">
                         <div class="input-group">
-                            <input type="text" name="SearchDualList" class="form-control" placeholder="Suche..." />
-                            <span class="input-group-addon glyphicon glyphicon-search"></span>
+                            <input type="text" name="SearchDualList" class="form-control form-assignment" placeholder="Suche..." />
+                            <span class="input-group-addon glyphicon glyphicon-assignment glyphicon-search"></span>
                         </div>
                     </div>
                 </div>
@@ -101,7 +107,7 @@
                <% for (var index in active_questions) {%>              
                <% var active_question = active_questions[index]; %>               
                         
-               <li class="list-group-item" data-trip-id="<%=trip.id%>" data-question-id="<%=active_question.question_id%>" data-question-version="<%=active_question.question_version%>"><%=active_question.text%></li>
+               <li class="list-group-item li-assignment" data-trip-id="<%=trip.id%>" data-question-id="<%=active_question.question_id%>" data-question-version="<%=active_question.question_version%>"><%=active_question.text%></li>
                     
                <% } %>
                 </ul>
