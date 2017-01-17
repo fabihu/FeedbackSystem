@@ -1,5 +1,5 @@
 body {  
-  background-image: url("../images/background-image1.jpg");
+  background-image: url("../images/background-image.jpg");
   background-repeat: no-repeat; 
   transition: background-image 1s linear;
   padding-top: 50px;
@@ -20,6 +20,73 @@ a {
   color: #3c3c3e;
 }
 
+button {
+  cursor: pointer!important;
+}
+
+.td-inline{
+  display: inline-flex;
+}
+
+.score-avg-info-weight{
+    font-size: 15px;
+    font-weight: 800;
+    padding-left: 5px;
+}
+
+.well{
+  background-color: #FFF9E6;
+  border: 1px solid #ad77b1;
+      border-top: 0;
+}
+
+.li-assignment {
+  background-color: #FFF9E6;
+  border: 1px solid #ad77b1;
+}
+
+.li-assignment.active, .li-assignment:hover, .li-assignment.active:hover {
+    color: #fbd929!important;
+    background: rgba(138, 65, 156, 0.701961);
+    border: 1px solid #ad77b1;
+}
+
+.btn-assignment{
+      color: #fbd929;
+    background: rgba(138, 65, 156, 0.701961);
+    border: 0;
+    margin: 1px;
+}
+
+.form-assignment{
+   background-color: #FFF9E6;
+   border: 1px solid #ad77b1;
+}
+
+.glyphicon-assignment{
+  position: initial;
+  color: #fbd929;
+  background: rgba(138, 65, 156, 0.701961);
+  border: 0;
+}
+
+.panel-tab {
+  border: 1px solid #912584!important;  
+}
+
+.body-eval {
+  background-image: url("../images/background-image-eval.jpg");
+  background-repeat: no-repeat;
+  padding-top: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  height: 100%;
+  background-size: 100% 100%;
+}
+
+.height-fix{
+  height: 100%;
+}
+
 .margin-nav {
   margin-top: 20px; 
 }
@@ -30,12 +97,11 @@ a {
     position: absolute;
     background-size: contain;
     background-repeat: no-repeat;
-
 }
 
 .overflow-fix{
     overflow-x: scroll;
-    height: 50%;
+    height: 45%;
 }
 
 .tutorial-type-0{
@@ -297,7 +363,10 @@ li {list-style-type: none;}
 }
 
 .panel{
-  margin-bottom: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px!important;
+  border: 2px solid #912584;
+  background-color: #fff9e6;
 }
 
 .margin-top-answer-detail-btn {
@@ -319,7 +388,7 @@ li {list-style-type: none;}
 }
 
 .margin-credits {
-  .margin-top: 20%;  
+  margin-top: 20%;  
 }
 
 .glyphicon-none:before {
@@ -333,12 +402,13 @@ li {list-style-type: none;}
     border: 0.1em solid #ffd500;
     border-radius: 1px;
     margin: 5px;
+    width: 50px;
+    height: 50px;
+    cursor: pointer!important;
 }
 
 .btn-checkbox-dem {
     margin-left: 20px;
-    width: 50px;
-    height: 50px;
 }
 
 ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
@@ -730,7 +800,7 @@ padding-right: 0px;
 }
 
 .login-controls-padding-top{
-	padding-top: 70px;
+	padding-top: 20px;
 }
 
 .text-color-yellow{
@@ -739,7 +809,7 @@ padding-right: 0px;
 
 
 .navbar-nav {
-  margin:0px;
+  margin-right: 65px;
 }
 
 .navbar-default {

@@ -6,10 +6,11 @@ FeedbackSystem.EvalController = (function() {
 	answer_option_counter = 0,
 	new_question = null,
 	old_answer_values = [],
-	question_types = ['nominal', 'ordinal', '', 'Freitext'],
+	question_types = ['Multiple-Choice', 'Bewertungsskala', '', 'Freitext'],
 	user_name = "",
 	labels_age_group = ["< 20", "20-29", "30-39", "40-49", "50-59", "60-69", "> 69"],
 	labels_exp = ["sehr wenig", "wenig", "durchschnittlich", "gut", "sehr gut"],
+	questionnaire_type = ["Standard", "Surveytainment", "Hybrid-Version"];
 	
 	init = function() {				
 	 console.log("EvalController init");
@@ -19,7 +20,6 @@ FeedbackSystem.EvalController = (function() {
 	 setClickListener();
 	 onNavBarClick();
 	},
-
 
 	getPageContent = function(url){
 		if(url == '/eval/logout'){
@@ -35,7 +35,7 @@ FeedbackSystem.EvalController = (function() {
     			case('/eval/trip'):{	    				
     				$(document).ready(function(){	
     					$('#table-trips > tbody  > tr').each(function(index, element) {
-    						parseTravelType(element)
+    						parseTravelType(element);
     						formatDate(element);    					
     					});
     				});	
@@ -81,7 +81,7 @@ FeedbackSystem.EvalController = (function() {
     							var eye_glyphicon = '<div class="glyphicon-eye"><span class="glyphicon glyphicon-eye-open"></span>';
     							$(password_field).append(eye_glyphicon);
 
-    							$(buttons).find('a').removeClass('not-active').removeAttr('disabled');;
+    							$(buttons).find('a').removeClass('not-active').removeAttr('disabled');
 
 
     							
@@ -98,7 +98,7 @@ FeedbackSystem.EvalController = (function() {
     									$(password_field).find('input').val("1234567890");
     									$(password_field).find('input').prop("type", "password");
     								}
-    							})
+    							});
     						}
     						
     					});
@@ -163,7 +163,7 @@ FeedbackSystem.EvalController = (function() {
 
    		$("#dashboard-content").on("click", ".btn-del-answer-row", function (event) {
         	$(this).closest("tr").remove();       
-        	answer_option_counter -= 1
+        	answer_option_counter -= 1;
     	});	
 
     	$('#dashboard-content').on('click', ".btn-modal-next-new-question", function( e ){			
@@ -285,8 +285,8 @@ FeedbackSystem.EvalController = (function() {
 		switch(tooltip){
 			case('status'):{ title = 'Ein Fragebogen kann mittels des Status-Sliders für die jeweilige Reise aktiviert oder deaktiviert werden. Die einzelnen Fragen des Fragebogens können nur im deaktivierten Zustand bearbeitet werden.'; break;}
 			case('qtype'):{title = 'Es ist möglich den Fragebogen in verschiedenen Versionen beantworten zu lassen. In der Hybrid-Version werden abwechselnd Surveytainment- bzw. Standard-Fragebögen an den Nutzer ausgeliefert.'; break;}
-			case('question'):{title = '<b>nominal:</b> Antwortoptionen der Frage können unterschiedliche Ausprägungen ohne natürliche Rangfolge aufweisen ' +
-									   '\n<b>ordinal:</b> Antwortoptionen der Frage besitzen eine natürliche Ausprägung und werden auf einer Skala von "sehr gut" bis "sehr schlecht" beantwortet' +
+			case('question'):{title = '<b>Multiple-Choice:</b> Teilnehmer kann eine oder mehrere Antwortoptionen auswählen' +
+									   '\n<b>Bewertungsskala:</b> Antwortoptionen der Frage werden auf einer Skala von "sehr gut" bis "sehr schlecht" beantwortet' +
 									   '\n<b>Freitext:</b> Nutzer können Antworten in einem Freitextfeld beantworten'; break;}
 			default: {title = 'Kein Tooltip gefunden!'; break;}
 		}
@@ -296,7 +296,7 @@ FeedbackSystem.EvalController = (function() {
                        placement: 'bottom',
                        html: true,
                        title: title 
-                        })  		
+                        });  		
 	},
 
 	parseQuestionType = function(selector){
@@ -329,8 +329,8 @@ FeedbackSystem.EvalController = (function() {
 
 	checkNoActiveTrips = function(data){
 		if($(".panel-assignment").length == 0){
-			var text ="<div class='main-text font-large'>Keine aktiven Reisen gefunden!</div>"
-			$("#dashboard-content").append(text)
+			var text ="<div class='main-text font-large'>Keine aktiven Reisen gefunden!</div>";
+			$("#dashboard-content").append(text);
 		} 
 	},
 
@@ -405,7 +405,7 @@ FeedbackSystem.EvalController = (function() {
 			$('a').removeClass('a-nav-active');
   			$(this).addClass('a-nav-active');      
 		});
-	}
+	},
 	
 
 	onSearchInput = function(e, element){			
@@ -486,7 +486,7 @@ FeedbackSystem.EvalController = (function() {
         	var question = $(question_entries[i]);
         	var question_id = $(question).data('question-id');
         	var position = i+1;
-        	var url = '/eval/change-order-question-set'
+        	var url = '/eval/change-order-question-set';
 			$.post(url, {trip_id: trip_id, question_id: question_id, position: position}, function( data ){
 				
 			});        	       	
@@ -503,7 +503,7 @@ FeedbackSystem.EvalController = (function() {
 			active_state = false;
 		}
 		
-		var url = '/eval/update-active-trip'
+		var url = '/eval/update-active-trip';
 		$.post(url, {trip_id: trip_id, flag_active: active_state}, function( data ){
 			
 		});
@@ -835,8 +835,11 @@ FeedbackSystem.EvalController = (function() {
 
 	result.forEach(function(value){
 		var trip = value.trip;
-		var trip_id = trip.id		
-		
+		var trip_id = trip.id;		
+		var q_type = trip.type_questionnaire;
+
+		displayQType(trip_id, q_type);
+
 		trip.questions.forEach(function(value){
 			var question = value;
 			var question_id = question.id;
@@ -879,7 +882,8 @@ FeedbackSystem.EvalController = (function() {
 				 });
 				createNewPieChart(chart, data);
 
-				} else if(question_type == 1){								
+				} else if(question_type == 1){
+
 					labels.forEach(function(label){
 						var answer_id = label.answer_id;
 						var data = $.grep(answers, function (answer) {              
@@ -913,17 +917,27 @@ FeedbackSystem.EvalController = (function() {
 		$.each(data, function(index, item) {
 			var text = data[index].text;
 			var tr = '<p><i>'+text+'</i></p></br>';
-			$(element).append(tr);
+			if(!isBlank(text) && !isEmpty(text)){
+				$(element).append(tr);				
+			}
 		});
 	},
 
-	createNewStarRating = function(element, label, data, trip_id, question_id, index){					
+	isBlank = function(str) {
+   		return (!str || /^\s*$/.test(str));
+	},
+
+	isEmpty = function(str) {
+    	return (!str || 0 === str.length);
+	},
+
+	createNewStarRating = function(element, label, data, trip_id, question_id, index){			
 			var avg = calcAvgStarRating(data);
 			var tr = '<tr>';
 			var text = label.text;
 			var header = '<td><label for="rating-'+trip_id + "-"+question_id+ "-"+ index +'" class="control-label label-score-star-rating">'+ text +'</label></td>';
-			var rating = '<td><input class="rating-loading" id="rating-'+trip_id + "-"+question_id+ "-"+ index +'" value="'+ avg +'"></input></td>';
-			var info = '<td><p class="score-avg-info">'+ avg.toFixed(1) +' / 5<p></td>'
+			var rating = '<td ><input class="rating-loading" id="rating-'+trip_id + "-"+question_id+ "-"+ index +'" value="'+ avg +'"></input></td>';
+			var info = '<td class="td-inline"><p class="score-avg-info">'+ avg.toFixed(1) +' / </p><p class="score-avg-info-weight">5</p></td>'
 			tr = tr+header+rating+info+'</tr>';			
 			$(element).append(tr);		
 			$("#rating-"+trip_id+"-"+question_id+ "-"+ index).rating({displayOnly: true, size: 'sm', step: 0.5});
@@ -1019,7 +1033,7 @@ FeedbackSystem.EvalController = (function() {
    	 	var hue=((max-(value-min))*120).toString(10);
    	 	console.log(["hsl(",hue,",100%,50%)"].join(""))
     	return ["hsl(",hue,",100%,50%)"].join("");
-	}
+	},
 
 
 	createNewPieChart = function(element, data){
@@ -1070,12 +1084,18 @@ FeedbackSystem.EvalController = (function() {
         return text.join("");
 	},
 
+	displayQType = function(trip_id, q_type){	
+		$('#info-avg-qtype-'+trip_id).text(questionnaire_type[q_type]);
+	},
+
 	displayCommonInfo = function(trip_id, question_id){
 		getAvgTimeForQuestion(trip_id, question_id, function(time){
-			var currentVal = $('#info-avg-time-'+trip_id).text();
+			var currentVal = $('#info-avg-time-'+trip_id).attr('data-seconds');
 			var newVal = parseFloat(time) + parseFloat(currentVal);
-			newVal = newVal.toFixed(2);
-			$('#info-avg-time-'+trip_id).text(newVal);
+			newVal = newVal.toFixed(0);			
+
+			$('#info-avg-time-'+trip_id).attr('data-seconds', newVal);
+			$('#info-avg-time-'+trip_id).text(secondsToHms(newVal));
 		});
 
 		getSumParticipants(trip_id, function(sum){			
@@ -1103,6 +1123,18 @@ FeedbackSystem.EvalController = (function() {
 				}
 			})
 		})
+	},
+
+	secondsToHms = function(seconds) {
+    	//d = Number(d);
+    	var h = Math.floor(seconds / 3600);
+    	var m = Math.floor(seconds % 3600 / 60);
+    	var s = Math.floor(seconds % 3600 % 60);
+	
+	    	var hDisplay = h > 0 ? h + (h == 1 ? " Stunde, " : " Stunden, ") : "";
+	    	var mDisplay = m > 0 ? m + (m == 1 ? " Minute, " : " Minuten, ") : "";
+	    	var sDisplay = s > 0 ? s + (s == 1 ? " Sekunde" : " Sekunden") : "";
+    	return hDisplay + mDisplay + sDisplay; 
 	},
 
 	getSumParticipantsFinish = function(trip_id, callback){		
