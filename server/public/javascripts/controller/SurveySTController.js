@@ -414,7 +414,7 @@ sendAnswers = function(question_id){
     	console.log("server received answers");
     	var message = '<div id="container-credits" class="container main-text margin-credits animated fadeInDown"><label class="lbl-suggestions" for="text-suggestion">Vielen Dank für Ihre Teilnahme an unserer Umfrage. <br/>'+
         'Wir hoffen, dass wir Sie auch in Zukunft auf weiteren Reisen begrüßen dürfen! <br/><br/> Bitte nehmen Sie sich einen Augenblick Zeit und bewerten Sie die Präsentation unseres Fragebogens. Dazu werden Sie in '+
-        '<text id="time-redirect">8</text> Sekunden auf eine extere Seite weitergeleitet... </label></div>';
+        '<text id="time-redirect">12</text> Sekunden auf eine extere Seite weitergeleitet... </label></div>';
     	$(message).insertAfter('.navbar');
     	redirectToAttrakDiff();
  	});
@@ -431,7 +431,7 @@ redirectToAttrakDiff = function(){
 setInterval(changeTimeRedirect, 1000);
 var timer = setTimeout(function() {
             window.location=URL_ATTRAKDIFF_SURVEYTAINMENT;
-        }, 8000);
+        }, 12000);
 },
 
 changeTimeRedirect = function(){
