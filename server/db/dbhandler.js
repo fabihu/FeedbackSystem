@@ -61,13 +61,11 @@ dbIsRunning = function(callback){
 checkLoginCredentials = function(user_id, callback){
   
   pool.getConnection(function(err, connection) {
-    
-  var sql = 'SELECT * FROM ' + TABLE_TRIPS + ' WHERE password = ' + connection.escape(user_id);
-  connection.query(sql, function(err, dbResponse) {
   if(err) {
     console.log(err);    
     return;
-  }  
+  } 
+  connection.query('SELECT * FROM ' + TABLE_TRIPS + ' WHERE password = ' + connection.escape(user_id), function(err, dbResponse) {
   connection.release();
   if (dbResponse.length > 0){
     callback(dbResponse[0]);  
@@ -776,9 +774,9 @@ insertTimeQuestion = function(user_id, question_id, trip_id, seconds, callback){
   }); 
 }
 
-getAvgTimeForQuestion = function(trip_id, question_id, callback){
+getAvgTime = function(trip_id, callback){
  pool.getConnection(function(err, connection) { 
-      connection.query('SELECT AVG(seconds_per_question) AS avg FROM ' + TABLE_TIME_QUESTION + ' WHERE trip_id = ? AND question_id = ?',[trip_id, question_id],  function(err, dbResponse) {
+      connection.query('SELECT AVG(seconds_per_question) AS avg FROM ' + TABLE_TIME_QUESTION + ' WHERE trip_id = ?',[trip_id],  function(err, dbResponse) {
       if (err) console.log(err);
       connection.release();     
       callback(err, dbResponse);
@@ -871,7 +869,7 @@ getSumParticipants = function(trip_id, callback){
 
 getSumParticipantsCancel = function(trip_id, callback){
    pool.getConnection(function(err, connection) { 
-      connection.query('SELECT COUNT(id) AS sum FROM ' + TABLE_USER_META + ' WHERE trip_id = ? GROUP BY status HAVING status = "canceld"', [trip_id],  function(err, dbResponse) {
+      connection.query('SELECT COUNT(id) AS sum FROM ' + TABLE_USER_META + ' WHERE trip_id = ? GROUP BY status HAVING status ="canceld"', [trip_id],  function(err, dbResponse) {
       if (err) console.log(err);
       connection.release();            
       callback(err, dbResponse);
@@ -1033,7 +1031,7 @@ exports.deleteFromQuestionSet = deleteFromQuestionSet;
 exports.updateAnswer = updateAnswer;
 exports.deleteAnswer = deleteAnswer;
 exports.insertTimeQuestion = insertTimeQuestion;
-exports.getAvgTimeForQuestion = getAvgTimeForQuestion;
+exports.getAvgTime = getAvgTime;
 exports.getSumParticipants = getSumParticipants;
 exports.getSumParticipantsCancel = getSumParticipantsCancel;
 exports.getSumParticipantsFinish = getSumParticipantsFinish;

@@ -4,7 +4,7 @@ body {
   transition: background-image 1s linear;
   padding-top: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  overflow: scroll;
+
   background-attachment: fixed;
   background-position: center center;
   height: 125%;
@@ -13,7 +13,18 @@ body {
   @media (max-width: @iphone-screen) {
       background-attachment: scroll;
   }
+ -webkit-background-size: cover;
+ -moz-background-size: cover;
+ -o-background-size: cover;
 }
+
+html{
+ height:100%;
+ min-height:100%;
+ }
+body{
+ min-height:100%;
+ }
 
 a {
 
@@ -112,8 +123,8 @@ button {
 
 .tutorial-type-1{
   background-image: url("../images/bent-arrow-1.png");
-  top: 6%;
   left: 30%;
+  height: 70px;
 }
 
 .tutorial-type-2{
@@ -253,6 +264,26 @@ li {list-style-type: none;}
 
 .bus-qv-2 {
   height: 70px!important
+}
+
+.bus-qv-2-1 {
+background-image: url("../images/st/bus_left_qv1_1.png")!important;;
+}
+
+.bus-qv-2-2{
+background-image: url("../images/st/bus_middle_qv1_2.png")!important;;
+}
+
+.bus-qv-2-3{
+background-image: url("../images/st/bus_middle_qv1_3.png")!important;;
+}
+
+.bus-qv-2-4{
+background-image: url("../images/st/bus_middle_qv1_4.png")!important;;
+}
+
+.bus-qv-2-5{
+background-image: url("../images/st/bus_right_qv1_5.png")!important;;
 }
 
 .qv-2 {

@@ -16,7 +16,7 @@ module.exports = function(passport) {
     // show the login form
     router.post('/try-login', function(req, res){      
     req.session.input = req.body;
-   //dbhandler.init();
+
     dbhandler.dbIsRunning(function(running){  
         if(running){
             passport.authenticate('local-login', {        
