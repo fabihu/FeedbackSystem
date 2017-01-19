@@ -655,8 +655,7 @@ FeedbackSystem.EvalController = (function() {
 			var new_type = $('#new-trip-type').val();
 			var new_traveller_count = $('#new-trip-count-travellers').val();
 			var new_password = $('#new-trip-password').val();
-			console.log(new_date)
-
+			
 			var new_trip = {
 				name: new_name,
 				date_start: new_date,
@@ -836,9 +835,12 @@ FeedbackSystem.EvalController = (function() {
 	result.forEach(function(value){
 		var trip = value.trip;
 		var trip_id = trip.id;		
-		var q_type = trip.type_questionnaire;
+		var q_type = trip.type_questionnaire;		
+		var count_questions = trip.questions.length;
 
 		displayQType(trip_id, q_type);
+		createDemografInfo(trip_id);
+		displayCommonInfo(trip_id, count_questions);
 
 		trip.questions.forEach(function(value){
 			var question = value;
@@ -856,11 +858,8 @@ FeedbackSystem.EvalController = (function() {
     										 "#ab82ff",
     										 "#f1f181");
 
-			$.post(url, {trip_id: trip_id, question_id: question_id}, function(answers){
-				
-				if(answers.length == 0) return;
-					displayCommonInfo(trip_id, question_id);
-					createDemografInfo(trip_id);				
+			$.post(url, {trip_id: trip_id, question_id: question_id}, function(answers){		
+									
 				if(question_type == 0){
 				var text_labels = $.map(labels, function (label) {												               
                                                     return label.text;                                                                                                  
@@ -913,11 +912,13 @@ FeedbackSystem.EvalController = (function() {
 	},
 	
 
-	createNewTextChart = function(element, data){		
+	createNewTextChart = function(element, data){
+		var count = 0;		
 		$.each(data, function(index, item) {
 			var text = data[index].text;
-			var tr = '<p><i>'+text+'</i></p></br>';
 			if(!isBlank(text) && !isEmpty(text)){
+				count++;
+				var tr = '<p><i>('+count+') '+text+'</i></p></br>';
 				$(element).append(tr);				
 			}
 		});
@@ -1088,11 +1089,12 @@ FeedbackSystem.EvalController = (function() {
 		$('#info-avg-qtype-'+trip_id).text(questionnaire_type[q_type]);
 	},
 
-	displayCommonInfo = function(trip_id, question_id){
-		getAvgTimeForQuestion(trip_id, question_id, function(time){
+	displayCommonInfo = function(trip_id, count_questions){
+		getAvgTime(trip_id, function(time){
 			var currentVal = $('#info-avg-time-'+trip_id).attr('data-seconds');
 			var newVal = parseFloat(time) + parseFloat(currentVal);
-			newVal = newVal.toFixed(0);			
+			console.log(count_questions);
+			newVal = newVal.toFixed(0) * count_questions;			
 
 			$('#info-avg-time-'+trip_id).attr('data-seconds', newVal);
 			$('#info-avg-time-'+trip_id).text(secondsToHms(newVal));
@@ -1126,7 +1128,7 @@ FeedbackSystem.EvalController = (function() {
 	},
 
 	secondsToHms = function(seconds) {
-    	//d = Number(d);
+    	
     	var h = Math.floor(seconds / 3600);
     	var m = Math.floor(seconds % 3600 / 60);
     	var s = Math.floor(seconds % 3600 % 60);
@@ -1139,22 +1141,38 @@ FeedbackSystem.EvalController = (function() {
 
 	getSumParticipantsFinish = function(trip_id, callback){		
 		var url = '/eval/get-sum-participants-finish';
-		$.post(url, {trip_id: trip_id}, function( data ){			
+		$.post(url, {trip_id: trip_id}, function( data ){
+		if(!data[0]){ 
+			callback(0);
+			return;
+		} else {
 			callback(data[0].sum);
+		}		
+			
 		});
 	},
 
 	getSumParticipantsCancel = function(trip_id, callback){
 		var url = '/eval/get-sum-participants-cancel';
-		$.post(url, {trip_id: trip_id}, function( data ){			
+		$.post(url, {trip_id: trip_id}, function( data ){
+			if(!data[0]){ 
+			callback(0);
+			return;
+		} else {
 			callback(data[0].sum);
+		}		
 		});
 	},
 
 	getSumParticipants = function(trip_id, callback){
 		var url = '/eval/get-sum-participants';
-		$.post(url, {trip_id: trip_id}, function( data ){			
+		$.post(url, {trip_id: trip_id}, function( data ){
+			if(!data[0]){ 
+			callback(0);
+			return;
+		} else {
 			callback(data[0].sum);
+		}		
 		});
 	},
 
@@ -1178,9 +1196,9 @@ FeedbackSystem.EvalController = (function() {
 		});
 	},
 
-	getAvgTimeForQuestion = function(trip_id, question_id, callback){
+	getAvgTime = function(trip_id, callback){
 		var url = '/eval/get-avg-question';
-		$.post(url, {trip_id: trip_id, question_id: question_id}, function( data ){			
+		$.post(url, {trip_id: trip_id}, function( data ){			
 			callback(data[0].avg.toFixed(2));
 		});
 	},

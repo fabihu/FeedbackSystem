@@ -250,9 +250,8 @@ router.post('/get-questionnaire-type/', function(req, res, next) {
 
 router.post('/get-avg-question/', function(req, res, next) {
  var trip_id = req.body.trip_id;
- var question_id = req.body.question_id;
 
- dbhandler.getAvgTimeForQuestion(trip_id, question_id, function(err, result){    
+ dbhandler.getAvgTime(trip_id, function(err, result){    
    res.json(result);
   }); 
 });
