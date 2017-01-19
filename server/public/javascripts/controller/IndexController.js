@@ -40,13 +40,11 @@ FeedbackSystem.IndexController = (function() {
 					$('#container-login-controls').append(text);
 					return;
 				} 
-
-      			var credentials_ok = (data.flag_active == 1) ? true:false;	
-				
-				if(credentials_ok){
-					var is_open = data.flag_active;
+				var trip_exists = data.hasOwnProperty("id")
+				if(trip_exists){
+					var trip_status = (data.flag_active == 1) ? true:false;
 					var id = data.id;
-					if(is_open == 1){
+					if(trip_status){
 						$.post('/get-questions/', {id: id}, function( data ) {							
 							var qtype_id = $(data).html(data).filter("#temp-qtype").data("qtype");							
 							$.post('/create-user/', {id: id, qtype_id: qtype_id}, function(data){								
@@ -73,12 +71,12 @@ FeedbackSystem.IndexController = (function() {
 								}, 800);
 						});
 					} else {
-					$('#button-submit').prop("disabled",true);
+					$('#button-submit').prop("disabled",false);
 					window.alert("Reise noch nicht zur Bewertung freigegeben!");
 					}
      				
 				} else {
-					$('#button-submit').prop("disabled",true);
+					$('#button-submit').prop("disabled",false);
 					window.alert("Reise-ID nicht vorhanden!");
 				}
       		});					
