@@ -40,6 +40,21 @@ comparePassword = function(password, hash){
     return bcrypt.compareSync(password, hash);
 }
 
+filterAnswers = function(id, arr){
+  
+ var arr2 = [];
+  for (var index in arr){
+    var answer = arr[index][0];   
+
+    if(answer.question_id == id){
+      arr2.push(arr[index]);
+    }
+  }
+  return arr2;
+
+}
+
+exports.filterAnswers = filterAnswers;
 exports.comparePassword = comparePassword;
 exports.hashPassword = hashPassword;
 exports.getDateTime = getDateTime;

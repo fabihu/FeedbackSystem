@@ -4,6 +4,7 @@ var express = require('express');
 var router = express.Router();
 var dbhandler = require('../db/dbhandler');
 var async = require('async');
+var utils = require('../models/utils');
 var allClients = {};
 allClients.sockets = [];
 allClients.ids = [];
@@ -39,7 +40,7 @@ io.sockets.on('connection', function (socket) {
 
 router.get('/', function(req, res, next) {
   dbhandler.init();
-  res.render('index', { title: 'Express' });  
+  res.render('index.ejs');  
 })
 
 router.get('/impressum/', function(req, res, next) {
@@ -125,8 +126,7 @@ router.post('/insert-time/', function(req, res, next) {
   var user_id = req.body.user_id;
   var question_id = req.body.question_id;
   var trip_id = req.body.trip_id;  
-  var seconds = req.body.seconds;
-  console.log(req.body);
+  var seconds = req.body.seconds;  
   dbhandler.insertTimeQuestion(user_id, question_id, trip_id, seconds, function(err, result){
     res.json();    
   });
@@ -184,20 +184,6 @@ router.post('/update-user-exp/', function(req, res, next) {
   });
 })
 
-filterAnswers = function(id, arr){
-  
- var arr2 = [];
-  for (var index in arr){
-    var answer = arr[index][0];   
-
-    if(answer.question_id == id){
-      arr2.push(arr[index]);
-    }
-  }
-  return arr2;
-
-}
-
 formatArr = function(arr1, arr2) {
   var result = []; 
 
@@ -206,7 +192,7 @@ formatArr = function(arr1, arr2) {
     var item = {};
          
     item.question = arr1[i][0];    
-    item.question.answers = filterAnswers(item.question.id, arr2);
+    item.question.answers = utils.filterAnswers(item.question.id, arr2);
     result.push(item);
 }
  

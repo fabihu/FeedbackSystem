@@ -378,9 +378,9 @@ removeDuplicates = function(a, b){
 return router;
 }
 
-function IsAuthenticated(req,res,next){
+IsAuthenticated = function (req, res, callback){
   if (req.user) {
-     next();
+     callback();
   } else {
      res.redirect('/login');
   }  

@@ -41,13 +41,13 @@ app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash());
 
-
-
-
 app.use('/', index);
 app.use('/eval', eval);
 app.use('/users', users);
 app.use('/login', login);
+app.get('*', function(req, res){
+  res.render('404');
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -84,6 +84,8 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
+
+
 
 server.listen(port)
 module.exports = app;

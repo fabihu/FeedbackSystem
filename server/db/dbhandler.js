@@ -26,18 +26,14 @@ var TABLE_USER_META = 'user_meta';
 var TABLE_TIME_QUESTION = 'time_question';
 var TABLE_USERS = 'users';
 
-var running = false;
-
 init = function(){ 
   console.log('DB init');  
   pool.getConnection(function(err, connection) {
    
-    if (err) {
-      //running = false;
+    if (err) {     
       console.error('error connecting: ' + err);
       return;
-    }
-    //running = true;
+    }   
     console.log('connected as id #' + connection.threadId);
     connection.release();   
   });  
@@ -51,7 +47,7 @@ dbIsRunning = function(callback){
       callback(false);
       return;
     }   
-    console.log("db running");
+    console.log("database online");
     callback(true);
     connection.release();   
   });  
@@ -271,25 +267,17 @@ connection.query(sql, function(err, dbResponse) {
 
 getTrips = function(callback){
 pool.getConnection(function(err, connection) {
-
-var sql = 'SELECT * FROM ' + TABLE_TRIPS;
-
-connection.query(sql, function(err, dbResponse) {
+  connection.query('SELECT * FROM ' + TABLE_TRIPS, function(err, dbResponse) {      
+    if(err) {
+      console.log(err);
+      callback(err, null);    
+      return;
+    }     
+    connection.release();
+    callback(null, dbResponse); 
     
-  if(err) {
-    console.log(err);
-    callback(err, null);    
-    return;
-  }     
-  connection.release();
-  callback(null, dbResponse);    
-  
-  
+  }); 
 });
-
- 
-});
-
 }
 
 getNotActiveTrips = function(callback){

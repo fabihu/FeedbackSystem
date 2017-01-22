@@ -14,11 +14,11 @@ module.exports = function(passport) {
     // LOGIN ===============================
     // =====================================
     // show the login form
-    router.post('/try-login', function(req, res){      
-    req.session.input = req.body;
+    router.post('/try-login', function(req, res){
+    dbhandler.dbIsRunning(function(running){
 
-    dbhandler.dbIsRunning(function(running){  
         if(running){
+            req.session.input = req.body;
             passport.authenticate('local-login', {        
                 successRedirect : '/eval', // redirect to the secure profile section
                 failureRedirect : '/login', // redirect back to the signup page if there is an error
