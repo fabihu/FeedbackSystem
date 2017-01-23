@@ -7,7 +7,7 @@ start = 0,
 isDown = false,
 interval = 0,
 socket = null,
-URL_ATTRAKDIFF_SURVEYTAINMENT = 'https://esurvey.uid.com/survey/#bac4c181-e87c-47fe-ae39-f2ab352a63e2',
+URL_ATTRAKDIFF_SURVEYTAINMENT = 'http://esurvey.uid.com/survey/#bac4c181-e87c-47fe-ae39-f2ab352a63e2',
 URL_DEPLOYMENT_SERVER = 'http://localhost:8080',
 
 init = function() {
@@ -16,14 +16,11 @@ init = function() {
     $(document).on("getTripId", onGetTripId);
     $(document).on("getUserId", onGetUserId);
     $(document).on("startTimerST", onStartTimerST);
-    $(document).on("leavePageST", onLeavePageST);        
-
-    initComponents();    
+    $(document).on("leavePageST", onLeavePageST);
+    $(document).on("initComponentsST", initComponents);
 },
 
-onInitSTSurvey = function(){
-	initDraggable();
-	initDroppable();
+onInitSTSurvey = function(){	
 	socket = io(URL_DEPLOYMENT_SERVER);
 	handleConnect();     
 },
@@ -37,7 +34,7 @@ onGetTripId = function(event, trip_id){
 },
 
 onGetUserId = function(event, user_id){    
-    userId = parseInt(user_id);
+  userId = parseInt(user_id);
 },
 
 initComponents = function(){
@@ -46,6 +43,7 @@ initComponents = function(){
 		e.preventDefault();
 		var next_id = $(this).parent().next('.container').data('question-id');		
 		var id =  $(this).data('question-id');
+		$('body').scrollTop(0);
 		if ($(this).hasClass('button-next-qtype-1')){			
 		  onButtonNextTypeOneClick(this, id, next_id);	 
 		} else {
@@ -68,10 +66,10 @@ initComponents = function(){
 		onPlusBtnPress(this);
 	});
 
-	$('#survey-container').on('touchstart mousedown', ".btn-arr", function(e){
+	$('#survey-container').on('touchstart mousedown', ".btn-arr", function(e){		
 		e.preventDefault();
 		e.stopPropagation();	
-			isDown = true;
+		isDown = true;
 		onBtnArrPress(this);
 	});
 
@@ -165,8 +163,10 @@ onExpNextClick = function(element){
 },
 
 fadeInSurveyContainer = function(){
-	//trigger Timer
+	$('body').scrollTop(0);
 	$(".surveyst-container").first().removeClass("invis").addClass("visible").addClass("animated fadeInDown");   
+	initDraggable();
+	initDroppable();
 },
 
 onCustomCheckboxGenderClick = function(element){
@@ -215,24 +215,27 @@ fadeOutExpContainer = function(){
 },
 
 fadeInAgeContainer = function(){
+  $('body').scrollTop(0);
   $('#container-age').removeClass("invis");
   $('#container-age').addClass("visible").addClass("animated fadeInDown");   
 },
 
 fadeInExpContainer = function(){
+  $('body').scrollTop(0);
   $('#container-experience').removeClass("invis");
   $('#container-experience').addClass("visible").addClass("animated fadeInDown");   
 },
 
 initDraggable = function(){	
 	var startPosition = 0;
+	$( "#bus-type-0-draggable").prop("draggable", true);
 	$( "#bus-type-1-draggable" ).draggable();
     $( "#bus-type-0-draggable").draggable({
 		    axis: 'x',
 		    start: function( event, ui ) {
 		        startPosition = ui.position.left;
 		    },
-		    drag: function( event, ui ) {
+		    drag: function( event, ui ) {		    	
 		        if(ui.position.left > 150)
 		            ui.position.left = 150;
 		        if(ui.position.left < -650)
@@ -240,6 +243,7 @@ initDraggable = function(){
 		        startPosition = ui.position.left;
 		    }
 	});
+
 },
 
 initDroppable = function(){
@@ -345,6 +349,7 @@ onDropBus = function(element){
 		stopTimerST(question_id);
 		showNextQuestion(question_id, next_question_id);
 	}
+	$('body').scrollTop(0);
 	removeTutorials(0);
 },
 

@@ -108,6 +108,7 @@ button {
     position: absolute;
     background-size: contain;
     background-repeat: no-repeat;
+    z-index: -1;
 }
 
 .overflow-fix{
@@ -131,6 +132,7 @@ button {
   background-image: url("../images/bent-arrow-2.png");
   bottom: -33%;
   left: 0%;
+
 }
 
 

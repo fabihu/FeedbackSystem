@@ -49,23 +49,24 @@ FeedbackSystem.IndexController = (function() {
 							var qtype_id = $(data).html(data).filter("#temp-qtype").data("qtype");							
 							$.post('/create-user/', {id: id, qtype_id: qtype_id}, function(data){								
 								$(document).trigger('getUserId', data.id);
-							});
-							
+							});							
 								
 								$('#container-info').removeClass('animated slideInDown');
 								$('#main-container').addClass("animated fadeOutDown");
 								$('#container-info').addClass("animated fadeOutDown");
+								$('#survey-container').addClass("invis").append(data);
 
-								setTimeout(function(){ 
-								     
-								$('#survey-container').addClass('animated slideInDown').append(data);
+								setTimeout(function(){
+								$('#survey-container').removeClass("invis").addClass("visible"); 								     
+								$('#survey-container').addClass('animated slideInDown');
 								$('#main-container').remove();
 								$('#container-info').remove();
 							
 								if(qtype_id == 0){
 									$(document).trigger('initSurvey');																
 								} else {
-									$(document).trigger('initSurveyST');										
+									$(document).trigger('initSurveyST');
+									$(document).trigger('initComponentsST');										
 								}
 								$(document).trigger('getTripId', id);
 								}, 800);

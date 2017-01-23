@@ -7,7 +7,7 @@ FeedbackSystem.SurveyController = (function() {
   userId = -1,
   socket = null,
   collection_answers = [],
-  URL_ATTRAKDIFF_STANDARD = 'https://esurvey.uid.com/survey/#1fdce83e-c208-4708-8d64-30c631b7e4b6',
+  URL_ATTRAKDIFF_STANDARD = 'http://esurvey.uid.com/survey/#1fdce83e-c208-4708-8d64-30c631b7e4b6',
   URL_DEPLOYMENT_SERVER = 'http://localhost:8080',
 
   init = function() {
