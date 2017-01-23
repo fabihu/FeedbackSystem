@@ -7,7 +7,7 @@ FeedbackSystem.SurveyController = (function() {
   userId = -1,
   socket = null,
   collection_answers = [],
-  URL_ATTRAKDIFF_STANDARD = 'http://esurvey.uid.com/survey/#1fdce83e-c208-4708-8d64-30c631b7e4b6',
+  URL_ATTRAKDIFF_STANDARD = 'http://docs.google.com/forms/d/e/1FAIpQLSeGokbw0cQpcmNNYwJnOES6PblppTEN5vK6rFdEgYPw9LER9w/viewform',
   URL_DEPLOYMENT_SERVER = 'http://localhost:8080',
 
   init = function() {
@@ -302,7 +302,8 @@ prepareAnswerObjects = function(object, question_type){
       answer_id: $(element).data('answer-id'),
       type: question_type,
       value: value,
-      trip_id: tripId        
+      trip_id: tripId,
+      user_id: userId        
     };   
     collection_answers.push(answer);      
     });
@@ -314,8 +315,8 @@ prepareAnswerObjects = function(object, question_type){
           type: question_type,
           value: 0,
           text: text,
-          trip_id: tripId          
-        
+          trip_id: tripId,          
+          user_id: userId 
         };
     collection_answers.push(answer);  
   }

@@ -7,7 +7,7 @@ start = 0,
 isDown = false,
 interval = 0,
 socket = null,
-URL_ATTRAKDIFF_SURVEYTAINMENT = 'http://esurvey.uid.com/survey/#bac4c181-e87c-47fe-ae39-f2ab352a63e2',
+URL_ATTRAKDIFF_SURVEYTAINMENT = 'http://docs.google.com/forms/d/e/1FAIpQLSdKEyIOdt1NzcoqFC-CRSFXni6pHaAPDcPldZaIn_XdmC6w1A/viewform',
 URL_DEPLOYMENT_SERVER = 'http://localhost:8080',
 
 init = function() {
@@ -298,7 +298,8 @@ onMinusBtnPress = function(element){
 	var last_visible_bus_element = $(element).prev('div').parent().find('div').last();
 	var bus_elements = $(element).prev('div').find('div');	
 	var first_element = $(element).prev('div').children().first();
-
+	var question_id = $(element).data("question-id");
+	var answer_id = $(element).data("answer-id");
 
 	$.each(bus_elements, function(index, el){
 		if ($(el).css("visibility") != "hidden"){
@@ -309,19 +310,31 @@ onMinusBtnPress = function(element){
 	if(!($(last_visible_bus_element).is($(first_element)))) {
 		$(last_visible_bus_element).css("visibility", "hidden");		
 	}
-
+	$(".score-qv-2-"+question_id+"-"+answer_id).text(countSegments(bus_elements));
 },
 
 onPlusBtnPress = function(element){
 	var bus_elements = $(element).next('div').find('div');
 	var last_visible_bus_element = $(element).next('div').children().first();
-
+	var question_id =  $(element).data("question-id");
+	var answer_id = $(element).data("answer-id");
 	$.each(bus_elements, function(index, el){
 		if ($(el).css("visibility") != "hidden"){			
 			last_visible_bus_element = $(el).next('div');
 		}
 	});	
-	$(last_visible_bus_element).css("visibility", "visible");
+	$(last_visible_bus_element).css("visibility", "visible").removeClass("hidden-st");	
+	$(".score-qv-2-"+question_id+"-"+answer_id).text(countSegments(bus_elements));
+},
+
+countSegments = function(elements){
+ var value = 0; 
+ $.each(elements, function(index, el){
+ 	if ($(el).css("visibility") != "hidden"){
+ 		value++;
+ 	}
+  });		
+return value;
 },
 
 onDropBus = function(element){
@@ -359,7 +372,6 @@ var question_id = $(element).data('question-id');
 var question_type = $(element).data('question-type');
 var type = 0;
 
-
 if(question_type == 0) {
 if (elements.length == 0) {  onNoAnswerGiven(element); return;}
  	$.each(elements, function(index, item){ 		
@@ -378,8 +390,8 @@ if(question_type == 3) {
           type: 3,
           value: 0,
           text: text,
-          trip_id: tripId          
-        
+          trip_id: tripId,          
+          user_id: userId
         };
     collection_answers.push(answer);  
 }
@@ -444,16 +456,16 @@ changeTimeRedirect = function(){
   $('#time-redirect').text(parseInt(current_time)-1);
 },
 
-onMiddleClick = function(element){
+onMiddleClick = function(element){	
 	var image = '';
 	var image_check =''; 
-	if($(element).find(".bus-answer-field").hasClass("check-middle")){
-		$(element).find(".bus-answer-field").removeClass("check-middle");
+	if($(element).hasClass("check-middle")){
+		$(element).removeClass("check-middle");
 		$(element).css("background-image", 'url("../images/st/bus_swipe_middle.png")');
 		$(element).data("checked", false);
 		$(element).attr("data-checked", false);  
 	} else {
-		$(element).find(".bus-answer-field").addClass("check-middle");
+		$(element).addClass("check-middle");
    		$(element).css("background-image", 'url("../images/st/bus_swipe_middle_check.png")');
 		$(element).data("checked", true);
 		$(element).attr("data-checked", true);   
@@ -466,7 +478,8 @@ createSingleUserAnswer = function(question_id, answer_id, type, value){
       answer_id: answer_id,
       type: type,
       value: value,
-      trip_id: tripId        
+      trip_id: tripId,  
+      user_id: userId      
     };               
 },
 
@@ -476,13 +489,14 @@ showNextQuestion = function(id, next_id){
 	
 	$('#container-questions-' + id).removeClass("animated fadeInDown");
 	$('#container-questions-' + id).addClass("animated fadeOutDown");
-	
+	initDraggable();
+	initDroppable();
 	setTimeout(function(){
 		$('#container-questions-'+next_id).removeClass("invis");
    		$('#container-questions-'+next_id).addClass("visible");  
    		$('#container-questions-'+next_id).addClass("animated fadeInDown");	  
 	   	$('#container-questions-' + id).remove();
-	   	 initDraggable();
+
    	}, 700);    
    } else {   
    	sendAnswers(id);

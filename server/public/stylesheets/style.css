@@ -102,6 +102,26 @@ button {
   margin-top: 20px; 
 }
 
+.star-qv-2{
+  width:50px;
+  height:50px;
+  background-image: url("../images/st/star.png");
+  background-repeat:no-repeat;
+  background-size:contain;
+}
+
+.score-qv-2{
+  display:inline-flex;
+  width:50px;
+  height:50px;
+  float:right;
+}
+
+.count-rating-qv2{
+    font-size: 30px;
+    margin-right: 5px;
+}
+
 .tutorial-type-0, .tutorial-type-1, .tutorial-type-2{  
     width: 65%;
     height: 250px;
@@ -124,7 +144,7 @@ button {
 
 .tutorial-type-1{
   background-image: url("../images/bent-arrow-1.png");
-  left: 30%;
+  left: 10%;
   height: 70px;
 }
 
@@ -134,7 +154,6 @@ button {
   left: 0%;
 
 }
-
 
 .glyph-collapse {
   color: #E6E9ED;
@@ -261,7 +280,7 @@ li {list-style-type: none;}
 }
 
 .container-qv-2 {
- width: 100%;
+ width: 80%;
 }
 
 .bus-qv-2 {
@@ -291,8 +310,13 @@ background-image: url("../images/st/bus_right_qv1_5.png")!important;;
 .qv-2 {
   margin: 5px;
   border: 0.1em solid #ffd500;
-  padding: 10px;
+  padding: 5px;
+  height: 190px;
 }
+
+.elements-qv2{
+  margin-top: 60px;
+}    
 
 .glow {
   -webkit-box-shadow:0 0 20px yellow inset; 
@@ -659,6 +683,10 @@ tr.row-no-border-top td{
   display:block;
 }
 
+.hidden-st{
+  visibility: hidden!important;
+}
+
 .txtarea-suggestions{
     color:#912584;
     margin: 10px;
@@ -711,15 +739,22 @@ tr.row-no-border-top td{
     cursor: pointer;
     font-weight: 400!important;
     color: #ffd500!important;
-    font-size: 20px!important;
-    padding: 5px 20px 5px 20px;
-    margin-right: 20px;
-    margin-bottom: 10px;
+    font-size: 20px!important; 
+    margin-top: 35px;
     border: 0.1em solid #ffd500;
     text-decoration: none!important;
     background: #912584;
     letter-spacing: 1px;
     text-align: center;
+    width:10%;
+ }
+
+ .button-plus{
+  float:right;
+ }
+
+ .button-minus{
+  float:left;
  }
 
 .button-next, .btn-next-dem, .button-next-st {
@@ -840,9 +875,16 @@ padding-right: 0px;
 	color: #ffd500!important;
 }
 
+.score-no-tutorial {
+  height:0px;
+}
 
-.navbar-nav {
-  margin-right: 65px;
+.elements-no-tutorial{
+  margin-top:30px;
+}
+
+.nav>li {
+  padding-left: 10px;
 }
 
 .navbar-default {
