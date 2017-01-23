@@ -887,8 +887,7 @@ FeedbackSystem.EvalController = (function() {
 						var answer_id = label.answer_id;
 						var data = $.grep(answers, function (answer) {              
                                                      return answer.answer_id == answer_id;                                                                                                  
-                                                  });
-						
+                                                  });						
 						createNewStarRating(chart, label, data, trip_id, question_id, label.id);						
 					});					
 				} else if(question_type == 3){									
@@ -1092,8 +1091,7 @@ FeedbackSystem.EvalController = (function() {
 	displayCommonInfo = function(trip_id, count_questions){
 		getAvgTime(trip_id, function(time){
 			var currentVal = $('#info-avg-time-'+trip_id).attr('data-seconds');
-			var newVal = parseFloat(time) + parseFloat(currentVal);
-			console.log(count_questions);
+			var newVal = parseFloat(time) + parseFloat(currentVal);			
 			newVal = newVal.toFixed(0) * count_questions;			
 
 			$('#info-avg-time-'+trip_id).attr('data-seconds', newVal);
