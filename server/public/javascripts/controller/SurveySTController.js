@@ -53,8 +53,14 @@ initComponents = function(){
 
 	$('#survey-container').on('click', ".bus-middle", function(e){
 		e.preventDefault();		
+		//onMiddleClick(this);
+	});
+
+	$('#survey-container').on('touchend', ".bus-middle", function(e){		
+		e.preventDefault();			
 		onMiddleClick(this);
 	});
+
 
 	$('#survey-container').on('click', ".button-minus", function(e){
 		e.preventDefault();		
@@ -231,8 +237,8 @@ initDraggable = function(){
 	$( "#bus-type-0-draggable").prop("draggable", true);
 	$( "#bus-type-1-draggable" ).draggable();
     $( "#bus-type-0-draggable").draggable({
-		    axis: 'x',
-		    start: function( event, ui ) {
+		    axis: 'x',		 
+		    start: function( event, ui ) {		    	
 		        startPosition = ui.position.left;
 		    },
 		    drag: function( event, ui ) {		    	
