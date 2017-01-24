@@ -193,7 +193,7 @@
           
           <div class="container-elements qv-2" data-answer-id="<%=answer.id%>">          
          
-          <h4><%=answer.text%></h4>          
+          <h4 class="header-qv2"><%=answer.text%></h4>          
           <% if (index==0){ %> 
             <div class="tutorial-type-1"/>
             <div class="score-qv-2">               
@@ -208,7 +208,7 @@
            <% } else { %>
             <div class="elements-qv2 elements-no-tutorial">
            <% } %> 
-            <button class="button-qv-2 button-plus" id="button-add-<%=question.id%>" data-question-id="<%=question.id%>" data-answer-id="<%=answer.id%>"><span class="glyphicon glyphicon-plus"></span></button> 
+            <button class="button-qv-2 button-plus" id="button-add-<%=question.id%>" data-question-id="<%=question.id%>" data-answer-id="<%=answer.id%>"><span class="glyphicon glyphicon-plus"></span> </button> 
             <div id="bus-type-3-draggable" class="bus-container container-qv-2">
               <div id="bus-left" class="bus bus-left bus-qv-2 bus-qv-2-1">
               </div>
@@ -221,7 +221,7 @@
               <div id="bus-right" class="bus bus-right bus-qv-2 bus-qv-2-5 hidden-st">
               </div>
             </div>
-            <button class="button-qv-2 button-minus" id="button-sub-<%=question.id%>" data-question-id="<%=question.id%>" data-answer-id="<%=answer.id%>"><span class="glyphicon glyphicon-minus"></span></button>
+            <button class="button-qv-2 button-minus" id="button-sub-<%=question.id%>" data-question-id="<%=question.id%>" data-answer-id="<%=answer.id%>"><span class="glyphicon glyphicon-minus"></span> </button>
           
           </div> 
           </div> 

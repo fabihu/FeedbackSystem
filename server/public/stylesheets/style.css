@@ -112,14 +112,18 @@ button {
 
 .score-qv-2{
   display:inline-flex;
-  width:50px;
+  width:40px;
   height:50px;
   float:right;
 }
 
 .count-rating-qv2{
-    font-size: 30px;
+    font-size: 23px;
     margin-right: 5px;
+}
+
+.glyphicon {
+
 }
 
 .tutorial-type-0, .tutorial-type-1, .tutorial-type-2{  
@@ -145,7 +149,7 @@ button {
 .tutorial-type-1{
   background-image: url("../images/bent-arrow-1.png");
   left: 10%;
-  height: 70px;
+  height: 65px;
 }
 
 .tutorial-type-2{
@@ -280,7 +284,11 @@ li {list-style-type: none;}
 }
 
 .container-qv-2 {
- width: 80%;
+  width: 75%;
+}
+
+.glyphicon {
+
 }
 
 .bus-qv-2 {
@@ -735,25 +743,28 @@ tr.row-no-border-top td{
  }
 
  .button-qv-2{
-    border-radius: 25px;
-    cursor: pointer;
-    font-weight: 400!important;
+    border-radius: 8px;
+    cursor: pointer;  
     color: #ffd500!important;
     font-size: 20px!important; 
     margin-top: 35px;
-    border: 0.1em solid #ffd500;
-    text-decoration: none!important;
+    border: 0.1em solid #ffd500;    
     background: #912584;
-    letter-spacing: 1px;
-    text-align: center;
-    width:10%;
+    width:10%;    
+    padding: 3px;
+ }
+
+ .header-qv2{
+    font-size: 20px;
  }
 
  .button-plus{
+   margin-left: 5px;
   float:right;
  }
 
  .button-minus{
+  margin-right: 5px;
   float:left;
  }
 
