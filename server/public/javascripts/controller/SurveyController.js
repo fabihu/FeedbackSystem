@@ -235,20 +235,18 @@ $buttonNext.click(function(){
     if(checkedButtons.length == 0){  onNoAnswerGiven(this); return;}
     prepareAnswerObjects(checkedButtons, 0); 
   } else if (question_type == 1) {
-    var $radioGroup = $('#container-questions-' + question_id);    
-    var radioAnswers = $radioGroup.find("input").filter(function() {
-      return parseInt($(this).val()) > 0;
-    });   
-    if(radioAnswers.length == 0) { onNoAnswerGiven(this); return;}
+    var $answerRows = $('#container-questions-' + question_id);
+    var radioAnswers = $answerRows.find("input").filter(function() {
+      return parseInt($(this).val()) == 0;
+    });
+    if(radioAnswers.length > 0) { onNoAnswerGiven(this); return;}
     prepareAnswerObjects( radioAnswers, 1); 
   } else if (question_type == 3){
     var textAreaSuggestions = $('#text-suggestions');
     prepareAnswerObjects( textAreaSuggestions, 3);
   }
-
-  stopTimer(question_id);
-  setTimeout(onFadeInContainer(next_question_id), 700);  
-  $(document).trigger("startTimer"); 
+  $('body').scrollTop(0);
+  stopTimer(question_id); 
 
   if(last_question){
     updateMetaFinish();
@@ -261,6 +259,9 @@ $buttonNext.click(function(){
         redirectToAttrakDiff();
   
     }); 
+  } else {
+    setTimeout(onFadeInContainer(next_question_id), 700);  
+    $(document).trigger("startTimer"); 
   }
 
   $('#container-questions-' + question_id).removeClass("animated fadeInDown");
