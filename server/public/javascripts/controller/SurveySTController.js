@@ -49,18 +49,23 @@ initComponents = function(){
 		} else {
 		  onButtonNextClick(this, id, next_id);			
 		}	
-	});
+	});	
 
-	$('#survey-container').on('click', ".bus-middle", function(e){
-		e.preventDefault();		
-		//onMiddleClick(this);
-	});
 
-	$('#survey-container').on('touchend', ".bus-middle", function(e){		
+	$('#survey-container').on('touchend', ".bus-middle", function(e){	
 		e.preventDefault();			
 		onMiddleClick(this);
 	});
 
+	/*if(navigator.userAgent.match(/SAMSUNG|SGH-[I|N|T]|GT-[I|P|N]|SM-[N|P|T|Z|G]|SHV-E|SCH-[I|J|R|S]|SPH-L/i)){
+		
+	} else {
+		$('#survey-container').on('click', ".bus-middle", function(e){			
+			e.preventDefault();		
+			onMiddleClick(this);
+		});		
+	}
+	*/
 
 	$('#survey-container').on('click', ".button-minus", function(e){
 		e.preventDefault();		
@@ -502,6 +507,8 @@ showNextQuestion = function(id, next_id){
    		$('#container-questions-'+next_id).addClass("visible");  
    		$('#container-questions-'+next_id).addClass("animated fadeInDown");	  
 	   	$('#container-questions-' + id).remove();
+	   	initDraggable();
+		initDroppable();
 
    	}, 700);    
    } else {   
