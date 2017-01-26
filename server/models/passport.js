@@ -11,7 +11,7 @@ dbhandler.pool.getConnection(function(err, connection) {
    
     passport.deserializeUser(function(id, done) {
         connection.query("select * from users where id = "+id,function(err,rows){   
-            done(err, rows[0]);
+            done(err, rows[0]);           
         });
     });
    
@@ -22,24 +22,25 @@ dbhandler.pool.getConnection(function(err, connection) {
     },
     function(req, email, password, done) {         
          connection.query("SELECT * FROM `users` WHERE `email` = '" + email + "'",function(err,rows){
-            if (err)
+            if (err){
+                console.log(err);               
                 return done(err);
-             if (!rows.length) {               
+            }
+            if (!rows.length) {                        
                 return done(null, false, req.flash('loginMessage', 'Passwort oder Benutzername falsch!')); 
             } 
             
            var hash = rows[0].password;
           
-            if (!(utils.comparePassword(password, hash)))
+            if (!(utils.comparePassword(password, hash))){               
                 return done(null, false, req.flash('loginMessage', 'Passwort oder Benutzername falsch!')); 
-
+            }
+           
             return done(null, rows[0]);         
         
         });
-        
-
-
     }));
+    connection.release();
 });
 
 };

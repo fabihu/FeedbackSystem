@@ -33,7 +33,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(helmet());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({ cookie: { maxAge: 60000 }, 
+app.use(session({ cookie: { maxAge: 300000 }, 
                   secret: config.session.secret,
                   resave: config.session.resave, 
                   saveUninitialized: config.session.saveUninitialized}));
