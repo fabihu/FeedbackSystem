@@ -39,6 +39,12 @@ button {
   display: inline-flex;
 }
 
+.div-loading{ 
+  background-repeat: no-repeat;
+  width:50px;
+  height:50px;
+}
+
 .score-avg-info-weight{
     font-size: 15px;
     font-weight: 800;
@@ -592,9 +598,8 @@ background-image: url("../images/st/bus_right_qv1_5.png")!important;;
 .right-addon input { padding-right: 45px; }
 
 .text-center {
-  text-align: center;
+  text-align: center!important;
 }
-
 
 .text-bold {
     font-weight: 900!important;
@@ -615,6 +620,8 @@ background-image: url("../images/st/bus_right_qv1_5.png")!important;;
 }
 .list-arrows button {
     margin-bottom: 20px;
+    width: 50px;
+    height: 50px;
 }
  
 tr.row-no-border-top td{
@@ -770,7 +777,7 @@ tr.row-no-border-top td{
   textarea,
   input {
    font: 16px "Lucida Grande", Helvetica, Arial, sans-serif!important;
-  }
+  } 
   select:focus,
   textarea:focus,
   input:focus {
@@ -778,6 +785,17 @@ tr.row-no-border-top td{
   }
 }
 
+@media (max-width: 1200px) {
+  .dual-list{
+    width:30%;
+  }
+}
+
+@media (max-width: 1500px) {
+  .dual-list{
+    width:35%;
+  }
+}
 
  .header-qv2{
     font-size: 20px;
