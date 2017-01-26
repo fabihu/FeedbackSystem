@@ -15,8 +15,8 @@ module.exports = function(passport) {
     // =====================================
     // show the login form
     router.post('/try-login', function(req, res){
+    dbhandler.init();
     dbhandler.dbIsRunning(function(running){
-
         if(running){
             req.session.input = req.body;
             passport.authenticate('local-login', {        
@@ -28,7 +28,12 @@ module.exports = function(passport) {
            res.render('login.ejs', { message: 'Dienst zur Zeit nicht verfügbar. Bitte benachrichtigen Sie den Administrator!' });
         }
     });
-});    
+    },
+  function(err, req, res, next) {
+    // failure in login test route
+    console.log(err);
+    return res.send({'status':'err','message':err.message});
+  });    
 
 
 return router;
