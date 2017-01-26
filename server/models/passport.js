@@ -4,15 +4,22 @@ var dbhandler = require('../db/dbhandler');
 
 module.exports = function(passport) {
 
-dbhandler.pool.getConnection(function(err, connection) {
+
     passport.serializeUser(function(user, done) {
         done(null, user.id);
     });
    
     passport.deserializeUser(function(id, done) {
-        connection.query("select * from users where id = "+id,function(err,rows){   
+    dbhandler.pool.getConnection(function(err, connection) {
+        connection.query("select * from users where id = "+id,function(err,rows){
+            if(err){
+                console.log(err);
+            }   
             done(err, rows[0]);           
         });
+        connection.release();
+    });
+
     });
    
     passport.use('local-login', new LocalStrategy({       
@@ -20,7 +27,8 @@ dbhandler.pool.getConnection(function(err, connection) {
         passwordField : 'password',
         passReqToCallback : true 
     },
-    function(req, email, password, done) {         
+    function(req, email, password, done) { 
+     dbhandler.pool.getConnection(function(err, connection) {        
          connection.query("SELECT * FROM `users` WHERE `email` = '" + email + "'",function(err,rows){
             if (err){
                 console.log(err);               
@@ -39,8 +47,8 @@ dbhandler.pool.getConnection(function(err, connection) {
             return done(null, rows[0]);         
         
         });
+      connection.release();
+      });
     }));
-    connection.release();
-});
 
 };
