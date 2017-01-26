@@ -12,7 +12,7 @@
             <th>Typ</th>
             <th>Anzahl Reisende</th>
             <th>Passwort</th>
-            <th>Status <span class="glyphicon glyphicon-info-sign tooltip-eval" data-tooltip="status"></span></th>
+            <th class="text-center">Freigabe Fragebogen <span class="glyphicon glyphicon-info-sign tooltip-eval" data-tooltip="status"></span></th>
             <th>Typ Fragebogen <span class="glyphicon glyphicon-info-sign tooltip-eval" data-tooltip="qtype"></span></th>
             <th class="text-center"></th>
         </tr>
@@ -26,9 +26,9 @@
                 <td><%=trip.count_travellers%></td>
                 <td><%=trip.password%></td>
                 <% if(trip.flag_active == 1){%>
-                  <td><input class="btn-trip-active" type="checkbox" name="btn-trip-active-<%=trip.id%>" data-trip-id="<%=trip.id%>" checked></td>
+                  <td class="text-center"><input class="btn-trip-active" type="checkbox" name="btn-trip-active-<%=trip.id%>" data-trip-id="<%=trip.id%>" checked></td>
                  <% } else { %>
-                  <td><input class="btn-trip-active" type="checkbox" name="btn-trip-active-<%=trip.id%>" data-trip-id="<%=trip.id%>"></td>
+                  <td class="text-center"><input class="btn-trip-active" type="checkbox" name="btn-trip-active-<%=trip.id%>" data-trip-id="<%=trip.id%>"></td>
                  <% } %>
                 <td><select class="select-questionnaire" id="select-q-type-<%=trip.id%>" data-trip-id="<%=trip.id%>">
                         <option value="0">Standard</option>

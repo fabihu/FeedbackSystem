@@ -26,6 +26,12 @@ FeedbackSystem.EvalController = (function() {
 			performLogout(url);		
 		}	
 
+		if(url == '/eval/score'){
+			$('#dashboard-content').empty();
+			var loading_gif = '<div id="loading-gif" class="col-md-6 col-md-offset-6"><img src="../images/loading_content.gif" class="div-loading"></img></div>';
+			$('#dashboard-content').append(loading_gif);
+		}
+
 		$.get(url, function( data ){
 											
     		$('#dashboard-content').empty();
@@ -38,14 +44,15 @@ FeedbackSystem.EvalController = (function() {
     						parseTravelType(element);
     						formatDate(element);    					
     					});
+    				$(".btn-trip-active").bootstrapSwitch({size: 'mini',
+    											onColor: 'success',
+    											offColor: 'danger',
+    											onSwitchChange: function(){
+    												onChangeTripStatus(this);
+    											}});
     				});	
     					
-    				$(".btn-trip-active").bootstrapSwitch({size: 'mini',
-    															onColor: 'success',
-    															offColor: 'danger',
-    															onSwitchChange: function(){
-    																onChangeTripStatus(this);
-    															}});
+
     				$('#table-trips > tbody  > tr').each(function(index, element) {    			
     					var trip_id = $(element).data('trip-id');
     					getQuestionnaireType(trip_id, function(data){
@@ -56,6 +63,7 @@ FeedbackSystem.EvalController = (function() {
     				break;
     			}
     			case('/eval/score'):{
+    				$('#loading-gif').remove();
     		     	parseTimeHeader();
     			 	onLoadCharts();
     			 	break;
@@ -664,7 +672,9 @@ FeedbackSystem.EvalController = (function() {
 				password: new_password
 			}
 			
-			
+			var loading_gif = '<div class="col-md-6 col-md-offset-6"><img src="../images/loading_content.gif" class="div-loading"></img></div>';
+			$('#dashboard-content').append(loading_gif);
+
 			if(edit_trip){
 				var url = '/eval/update-trip'
 				$.post(url, {data: new_trip, id: trip_id}, function( data ){
@@ -1165,7 +1175,7 @@ FeedbackSystem.EvalController = (function() {
 	getSumParticipants = function(trip_id, callback){
 		var url = '/eval/get-sum-participants';
 		$.post(url, {trip_id: trip_id}, function( data ){
-			if(!data[0]){ 
+		if(!data[0]){ 
 			callback(0);
 			return;
 		} else {
@@ -1196,8 +1206,13 @@ FeedbackSystem.EvalController = (function() {
 
 	getAvgTime = function(trip_id, callback){
 		var url = '/eval/get-avg-question';
-		$.post(url, {trip_id: trip_id}, function( data ){			
+		$.post(url, {trip_id: trip_id}, function( data ){
+		if(!data[0].avg){ 
+			callback(0);
+			return;
+		} else {			
 			callback(data[0].avg.toFixed(2));
+		}	
 		});
 	},
 

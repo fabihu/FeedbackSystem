@@ -16,12 +16,9 @@
         <%=trip.name%>
         </a>
       </h4>
-    </div>
-    <% if (i == 0) { %>
-        <div id="collapse-<%=trip.id%>" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading-<%=trip.id%>">
-    <%  } else { %>  
-        <div id="collapse-<%=trip.id%>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-<%=trip.id%>">
-    <%  } %>  
+    </div>  
+    <div id="collapse-<%=trip.id%>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-<%=trip.id%>">
+
       <div class="panel-body">
         <div class="container">
     <br />
@@ -33,7 +30,7 @@
         </div>
             <div class="well text-right">
                 <div class="row">
-                    <div class="col-md-8">
+                    <div class="col-md-10">
                         <div class="input-group">
                             <span class="input-group-addon glyphicon glyphicon-assignment glyphicon-search"></span>
                             <input type="text" name="SearchDualList" class="form-control form-assignment" placeholder="Suche..." />
@@ -48,12 +45,6 @@
                             <button class="btn btn-default btn-assignment btn-sm move-down"  data-trip-id="<%=trip.id%>" >
                                 <span class="glyphicon glyphicon-chevron-down"></span>
                             </button>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2">
-                        <div class="btn-group">
-                            <a class="btn btn-default btn-assignment selector" title="select all"><i class="glyphicon glyphicon-unchecked"></i></a>
                         </div>
                     </div>
                 </div>
@@ -90,12 +81,7 @@
         </div>
             <div class="well">
                 <div class="row">
-                    <div class="col-md-2">
-                        <div class="btn-group">
-                            <a class="btn btn-default btn-assignment selector" title="select all"><i class="glyphicon glyphicon-unchecked"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-md-10">
+                    <div class="col-md-12">
                         <div class="input-group">
                             <input type="text" name="SearchDualList" class="form-control form-assignment" placeholder="Suche..." />
                             <span class="input-group-addon glyphicon glyphicon-assignment glyphicon-search"></span>
