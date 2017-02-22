@@ -6,17 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <title>Thürauf Reisen</title>
-
    
-   <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
-   <link href="/stylesheets/style.css" rel="stylesheet">
-   <link href="/stylesheets/animate.css" rel="stylesheet">
-   <link href="/stylesheets/star-rating.min.css" rel="stylesheet">
-
+    <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
+    <link href="/stylesheets/style.css" rel="stylesheet">
+    <link href="/stylesheets/animate.css" rel="stylesheet">
+    <link href="/stylesheets/star-rating.min.css" rel="stylesheet">
 
   </head>
-  <body>   
-     <nav class="navbar navbar-default navbar-fixed-top">
+  <body>
+    <!--navigaition bar -->   
+    <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container">
         <button type="button" class="navbar-toggle collapsed margin-nav" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
             <span class="sr-only">Toggle navigation</span>
@@ -33,51 +32,56 @@
             <li class= "li-main"><a href="/impressum/">Impressum</a></li>
             <li class= "li-main"><a href="http://www.thuerauf-reisen.de/">Homepage</a></li>
           </ul>
-        </div><!--/.nav-collapse -->
+        </div>
       </div>
-    </nav>
+    </nav>  <!-- end of navigaition bar --> 
 
-   <div class="container hide-overflow" id="survey-container">
-   </div>
-      <div class="row col-md-12 main-text-padding overflow-fix" id="container-info">
-        <h1 class="text-center text-bold">Bewerten Sie jetzt Ihre Thürauf Reise!</h1>
-        <br/>
-        <p class="lead text-center">Wir bieten Ihnen die Möglichkeit Ihre Busreise mit einem kurzen Fragebogen zu bewerten. So können wir unser Angebot noch besser auf Ihre Wünsche und Bedürfnisse anpassen.</p>
-      </div>
+    <!--main container for survey-->
+    <div class="container hide-overflow" id="survey-container">
+    </div><!--end of container for survey-->
 
-   
+    <!--container with welcome message -->
+    <div class="row col-md-12 main-text-padding overflow-fix" id="container-info">
+      <h1 class="text-center text-bold">Bewerten Sie jetzt Ihre Thürauf Reise!</h1>
+      <br/>
+      <p class="lead text-center">Wir bieten Ihnen die Möglichkeit Ihre Busreise mit einem kurzen Fragebogen zu bewerten. So können wir unser Angebot noch besser auf Ihre Wünsche und Bedürfnisse anpassen.</p>
+    </div> <!--end of welcome message -->
+  
+    <!--input container for login controls -->
     <div class="col-md-3 col-md-offset-4 container login-controls-padding-top" id="main-container">
-
       <form class="form padding-form-login" id="container-login-controls">
         <div class="form-group">        
            <div class="inner-addon left-addon">
-            <span class="glyphicon glyphicon-globe glyphicon-yellow glyphicon-lg"></span>
-           
-              <input type="text" class="form-control input-opaque input-lg" id="InputTravelId" placeholder="Bitte geben Sie Ihre Reise-ID ein..."  onfocus="this.placeholder = ''" onblur="this.placeholder = 'Bitte geben Sie Ihre Reise-ID ein...'"/>
-            
+            <span class="glyphicon glyphicon-globe glyphicon-yellow glyphicon-lg"></span>           
+              <input type="text" class="form-control input-opaque input-lg" id="InputTravelId" placeholder="Bitte geben Sie Ihre Reise-ID ein..."  onfocus="this.placeholder = ''" onblur="this.placeholder = 'Bitte geben Sie Ihre Reise-ID ein...'"/>            
            </div> 
       </div>
        <div class="text-center">  
         <button type="submit" class="btn btn-default input-opaque btn-login btn-lg" id="button-submit">Weiter</button>
        </div>
       </form>
+    </div> <!-- end of input container for login controls -->
 
-    </div>
-    
+
+    <!--scripts from external sources -->
     <script src="/javascripts/libs/jquery-3.1.1.min.js"></script>
     <script src="/javascripts/libs/jquery-ui.min.js"></script>   
     <script src="/javascripts/libs/star-rating.min.js"></script>
     <script src="/javascripts/libs/jquery.ui.touch-punch.min.js"></script>
     <script src="/javascripts/libs/socket.io.min.js"></script>
     <script src="/javascripts/libs/bootstrap.min.js"></script>
-    <script src="/javascripts/libs/tether.min.js"></script>
-  
+    <script src="/javascripts/libs/tether.min.js"></script>  
    
+    <!--native scripts-->
     <script src="/javascripts/FeedbackSystem.js"></script>
     <script src="/javascripts/controller/MainController.js"></script>
     <script src="/javascripts/controller/IndexController.js"></script>
+    <script src="/javascripts/views/IndexView.js"></script>
     <script src="/javascripts/controller/SurveyController.js"></script>
-    <script src="/javascripts/controller/SurveySTController.js"></script>   
+    <script src="/javascripts/views/SurveyView.js"></script>
+    <script src="/javascripts/controller/SurveySTController.js"></script>
+    <script src="/javascripts/views/SurveySTView.js"></script>
+       
     <script>
       FeedbackSystem.init();
     </script>   

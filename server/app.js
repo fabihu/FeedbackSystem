@@ -5,7 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var passport = require('passport');
-var helmet = require('helmet')
+var helmet = require('helmet');
 var flash    = require('connect-flash');
 var session = require('express-session');
 var app = express();
@@ -15,14 +15,12 @@ var io = require('socket.io').listen(server);
 var config = require('./config/config');
 var port = config.port;
 require('./models/passport')(passport);
-
 var index = require('./routes/index')(io);
 var eval = require('./routes/eval')();
 var users = require('./routes/users');
 var login = require('./routes/login')(passport);
 
-
-// view engine setup
+// view engine setup, using ejs as template engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
@@ -31,16 +29,17 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(helmet());
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({ cookie: { maxAge: 300000 }, 
-                  secret: config.session.secret,
+app.use(helmet());  //allows custom HTTP headers
+app.use(express.static(path.join(__dirname, 'public'))); //set public directory
+app.use(session({ cookie: { maxAge: 300000 },    //customize cookie settings
+                  secret: config.session.secret, //secret, duration, etc.
                   resave: config.session.resave, 
                   saveUninitialized: config.session.saveUninitialized}));
 app.use(passport.initialize());
-app.use(passport.session()); // persistent login sessions
-app.use(flash());
+app.use(passport.session()); //enable persistent login sessions
+app.use(flash()); //allows the use of flash messages
 
+//setting possible routes
 app.use('/', index);
 app.use('/eval', eval);
 app.use('/users', users);
@@ -59,12 +58,10 @@ app.use(function(req, res, next) {
 
 // error handlers
 app.use(function(err, req, res, next) {
-  console.error(err.stack);
-  
+  console.error(err.stack);  
 });
 
 // development error handler
-// will print stacktrace
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
@@ -76,7 +73,6 @@ if (app.get('env') === 'development') {
 }
 
 // production error handler
-// no stacktraces leaked to user
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error', {
@@ -85,8 +81,6 @@ app.use(function(err, req, res, next) {
   });
 });
 
-
-
-server.listen(port)
+server.listen(port);
 module.exports = app;
 

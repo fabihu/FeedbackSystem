@@ -6,6 +6,4 @@ var FeedbackSystem = {
 	initEval: function() {
 		FeedbackSystem.MainController.initEval();
 	}
-
-
 }

@@ -1,10 +1,11 @@
+<!-- layout representing the assignment of questionnaires to trips-->  
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 <% var i = 0; %>
 <% for (var index in data) {%>
 <% var trip = data[index].trip; %>
 <% var questionset = data[index].trip.questions; %>
 <% var active_questions = data[index].trip.active_questions; %>
-
+  <!-- panel for each trip--> 
   <div class="panel panel-default panel-assignment">
     <div class="panel-heading" role="tab" id="heading-<%=trip.id%>">
       <h4 class="panel-title">
@@ -18,12 +19,12 @@
       </h4>
     </div>  
     <div id="collapse-<%=trip.id%>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-<%=trip.id%>">
-
       <div class="panel-body">
         <div class="container">
     <br />
+    <!-- row with dual list for each trip--> 
     <div class="row">
-        
+        <!-- list with active questions-->        
         <div class="dual-list list-left col-md-5">
         <div class="main-text text-center">
             <h4>Aktive Fragen</h4>
@@ -48,63 +49,51 @@
                         </div>
                     </div>
                 </div>
-
                 <ul class="list-group <%=trip.id%>">
-
-      
         <% for (var index in questionset) {%>
         <% var question = questionset[index][0]; %>                                
                   <li class="list-group-item li-assignment trip-<%=trip.id%>" data-trip-id="<%=trip.id%>" data-question-id="<%=question.question_id%>" data-question-version="<%=question.question_version%>"><%=question.text%></li>
-        <% } %>  
-    
-                  
-
+        <% } %> 
                 </ul>
             </div>
-        </div>
+        </div> <!-- end of list-->
 
-
-
+        <!-- buttons to maintain questions-->
         <div class="list-arrows col-md-1 text-center">
             <button class="btn btn-default btn-assignment btn-sm move-left"  data-trip-id="<%=trip.id%>" >
                 <span class="glyphicon glyphicon-chevron-left"></span>
             </button>
-
             <button class="btn btn-default btn-assignment btn-sm move-right"  data-trip-id="<%=trip.id%>" >
                 <span class="glyphicon glyphicon-chevron-right"></span>
             </button>
-        </div>
-       
-        <div class="dual-list list-right col-md-5">
-        <div class="main-text text-center">
-            <h4>Verfügbare Fragen</h4>
-        </div>
-            <div class="well">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="input-group">
-                            <input type="text" name="SearchDualList" class="form-control form-assignment" placeholder="Suche..." />
-                            <span class="input-group-addon glyphicon glyphicon-assignment glyphicon-search"></span>
-                        </div>
-                    </div>
+        </div><!--end of buttons-->
+            <!-- list with active questions-->   
+            <div class="dual-list list-right col-md-5">
+                <div class="main-text text-center">
+                    <h4>Verfügbare Fragen</h4>
                 </div>
-                <ul class="list-group <%=trip.id%>">  
-                 
-               <% for (var index in active_questions) {%>              
-               <% var active_question = active_questions[index]; %>               
-                        
-               <li class="list-group-item li-assignment" data-trip-id="<%=trip.id%>" data-question-id="<%=active_question.question_id%>" data-question-version="<%=active_question.question_version%>"><%=active_question.text%></li>
-                    
-               <% } %>
-                </ul>
-            </div>
+                <div class="well">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="input-group">
+                                    <input type="text" name="SearchDualList" class="form-control form-assignment" placeholder="Suche..." />
+                                    <span class="input-group-addon glyphicon glyphicon-assignment glyphicon-search"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="list-group <%=trip.id%>">                 
+                        <% for (var index in active_questions) {%>              
+                        <% var active_question = active_questions[index]; %>               
+                            <li class="list-group-item li-assignment" data-trip-id="<%=trip.id%>" data-question-id="<%=active_question.question_id%>" data-question-version="<%=active_question.question_version%>"><%=active_question.text%></li>
+                        <% } %>
+                        </ul>
+                    </div>
+                </div><!-- end of list-->   
+            </div><!-- end of row--> 
         </div>
-
-    </div>
-</div>
       </div>
     </div>
-  </div>
+  </div><!-- end of panel for each trip--> 
 <% i++ %>
 <% } %>  
 </div>

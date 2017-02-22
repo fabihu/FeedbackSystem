@@ -1,8 +1,6 @@
 FeedbackSystem.SurveyController = (function() {
-
   var that = {},
-  $buttonNext = null,
-  $containerQuestions = null,
+  SurveyView = null,
   tripId = -1,
   userId = -1,
   socket = null,
@@ -10,8 +8,14 @@ FeedbackSystem.SurveyController = (function() {
   URL_ATTRAKDIFF_STANDARD = 'http://docs.google.com/forms/d/e/1FAIpQLSeGokbw0cQpcmNNYwJnOES6PblppTEN5vK6rFdEgYPw9LER9w/viewform',
   URL_DEPLOYMENT_SERVER = 'http://localhost:8080',
 
-  init = function() {
-  	console.log("SurveyController init");   
+  //Initalizing SurveyController
+  init = function() { 
+    initHandler();
+    SurveyView = FeedbackSystem.SurveyView;
+  },
+
+  //Initalizing handler
+  initHandler = function(){
     $(document).on("initSurvey", onInitSurvey);
     $(document).on("getTripId", onGetTripId);
     $(document).on("getUserId", onGetUserId);
@@ -19,27 +23,20 @@ FeedbackSystem.SurveyController = (function() {
     $(document).on("leavePage", onLeavePage);
   },
 
+  //Initalizing components 
   onInitSurvey = function(){ 
-    socket = io(URL_DEPLOYMENT_SERVER);  
-    $containerQuestions = $('#container-questions');
-    $buttonNext = $(".button-next");
-
-   
-    initStarRating();
-    initListener();
-    getSelectedAnswers();
+    socket = io(URL_DEPLOYMENT_SERVER);     
+    SurveyView.initStarRating();
+    initListener();    
     handleConnect();        
   },
 
-  unbindWindowClose = function(){
-    $(window).unbind('beforeunload');
-    $(window).unbind('unload');
-    $(document).unbind("leavePage");
-    window.onbeforeunload = function(){return null;};
-    window.unload = function(){return null;};
-  },
-
+  //Initalizing listener
   initListener = function(){
+    $(".button-next").on('click', function(e){
+      e.preventDefault();     
+      onButtonNextClick(this);
+    });
 
     $('.btn-checkbox').on('click', function(e){
       e.preventDefault();       
@@ -74,173 +71,143 @@ FeedbackSystem.SurveyController = (function() {
     $('.btn-next-exp').on('click', function(e){
       e.preventDefault();       
       onExpNextClick(this);
-    });
-    
-   
-   
+    });   
   },
 
+  //handle connect and create new user
   handleConnect = function(){
     socket.on('connect',function(){ 
       socket.emit('user_data', {user_id: userId});
     });
   },
 
+  //handle disconnect to update status canceld
   handleDisconnect = function(){
     socket.emit('disconnect'); 
   },
 
+  //leave page action
   onLeavePage = function(){
-   handleDisconnect();
+    handleDisconnect();
   },
 
-  initStarRating = function(){
-     $('.rating').rating({ showClear:false,
-                            showCaption: false });
-    
+  //prevent window close and show alert dialog
+  unbindWindowClose = function(){
+    $(window).unbind('beforeunload');
+    $(window).unbind('unload');
+    $(document).unbind("leavePage");
+    window.onbeforeunload = function(){return null;};
+    window.unload = function(){return null;};
   },
 
-onCustomCheckboxClick = function(element){
-    var span = $(element).find("span");
-    if($(span).hasClass('glyphicon glyphicon-ok')){
-      $(span).removeClass('glyphicon glyphicon-ok').addClass('glyphicon glyphicon-none');  
-    } else {
-      $(span).removeClass('glyphicon glyphicon-none').addClass('glyphicon glyphicon-ok');  
-    }
+  //click event on custom checkbox, change icon and mark as checked
+  onCustomCheckboxClick = function(element){
+      var span = $(element).find("span");
+      SurveyView.changeSpanIcon(span);  
+      var checked = $(element).data("checked");
+  
+      if(checked){
+        $(element).attr("data-checked", false);
+        $(element).data("checked", false);
+      } else {
+        $(element).attr("data-checked", true);
+        $(element).data("checked", true);
+      }
+  },
 
-    //moved from onBtnCheckboxClick check if works
-    var checked = $(element).data("checked");
-
-    if(checked){
-      $(element).attr("data-checked", false);
-      $(element).data("checked", false);
-    } else {
-      $(element).attr("data-checked", true);
-      $(element).data("checked", true);
-    }
-},
-
+//click event on demographic gender next button 
 onGenderNextClick = function(element){
   var container = $(element).parent();
   var checked = $(container).find('.row').find('button').filter('button[data-checked="true"]');
   var gender = $(checked).data("val");
 
   updateUserGender(gender);
-  fadeOutGenderContainer();
-  setTimeout(fadeInAgeContainer, 700);   
+  SurveyView.fadeOutGenderContainer();
+  setTimeout(SurveyView.fadeInAgeContainer, 700);   
 },
 
+//click event on demographic age next button 
 onAgeNextClick = function(element){
   var container = $(element).parent();
   var checked = $(container).find('.row').find('button').filter('button[data-checked="true"]');
   var age = $(checked).data("val");
 
   updateUserAge(age);
-  fadeOutAgeContainer();
-  setTimeout(fadeInExpContainer, 700);
+  SurveyView.fadeOutAgeContainer();
+  setTimeout(SurveyView.fadeInExpContainer, 700);
 },
 
+//click event on demographic experience next button 
 onExpNextClick = function(element){
   var container = $(element).parent();
   var checked = $(container).find('.row').find('button').filter('button[data-checked="true"]');
   var exp = $(checked).data("val");
 
   updateUserExp(exp);
-  fadeOutExpContainer(); 
-  setTimeout(fadeInSurveyContainer, 700);
+  SurveyView.fadeOutExpContainer(); 
+  setTimeout(SurveyView.fadeInSurveyContainer, 700);
   $(document).trigger('startTimer'); 
 },
 
-fadeInSurveyContainer = function(){
-//trigger Timer
-$(".survey-container").first().removeClass("invis").addClass("visible").addClass("animated fadeInDown");   
-},
-
+//click event on custom demographic gender button 
 onCustomCheckboxGenderClick = function(element){
-    var span = $(element).find("span");   
-    $(".btn-gender span").removeClass('glyphicon glyphicon-ok').addClass('glyphicon glyphicon-none');
+    var span = $(element).find("span");
+    var group = $(".btn-gender span");
+    SurveyView.removeCheckedGlyphicon(group);
     $(".btn-gender").data("checked", false).attr("data-checked", false);
-    $(span).removeClass('glyphicon glyphicon-none').addClass('glyphicon glyphicon-ok');
+    SurveyView.showCheckedGlyphicon(span);
     $(element).data("checked", true).attr("data-checked", true);
 },
 
+//click event on custom demographic age button 
 onCustomCheckboxAgeClick = function(element){
     var span = $(element).find("span");
-    $(".btn-age span").removeClass('glyphicon glyphicon-ok').addClass('glyphicon glyphicon-none');
+    var group = $(".btn-age span");
+    SurveyView.removeCheckedGlyphicon(group);
     $(".btn-age").data("checked", false).attr("data-checked", false);
-    $(span).removeClass('glyphicon glyphicon-none').addClass('glyphicon glyphicon-ok');
+    SurveyView.showCheckedGlyphicon(span);
     $(element).data("checked", true).attr("data-checked", true);
 },
 
+//click event on custom demographic experience button 
 onCustomCheckboxExpClick = function(element){
     var span = $(element).find("span");
-    $(".btn-exp span").removeClass('glyphicon glyphicon-ok').addClass('glyphicon glyphicon-none');
+    var group = $(".btn-exp span");
+    SurveyView.removeCheckedGlyphicon(group);
     $(".btn-exp").data("checked", false).attr("data-checked", false);
-    $(span).removeClass('glyphicon glyphicon-none').addClass('glyphicon glyphicon-ok');
+    SurveyView.showCheckedGlyphicon(span);
     $(element).data("checked", true).attr("data-checked", true);
 },
 
-onFadeInContainer = function(id){
-   $('#container-questions-'+id).removeClass("invis").addClass("visible").addClass("animated fadeInDown");
-},
-
-fadeOutGenderContainer = function(){
-  $('#container-gender').removeClass("animated fadeInDown").addClass("animated fadeOutDown");
-  setTimeout(function(){    
-    $('#container-gender').remove();
-  }, 700); 
-},
-
-fadeOutAgeContainer = function(){
-  $('#container-age').removeClass("animated fadeInDown").addClass("animated fadeOutDown");
-  setTimeout(function(){    
-    $('#container-age').remove();
-  }, 700); 
-},
-
-fadeOutExpContainer = function(){
-  $('#container-experience').removeClass("animated fadeInDown").addClass("animated fadeOutDown");
-  setTimeout(function(){    
-    $('#container-experience').remove();
-  }, 700); 
-},
-
-fadeInAgeContainer = function(){
-  $('#container-age').removeClass("invis");
-  $('#container-age').addClass("visible").addClass("animated fadeInDown");   
-},
-
-fadeInExpContainer = function(){
-  $('#container-experience').removeClass("invis");
-  $('#container-experience').addClass("visible").addClass("animated fadeInDown");   
-},
-
+//get users trip_id
 onGetTripId = function(event, trip_id){    
     tripId = parseInt(trip_id);
 },
 
+//get users user_id
 onGetUserId = function(event, user_id){    
     userId = parseInt(user_id);
 },
 
-getSelectedAnswers = function(){
-$buttonNext.click(function(){  
-  var question_id =  $(this).data("question-id");
-  var question_type = $(this).data("question-type");  
-  var next_question_id = $(this).parent().next('.container').data('question-id'); 
-  var last_question = $(this).data("last-question");  
+//handle click event on button next click
+onButtonNextClick = function(element){
+  var question_id =  $(element).data("question-id");
+  var question_type = $(element).data("question-type");  
+  var next_question_id = $(element).parent().next('.container').data('question-id'); 
+  var last_question = $(element).data("last-question");  
 
-  if(question_type == 0) {
-    var checkedButtons = $(".answer-options-"+question_id).filter('button[data-checked="true"]');
-    if(checkedButtons.length == 0){  onNoAnswerGiven(this); return;}
+  //check different question types and prepare an object representing the users answers
+  if(question_type === 0) {
+    var checkedButtons = $(".answer-options-"+question_id).filter('button[data-checked="true"]');    
+    if(checkedButtons.length === 0){  onNoAnswerGiven(element); return;}
     prepareAnswerObjects(checkedButtons, 0); 
   } else if (question_type == 1) {
-    var $answerRows = $('#container-questions-' + question_id);
+    var $answerRows = $('#container-questions-' + question_id);  
     var radioAnswers = $answerRows.find("input").filter(function() {
-      return parseInt($(this).val()) == 0;
-    });
-    if(radioAnswers.length > 0) { onNoAnswerGiven(this); return;}
-    prepareAnswerObjects( radioAnswers, 1); 
+      return parseInt($(this).val()) === 0;
+    });   
+    if(radioAnswers.length > 0) { onNoAnswerGiven(element); return;}    
+    prepareAnswerObjects($answerRows.find("input"), 1); 
   } else if (question_type == 3){
     var textAreaSuggestions = $('#text-suggestions');
     prepareAnswerObjects( textAreaSuggestions, 3);
@@ -248,33 +215,31 @@ $buttonNext.click(function(){
   $('body').scrollTop(0);
   stopTimer(question_id); 
 
+  //check if last question, then post users answers, otherwise fade in the next question
   if(last_question){
     updateMetaFinish();
     unbindWindowClose();  
     $.post('/receive-answers/', {data: collection_answers}, function( data ) {
-        var message = '<div id="container-credits" class="container main-text margin-credits animated fadeInDown"><label class="lbl-suggestions" for="text-suggestion">Vielen Dank für Ihre Teilnahme an unserer Umfrage. <br/>'+
-        'Wir hoffen, dass wir Sie auch in Zukunft auf weiteren Reisen begrüßen dürfen! <br/><br/> Bitte nehmen Sie sich einen Augenblick Zeit und bewerten Sie die Präsentation unseres Fragebogens. Dazu werden Sie in '+
-        '<text id="time-redirect">12</text> Sekunden auf eine extere Seite weitergeleitet... </label></div>';
-        $(message).insertAfter('.navbar');
+        SurveyView.showGoodByeMsg();
         redirectToAttrakDiff();
   
     }); 
   } else {
-    setTimeout(onFadeInContainer(next_question_id), 700);  
+    setTimeout(function(){
+      SurveyView.fadeInContainer(next_question_id)
+    }, 700);  
     $(document).trigger("startTimer"); 
   }
 
+  //remove question container
   $('#container-questions-' + question_id).removeClass("animated fadeInDown");
   $('#container-questions-' + question_id).addClass("animated fadeOutDown");
   setTimeout(function(){    
     $('#container-questions-' + question_id).remove();
   }, 700); 
-
-  });
-
-
 },
 
+//redirect user to attrakdiff
 redirectToAttrakDiff = function(){
 setInterval(changeTimeRedirect, 1000);
 var timer = setTimeout(function() {
@@ -282,11 +247,13 @@ var timer = setTimeout(function() {
         }, 12000);
 },
 
+//change time when redirecting to attrakdiff
 changeTimeRedirect = function(){
   var current_time = $('#time-redirect').text();
   $('#time-redirect').text(parseInt(current_time)-1);
 },
 
+//show notification when no answers given by user
 onNoAnswerGiven = function(element){
   $(element).tooltip({ animation: true,                       
                        container: element,
@@ -294,10 +261,11 @@ onNoAnswerGiven = function(element){
   $(element).tooltip('show');
 },
 
+//format the answer object depending on the question type
 prepareAnswerObjects = function(object, question_type){
-  if(question_type == 0 || question_type == 1){
+  if(question_type === 0 || question_type == 1){
     $.each(object, function(index, element){
-    var value = (question_type == 0) ? true:element.value;
+    var value = (question_type === 0) ? true:element.value;   
     var answer = {
       question_id: $(element).data('question-id'),
       answer_id: $(element).data('answer-id'),
@@ -323,21 +291,24 @@ prepareAnswerObjects = function(object, question_type){
   }
 },
 
-onStartTimer = function(){
-  initPageLeaveAction();
-  start = new Date(); 
-},
 
+//handle page leaving of user
 initPageLeaveAction = function(){
   $(window).on('beforeunload', function(e){
         return "Why are you leaving?";               
     });
-
   $(window).on('unload', function(){    
     $(document).trigger('leavePage');    
   });   
 }, 
 
+//handle starting of timer to meauser time taken for question
+onStartTimer = function(){
+  initPageLeaveAction();
+  start = new Date(); 
+},
+
+//stop the timer
 stopTimer = function(question_id){
   var elapsed = (new Date() - start) / 1000;
   start = 0;
@@ -345,6 +316,7 @@ stopTimer = function(question_id){
   updateMetaCount();
 },
 
+//send time taken by user for one question to server
 sendTimeTaken = function(question_id, seconds){
   var url = '/insert-time/';
   $.post(url, {user_id: userId, question_id: question_id, trip_id: tripId, seconds: seconds}, function( data ) {
@@ -352,6 +324,7 @@ sendTimeTaken = function(question_id, seconds){
   });
 },
 
+//update users answerd question
 updateMetaCount = function(){
   var url = '/update-meta-count/';
   $.post(url, {user_id: userId, trip_id: tripId}, function( data ) {
@@ -359,6 +332,7 @@ updateMetaCount = function(){
   });
 },
 
+//change status of users questionnaire to finished
 updateMetaFinish = function(){
   socket.emit('finished', {user_id: userId});
   var url = '/update-meta-finish/';
@@ -367,6 +341,7 @@ updateMetaFinish = function(){
   });
 },
 
+//insert gender of user in db
 updateUserGender = function(gender){
  var url = '/update-user-gender/'; 
  $.post(url, {user_id: userId, gender: gender}, function( data ) {
@@ -374,6 +349,7 @@ updateUserGender = function(gender){
  });
 },
 
+//insert age of user in db
 updateUserAge = function(age){
 var url = '/update-user-age/'; 
  $.post(url, {user_id: userId, age: age}, function( data ) {
@@ -381,6 +357,7 @@ var url = '/update-user-age/';
  });
 },
 
+//insert experience of user in db
 updateUserExp = function(exp){
 var url = '/update-user-exp/'; 
  $.post(url, {user_id: userId, exp: exp}, function( data ) {

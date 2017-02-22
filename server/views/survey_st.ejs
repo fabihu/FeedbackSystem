@@ -1,290 +1,253 @@
-     <div id="temp-qtype" class="invis" data-qtype="<%=type%>"></div>
-         <div class="row col-md-12 container main-text demograph-gender" id='container-gender'>     
-      <h2>Sind Sie männlich oder weiblich? </h2>
-        <div  class="row">     
-          <button class="btn-checkbox-dem btn-lg btn-gender" id="check-male" data-checked="false" data-val="m"><span class="glyphicon glyphicon-none"></span></button>
-          <label class="question-answer-option col-md-4" for="check-male"> männlich </label>
-        </div>
+<!--layout snippet of the surveytainment survey -->
+<div id="temp-qtype" class="invis" data-qtype="<%=type%>"></div>
 
-      <div  class="row"> 
-         <button class="btn-checkbox-dem btn-lg btn-gender" id="check-female" data-checked="false" data-val="f"><span class="glyphicon glyphicon-none"></span> </button>                
-         <label class="question-answer-option col-md-4" for="check-female"> weiblich </label>
-      </div>
+<!--containers for the demographic questions -->
+<!--container question gender -->
+<div class="row col-md-12 container main-text demograph-gender" id='container-gender'>     
+<h2>Sind Sie männlich oder weiblich? </h2>
+  <div  class="row">     
+    <button class="btn-checkbox-dem btn-lg btn-gender" id="check-male" data-checked="false" data-val="m"><span class="glyphicon glyphicon-none"></span></button>
+    <label class="question-answer-option col-md-4" for="check-male"> männlich </label>
+  </div>
+<div  class="row"> 
+    <button class="btn-checkbox-dem btn-lg btn-gender" id="check-female" data-checked="false" data-val="f"><span class="glyphicon glyphicon-none"></span> </button>                
+    <label class="question-answer-option col-md-4" for="check-female"> weiblich </label>
+</div>
+<div  class="row"> 
+   <button class="btn-checkbox-dem btn-lg btn-gender" id="check-na" data-checked="true" data-val="n"><span class="glyphicon glyphicon-ok"></span></button>
+   <label class="question-answer-option col-md-4" for="check-na"> keine Angaben </label>
+</div>
+<button class="btn-next-dem btn-next-gender-st" id="button-next-gender-st">Weiter ></button>
+</div><!-- end of container question gender -->
 
-      <div  class="row"> 
-        <button class="btn-checkbox-dem btn-lg btn-gender" id="check-na" data-checked="true" data-val="n"><span class="glyphicon glyphicon-ok"></span></button>
-        <label class="question-answer-option col-md-4" for="check-na"> keine Angaben </label>
-      </div>
-      <button class="btn-next-dem btn-next-gender-st" id="button-next-gender-st">Weiter ></button>
-      </div>
+<!--container question age -->
+<div class="row col-md-12 container main-text demograph-age invis" id='container-age'>     
+  <h2> Wie alt sind Sie? </h2>
+  <div class="row"> 
+    <button class="btn-checkbox-dem btn-lg btn-age" id="check-y-0" data-checked="true" data-val="0"><span class="glyphicon glyphicon-ok"></span></button>
+    <label class="question-answer-option col-md-4" for="check-y-0"> jünger als 20 </label>
+  </div>
+  <div  class="row"> 
+    <button class="btn-checkbox-dem btn-lg btn-age" id="check-y-1" data-checked="false" data-val="1"><span class="glyphicon glyphicon-none"></span></button>
+    <label class="question-answer-option col-md-4" for="check-y-1"> 20-29 </label>
+  </div>
+  <div  class="row"> 
+    <button class="btn-checkbox-dem btn-lg btn-age" id="check-y-2" data-checked="false" data-val="2"><span class="glyphicon glyphicon-none"></span></button>
+    <label class="question-answer-option col-md-4" for="check-y-2"> 30-39 </label>
+  </div>
+  <div  class="row"> 
+    <button class="btn-checkbox-dem btn-lg btn-age" id="check-y-3" data-checked="false" data-val="3"><span class="glyphicon glyphicon-none"></span></button>
+    <label class="question-answer-option col-md-4" for="check-y-3"> 40-49 </label>
+  </div>
+  <div  class="row"> 
+    <button class="btn-checkbox-dem btn-lg btn-age" id="check-y-4" data-checked="false" data-val="4"><span class="glyphicon glyphicon-none"></span></button>
+    <label class="question-answer-option col-md-4" for="check-y-4"> 50-59 </label>
+  </div>
+  <div  class="row"> 
+    <button class="btn-checkbox-dem btn-lg btn-age" id="check-y-5" data-checked="false" data-val="5"><span class="glyphicon glyphicon-none"></span></button>
+    <label class="question-answer-option col-md-4" for="check-y-5"> 60-69 </label>
+  </div>
+  <div  class="row"> 
+    <button class="btn-checkbox-dem btn-lg btn-age" id="check-y-6" data-checked="false" data-val="6"><span class="glyphicon glyphicon-none"></span></button>
+    <label class="question-answer-option col-md-4" for="check-y-6"> älter als 69 </label>
+  </div>
+    <button class="btn-next-dem btn-next-age-st" id="button-next-age">Weiter ></button>  
+</div><!-- end of container question age -->
 
-       <div class="row col-md-12 container main-text demograph-age invis" id='container-age'>     
-        <h2> Wie alt sind Sie? </h2>
-        <div class="row"> 
-         <button class="btn-checkbox-dem btn-lg btn-age" id="check-y-0" data-checked="true" data-val="0"><span class="glyphicon glyphicon-ok"></span></button>
-         <label class="question-answer-option col-md-4" for="check-y-0"> jünger als 20 </label>
-        </div>
-        <div  class="row"> 
-         <button class="btn-checkbox-dem btn-lg btn-age" id="check-y-1" data-checked="false" data-val="1"><span class="glyphicon glyphicon-none"></span></button>
-         <label class="question-answer-option col-md-4" for="check-y-1"> 20-29 </label>
-        </div>
-        <div  class="row"> 
-         <button class="btn-checkbox-dem btn-lg btn-age" id="check-y-2" data-checked="false" data-val="2"><span class="glyphicon glyphicon-none"></span></button>
-         <label class="question-answer-option col-md-4" for="check-y-2"> 30-39 </label>
-        </div>
-        <div  class="row"> 
-         <button class="btn-checkbox-dem btn-lg btn-age" id="check-y-3" data-checked="false" data-val="3"><span class="glyphicon glyphicon-none"></span></button>
-         <label class="question-answer-option col-md-4" for="check-y-3"> 40-49 </label>
-        </div>
-        <div  class="row"> 
-         <button class="btn-checkbox-dem btn-lg btn-age" id="check-y-4" data-checked="false" data-val="4"><span class="glyphicon glyphicon-none"></span></button>
-         <label class="question-answer-option col-md-4" for="check-y-4"> 50-59 </label>
-        </div>
-        <div  class="row"> 
-         <button class="btn-checkbox-dem btn-lg btn-age" id="check-y-5" data-checked="false" data-val="5"><span class="glyphicon glyphicon-none"></span></button>
-         <label class="question-answer-option col-md-4" for="check-y-5"> 60-69 </label>
-        </div>
-        <div  class="row"> 
-         <button class="btn-checkbox-dem btn-lg btn-age" id="check-y-6" data-checked="false" data-val="6"><span class="glyphicon glyphicon-none"></span></button>
-         <label class="question-answer-option col-md-4" for="check-y-6"> älter als 69 </label>
-        </div>
-         <button class="btn-next-dem btn-next-age-st" id="button-next-age">Weiter ></button>  
-      </div>
+<!--container question experience with computers -->
+<div class="row col-md-12 container main-text demograph-age invis" id='container-experience'>     
+  <h2> Wie viel Erfahrung besitzen Sie im Umgang mit Computern? </h2>
+  <div class="row"> 
+    <button class="btn-checkbox-dem btn-lg btn-exp" id="check-exp-0" data-checked="false" data-val="0"><span class="glyphicon glyphicon-none"></span></button>
+    <label class="question-answer-option col-md-4" for="check-exp-0"> sehr wenig </label>
+  </div>
+  <div  class="row"> 
+    <button class="btn-checkbox-dem btn-lg btn-exp" id="check-exp-1" data-checked="false" data-val="1"><span class="glyphicon glyphicon-none"></span></button>
+    <label class="question-answer-option col-md-4" for="check-exp-1"> wenig </label>
+  </div>
+  <div  class="row"> 
+    <button class="btn-checkbox-dem btn-lg btn-exp" id="check-exp-2" data-checked="true" data-val="2"><span class="glyphicon glyphicon-ok"></span></button>
+    <label class="question-answer-option col-md-4" for="check-exp-2"> durchschnittlich </label>
+  </div>
+  <div  class="row"> 
+    <button class="btn-checkbox-dem btn-lg btn-exp" id="check-exp-3" data-checked="false" data-val="3"><span class="glyphicon glyphicon-none"></span></button>
+    <label class="question-answer-option col-md-4" for="check-exp-3"> viel </label>
+  </div>
+  <div  class="row"> 
+    <button class="btn-checkbox-dem btn-lg btn-exp" id="check-exp-4" data-checked="false" data-val="4"><span class="glyphicon glyphicon-none"></span></button>
+    <label class="question-answer-option col-md-4" for="check-exp-4"> sehr viel </label>
+  </div>
+    <button class="btn-next-dem btn-next-exp-st" id="button-next-exp">Weiter ></button>  
+</div><!-- end of container question experience -->
 
-      <div class="row col-md-12 container main-text demograph-age invis" id='container-experience'>     
-        <h2> Wie viel Erfahrung besitzen Sie im Umgang mit Computern? </h2>
-        <div class="row"> 
-         <button class="btn-checkbox-dem btn-lg btn-exp" id="check-exp-0" data-checked="false" data-val="0"><span class="glyphicon glyphicon-none"></span></button>
-         <label class="question-answer-option col-md-4" for="check-exp-0"> sehr wenig </label>
-        </div>
-        <div  class="row"> 
-         <button class="btn-checkbox-dem btn-lg btn-exp" id="check-exp-1" data-checked="false" data-val="1"><span class="glyphicon glyphicon-none"></span></button>
-         <label class="question-answer-option col-md-4" for="check-exp-1"> wenig </label>
-        </div>
-        <div  class="row"> 
-         <button class="btn-checkbox-dem btn-lg btn-exp" id="check-exp-2" data-checked="true" data-val="2"><span class="glyphicon glyphicon-ok"></span></button>
-         <label class="question-answer-option col-md-4" for="check-exp-2"> durchschnittlich </label>
-        </div>
-        <div  class="row"> 
-         <button class="btn-checkbox-dem btn-lg btn-exp" id="check-exp-3" data-checked="false" data-val="3"><span class="glyphicon glyphicon-none"></span></button>
-         <label class="question-answer-option col-md-4" for="check-exp-3"> viel </label>
-        </div>
-        <div  class="row"> 
-         <button class="btn-checkbox-dem btn-lg btn-exp" id="check-exp-4" data-checked="false" data-val="4"><span class="glyphicon glyphicon-none"></span></button>
-         <label class="question-answer-option col-md-4" for="check-exp-4"> sehr viel </label>
-        </div>
-         <button class="btn-next-dem btn-next-exp-st" id="button-next-exp">Weiter ></button>  
-      </div>
-
-    </div>
-    <% for(var i=0; i<data.length; i++) { %>
-      <% var question = data[i].question; %>
-
-      <div class="col-md-12 container main-text invis surveyst-container" id='container-questions-<%=question.id%>' data-question-id='<%=question.id%>'>
-
-
-        <h3 class="question-header"><%=question.text%></h3>
-            
-        <% if(question.type == 0) {%>  
-       <div id="bus-type-0-draggable" class="bus-container">
-          <div id="bus-left" class="bus bus-left">
-          </div>
-          
-         
-      <% } %>    
-      <% var even_odd =  i % 2; %>
-    
+<!--diffrent layout for each question depending on the type of question -->
+<% for(var i=0; i<data.length; i++) { %>
+  <% var question = data[i].question; %>
+  <!--container question-->  
+  <div class="col-md-12 container main-text invis surveyst-container" id='container-questions-<%=question.id%>' data-question-id='<%=question.id%>'>
+    <h3 class="question-header"><%=question.text%></h3>
+      <!--multiple choice question draggable bus-->     
+      <% if(question.type == 0) {%>  
+      <div id="bus-type-0-draggable" class="bus-container">
+      <div id="bus-left" class="bus bus-left"></div>
+      <% } %>        
+      <% var even_odd =  i % 2; %>    
       <% for(var index in question.answers) { %>
-      <% var answer = question.answers[index][0]; %>
-      <% var length = question.answers.length; %>
-
-      <% if(question.type == 0) {%>
-        <div id="bus-middle" class="bus bus-middle bus-answer-field" data-answer-id="<%=answer.id%>" data-checked="false">
-        <p class="p-padding"> <%=answer.text%></p>
-        </div>
-      <% } %>
-
-        <% if(question.type == 1) { %>        
-         
+        <% var answer = question.answers[index][0]; %>
+        <% var length = question.answers.length; %>
+         <!--if multiple choice print middle elements for each answer option-->  
+        <% if(question.type == 0) {%>
+          <div id="bus-middle" class="bus bus-middle bus-answer-field" data-answer-id="<%=answer.id%>" data-checked="false">
+            <p class="p-padding"> <%=answer.text%></p>
+          </div>
+        <% } %><!--end if-->
+        <!--if scale ranking check two diffrent representation-->  
+        <% if(question.type == 1) { %>
+         <!--if representation bus scale check if first question-->  
           <% if (even_odd==0){ %>
-
-          <% if (index==0){ %>
-          <div id="answer-container-<%=answer.id%>" data-answer-id="<%=answer.id%>"> 
-              <h3><%=answer.text%></h3>
-              <h3>(<%=parseInt(index)+1%> / <%=length%>)</h3>
-              <div class="container-elements">             
+            <% if (index==0){ %>
+              <!--show container parking lot representation visbile, first answer option-->  
+              <div id="answer-container-<%=answer.id%>" data-answer-id="<%=answer.id%>"> 
+                <h3><%=answer.text%></h3>
+                <h3>(<%=parseInt(index)+1%> / <%=length%>)</h3>
+                <div class="container-elements">             
                   <div id="container-draggable" class="container-draggable">
                     <div id="bus-type-1-draggable" class="ui-widget-content ui-draggable demo-1"> </div>    
                   </div>
                   <div class="tutorial-type-0"/>              
-              <div id="container-droppable" data-answer-id="<%=answer.id%>" class="container-droppable">
-                       <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="1">
-                        <div class="star-image first-star"></div>
-                      </div>
-                      <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="2">
-                       <div class="star-image first-star"></div>
-                       <div class="star-image"></div>
-                      </div> 
-                      <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="3">
-                       <div class="star-image first-star"></div>
-                       <div class="star-image"></div>
-                       <div class="star-image"></div>                       
-                      </div> 
-                      <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="4">
-                        <div class="star-image first-star"></div>
-                        <div class="star-image"></div>
-                        <div class="star-image"></div>
-                        <div class="star-image"></div>
-                      </div>  
-                       <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="5">
-                        <div class="star-image first-star"></div>
-                        <div class="star-image"></div>
-                        <div class="star-image"></div>
-                        <div class="star-image"></div>
-                        <div class="star-image"></div>
-
-                      </div>
+                  <div id="container-droppable" data-answer-id="<%=answer.id%>" class="container-droppable">
+                    <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="1">
+                      <div class="star-image first-star"></div>
+                    </div>
+                    <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="2">
+                     <div class="star-image first-star"></div>
+                     <div class="star-image"></div>
+                    </div> 
+                    <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="3">
+                     <div class="star-image first-star"></div>
+                     <div class="star-image"></div>
+                     <div class="star-image"></div>                       
+                    </div> 
+                    <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="4">
+                      <div class="star-image first-star"></div>
+                      <div class="star-image"></div>
+                      <div class="star-image"></div>
+                      <div class="star-image"></div>
+                    </div>  
+                    <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="5">
+                     <div class="star-image first-star"></div>
+                     <div class="star-image"></div>
+                     <div class="star-image"></div>
+                     <div class="star-image"></div>
+                     <div class="star-image"></div>
+                    </div>
+                  </div>
                 </div>
-            </div>
-          </div>       
+              </div><!--end of container-->                     
           <% } else { %>
+           <!--show container parking lot representation invisible, later answer options-->            
             <div id="answer-container-<%=answer.id%>" class="invis" data-answer-id="<%=answer.id%>">
               <div class="container-elements">
-                 <h3><%=answer.text%></h3>
-                 <h3>(<%=parseInt(index)+1%> / <%=length%>)</h3>
-                 <div id="container-draggable" class="container-draggable">
-                    <div id="bus-type-1-draggable" class="ui-widget-content ui-draggable demo-1"> </div>    
+                <h3><%=answer.text%></h3>
+                <h3>(<%=parseInt(index)+1%> / <%=length%>)</h3>
+                <div id="container-draggable" class="container-draggable">
+                  <div id="bus-type-1-draggable" class="ui-widget-content ui-draggable demo-1"> </div>    
+                </div> 
+                <div id="container-droppable" data-answer-id="<%=answer.id%>" class="container-droppable"> 
+                  <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="1">
+                    <div class="star-image first-star"></div>
+                  </div>
+                  <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="2">
+                     <div class="star-image first-star"></div>
+                     <div class="star-image"></div>
                   </div> 
-                  <div id="container-droppable" data-answer-id="<%=answer.id%>" class="container-droppable"> 
-                      <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="1">
-                       <div class="star-image first-star"></div>
-                      </div>
-                      <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="2">
-                         <div class="star-image first-star"></div>
-                         <div class="star-image"></div>
-                      </div> 
-                      <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="3">
-                        <div class="star-image first-star"></div>
-                        <div class="star-image"></div>
-                        <div class="star-image"></div>                  
-                      </div> 
-                      <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="4">
-                        <div class="star-image first-star"></div>
-                        <div class="star-image"></div>
-                        <div class="star-image"></div>
-                        <div class="star-image"></div>
-                      </div>  
-                       <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="5">
-                          <div class="star-image first-star"></div>
-                          <div class="star-image"></div>
-                          <div class="star-image"></div>
-                          <div class="star-image"></div>
-                          <div class="star-image"></div>
-                      </div>
-                </div>
-  
-                </div>
-            </div>
-          <% } %>
-
-
-          <% } else { %>
-
-          
-          <div class="container-elements qv-2" data-answer-id="<%=answer.id%>">          
-         
-          <h4 class="header-qv2"><%=answer.text%></h4>          
-          <% if (index==0){ %> 
-            <div class="tutorial-type-1"/>
-            <div class="score-qv-2">               
-          <% } else { %>
-            <div class="score-qv-2 score-no-tutorial" >
-          <% } %>
-          <p class="count-rating-qv2 score-qv-2-<%=question.id%>-<%=answer.id%>">3</p>            
-               <div class="star-qv-2"></div>
-          </div> 
-          <% if (index==0){ %> 
-           <div class="elements-qv2">
-           <% } else { %>
-            <div class="elements-qv2 elements-no-tutorial">
-           <% } %> 
-            <button class="button-qv-2 button-plus" id="button-add-<%=question.id%>" data-question-id="<%=question.id%>" data-answer-id="<%=answer.id%>"><span class="glyphicon glyphicon-plus"></span> </button> 
-            <div id="bus-type-3-draggable" class="bus-container container-qv-2">
-              <div id="bus-left" class="bus bus-left bus-qv-2 bus-qv-2-1">
+                  <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="3">
+                    <div class="star-image first-star"></div>
+                    <div class="star-image"></div>
+                    <div class="star-image"></div>                  
+                  </div> 
+                  <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="4">
+                    <div class="star-image first-star"></div>
+                    <div class="star-image"></div>
+                    <div class="star-image"></div>
+                    <div class="star-image"></div>
+                  </div>  
+                   <div id="droppable-<%=index%>" class="ui-widget-header ui-droppable demo-2" data-value="5">
+                      <div class="star-image first-star"></div>
+                      <div class="star-image"></div>
+                      <div class="star-image"></div>
+                      <div class="star-image"></div>
+                      <div class="star-image"></div>
+                  </div>
+                </div>  
               </div>
-              <div id="bus-middle" class="bus bus-middle-qv2 bus-qv-2 bus-qv-2-2" >               
-             </div>
-             <div id="bus-middle" class="bus bus-middle-qv2 bus-qv-2 bus-qv-2-3">           
-            </div>
-            <div id="bus-middle" class="bus bus-middle-qv2 bus-qv-2 bus-qv-2-4 hidden-st">           
-            </div>
-              <div id="bus-right" class="bus bus-right bus-qv-2 bus-qv-2-5 hidden-st">
-              </div>
-            </div>
-            <button class="button-qv-2 button-minus" id="button-sub-<%=question.id%>" data-question-id="<%=question.id%>" data-answer-id="<%=answer.id%>"><span class="glyphicon glyphicon-minus"></span> </button>
-          
-          </div> 
-          </div> 
-          <button class="button-next-st btn-next-qtype-1 invis" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="false">Absenden</button>
-          <% } %>
+            </div><!--end of container-->
+          <% } %><!--end if-->    
+        <% } else { %>
+          <!--show container bus scale representation--> 
+          <div class="container-elements qv-2" data-answer-id="<%=answer.id%>">
+            <h4 class="header-qv2"><%=answer.text%></h4>  
+             <!--check if tutorial is necessary-->  
+            <% if (index==0){ %> 
+              <div class="tutorial-type-1"/>
+              <div class="score-qv-2">               
+            <% } else { %>
+              <div class="score-qv-2 score-no-tutorial" >
+            <% } %>            
+            <p class="count-rating-qv2 score-qv-2-<%=question.id%>-<%=answer.id%>">3</p>            
+            <div class="star-qv-2"></div></div> 
+            <% if (index==0){ %> 
+              <div class="elements-qv2">
+            <% } else { %>
+              <div class="elements-qv2 elements-no-tutorial">
+            <% } %>
+                <button class="button-qv-2 button-plus" id="button-add-<%=question.id%>" data-question-id="<%=question.id%>" data-answer-id="<%=answer.id%>"><span class="glyphicon glyphicon-plus"></span> </button> 
+                <div id="bus-type-3-draggable" class="bus-container container-qv-2">
+                  <div id="bus-left" class="bus bus-left bus-qv-2 bus-qv-2-1"></div>
+                  <div id="bus-middle" class="bus bus-middle-qv2 bus-qv-2 bus-qv-2-2" ></div>
+                  <div id="bus-middle" class="bus bus-middle-qv2 bus-qv-2 bus-qv-2-3"></div>
+                  <div id="bus-middle" class="bus bus-middle-qv2 bus-qv-2 bus-qv-2-4 hidden-st"></div>
+                  <div id="bus-right" class="bus bus-right bus-qv-2 bus-qv-2-5 hidden-st"></div>
+                </div>
+                <button class="button-qv-2 button-minus" id="button-sub-<%=question.id%>" data-question-id="<%=question.id%>" data-answer-id="<%=answer.id%>"><span class="glyphicon glyphicon-minus"></span> </button>
+              </div> 
+              </div> 
+              <button class="button-next-st btn-next-qtype-1 invis" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="false">Absenden</button>
+          <% } %><!--end if-->    
+      <% } %> <!--end if-->                
+      <% if(question.type == 3){ %>
+          <!--layout question freetext-->         
+          <label class="lbl-suggestions" for="text-suggestion">In diesem Textfeld können Sie uns die Eindrücke und Erlebnisse auf Ihrer Reise zukommen lassen. Für Verbesserungsvorschläge und Kritik jeder Art sind wir Ihnen sehr dankbar. Aus technischen und    organisatorischen Gründen können wir jedoch keine persönliche Antwort auf Ihre Anmerkungen geben. </label>          
+          <div class="col-md-2"></div>          
+    ​      <textarea class="txtarea-suggestions" id="text-suggestions" data-answer-id="<%=answer.id%>"  data-question-id="<%=question.id%>" name="text-suggestion" rows="10" cols="45"></textarea>
       <% } %>
-             
-      <% if(question.type == 3){ %>        
-                <label class="lbl-suggestions" for="text-suggestion">In diesem Textfeld können Sie uns die Eindrücke und Erlebnisse auf Ihrer Reise zukommen lassen. Für Verbesserungsvorschläge und Kritik jeder Art sind wir Ihnen sehr dankbar. Aus technischen und    organisatorischen Gründen können wir jedoch keine persönliche Antwort auf Ihre Anmerkungen geben. </label>          
-                <div class="col-md-2"></div>          
-    ​            <textarea class="txtarea-suggestions" id="text-suggestions" data-answer-id="<%=answer.id%>"  data-question-id="<%=question.id%>" name="text-suggestion" rows="10" cols="45"></textarea>              
-        
-      <% } %>
-    
     <% } %>
-
-
+    <!--remaining layout of multiple choice question, buttons and bus elements--> 
     <% if(question.type == 0) {%>
-        <div id="bus-right" class="bus bus-right">
-        </div>
-       </div>
-
-
-        <div class="container-arrows">
-        <span class="glyphicon glyphicon-menu-left btn-arr btn-arr-left"></span>       
-        <span class="glyphicon glyphicon-menu-right btn-arr btn-arr-right"></span>
-        
-        <div class="tutorial-type-2"/>
-         
-       </div>       
-    <% } %>  
-
-
-
-
-
-     
+      <div id="bus-right" class="bus bus-right"></div>
+      </div>
+      <div class="container-arrows">
+      <span class="glyphicon glyphicon-menu-left btn-arr btn-arr-left"></span>       
+      <span class="glyphicon glyphicon-menu-right btn-arr btn-arr-right"></span>
+      <div class="tutorial-type-2"/></div>       
+    <% } %> 
+    <!--diffrent buttons to send or get next question--> 
     <% if(question.type == 1) {%>
-
-        <% if(even_odd == 1) {%>  
-         <% if (i == data.length-1){ %>
-
-           <button class="button-next-st button-next-qtype-1" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="true">Absenden</button> 
-
-         <% } else { %>
-
+      <% if(even_odd == 1) { %>  
+        <% if (i == data.length-1){ %>
+          <button class="button-next-st button-next-qtype-1" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="true">Absenden</button> 
+        <% } else { %>
           <button class="button-next-st button-next-qtype-1" style="bottom: 0;" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="false">Weiter</button>
-
-         <% } %>     
-
-        
-        <% } %>
-
-    <% } else { %>  
-
-    <% if (i == data.length-1){ %>      
+        <% } %> 
+     <% } %>
+    <% } else { %> 
+      <% if (i == data.length-1){ %>      
         <button class="button-next-st" id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="true">Absenden</button>        
-    <% } else { %>      
+      <% } else { %>      
         <button class="button-next-st" style="bottom: 0;"id="button-next-<%=question.id%>" name="button-next" data-question-type="<%=question.type%>" data-question-id="<%=question.id%>" data-last-question="false">Weiter</button>
     <% } %>
-     <% } %>
-     
-</div>
+  <% } %>
+  </div>  <!--end of container question-->  
 <% } %>   
 
 

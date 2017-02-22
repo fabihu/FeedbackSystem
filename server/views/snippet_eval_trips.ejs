@@ -1,74 +1,76 @@
-   <h2>Reisen verwalten</h2>
+  <!-- layout to maintain all trips-->
+  <h2>Reisen verwalten</h2>
   <div class="col-md-12 container">
-  	<div class="row col-md-2">
-  		<button href="#" class='btn btn-info btn-s btn-modal-new-trip header-color-yellow' data-toggle="modal" data-target="modal-new-trip"><span class="glyphicon glyphicon-plus"></span> Neue Reise anlegen</button>
-	</div>
+ 	  <div class="row col-md-2">
+    	<button href="#" class='btn btn-info btn-s btn-modal-new-trip header-color-yellow' data-toggle="modal" data-target="modal-new-trip"><span class="glyphicon glyphicon-plus"></span> Neue Reise anlegen</button>
+	  </div>
     <div class="row col-md-12">
-    <table class="table table-hover" id="table-trips">
-    <thead>   
-        <tr>                    
-            <th>Name</th>
-            <th>Datum</th>
-            <th>Typ</th>
-            <th>Anzahl Reisende</th>
-            <th>Passwort</th>
-            <th class="text-center">Freigabe Fragebogen <span class="glyphicon glyphicon-info-sign tooltip-eval" data-tooltip="status"></span></th>
-            <th>Typ Fragebogen <span class="glyphicon glyphicon-info-sign tooltip-eval" data-tooltip="qtype"></span></th>
-            <th class="text-center"></th>
-        </tr>
-    </thead>
-    	<% for (var index in trips) {%>
-    	<% var trip = trips[index]; %>     
-            <tr id="trip-row-<%=trip.id%>" data-trip-id="<%=trip.id%>">                
-                <td><%=trip.name%></td>
-                <td><%=trip.date_start%></td>
-                <td><%=trip.type%></td>
-                <td><%=trip.count_travellers%></td>
-                <td><%=trip.password%></td>
-                <% if(trip.flag_active == 1){%>
-                  <td class="text-center"><input class="btn-trip-active" type="checkbox" name="btn-trip-active-<%=trip.id%>" data-trip-id="<%=trip.id%>" checked></td>
-                 <% } else { %>
-                  <td class="text-center"><input class="btn-trip-active" type="checkbox" name="btn-trip-active-<%=trip.id%>" data-trip-id="<%=trip.id%>"></td>
-                 <% } %>
-                <td><select class="select-questionnaire" id="select-q-type-<%=trip.id%>" data-trip-id="<%=trip.id%>">
-                        <option value="0">Standard</option>
-                        <option value="1">Surveytainment</option>
-                        <option value="2">Hybrid</option>
-                    </select>
-                </td>
-                <td class="text-center">
-                  <a href="#" class='btn btn-info   btn-xs btn-edit-trip'   id="btn-edit-trip-<%=trip.id%>"   data-trip-id="<%=trip.id%>"><span class="glyphicon glyphicon-pencil"></span></a>
-                  <a href="#" class="btn btn-danger btn-xs btn-delete-trip" id="btn-delete-trip-<%=trip.id%>" data-trip-id="<%=trip.id%>"><span class="glyphicon glyphicon-remove"></span></a>
-                </td>
-
+    <!-- table to list all questions-->
+      <table class="table table-hover" id="table-trips">
+        <thead>   
+            <tr>                    
+                <th>Name</th>
+                <th>Datum</th>
+                <th>Typ</th>
+                <th>Anzahl Reisende</th>
+                <th>Passwort</th>
+                <th class="text-center">Freigabe Fragebogen <span class="glyphicon glyphicon-info-sign tooltip-eval" data-tooltip="status"></span></th>
+                <th>Typ Fragebogen <span class="glyphicon glyphicon-info-sign tooltip-eval" data-tooltip="qtype"></span></th>
+                <th class="text-center"></th>
             </tr>
-        <% } %>             
-    </table>
+        </thead>
+        <tbody>
+    	   <% for (var index in trips) {%>
+    	   <% var trip = trips[index]; %>
+              <!-- one row for each trip-->
+              <tr id="trip-row-<%=trip.id%>" data-trip-id="<%=trip.id%>">                
+                  <td><%=trip.name%></td>
+                  <td><%=trip.date_start%></td>
+                  <td><%=trip.type%></td>
+                  <td><%=trip.count_travellers%></td>
+                  <td><%=trip.password%></td>
+                  <% if(trip.flag_active == 1){%>
+                    <td class="text-center"><input class="btn-trip-active" type="checkbox" name="btn-trip-active-<%=trip.id%>" data-trip-id="<%=trip.id%>" checked></td>
+                   <% } else { %>
+                    <td class="text-center"><input class="btn-trip-active" type="checkbox" name="btn-trip-active-<%=trip.id%>" data-trip-id="<%=trip.id%>"></td>
+                   <% } %>
+                  <td><select class="select-questionnaire" id="select-q-type-<%=trip.id%>" data-trip-id="<%=trip.id%>">
+                          <option value="0">Standard</option>
+                          <option value="1">Surveytainment</option>
+                          <option value="2">Hybrid</option>
+                      </select>
+                  </td>
+                  <td class="text-center">
+                    <a href="#" class='btn btn-info   btn-xs btn-edit-trip'   id="btn-edit-trip-<%=trip.id%>"   data-trip-id="<%=trip.id%>"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a href="#" class="btn btn-danger btn-xs btn-delete-trip" id="btn-delete-trip-<%=trip.id%>" data-trip-id="<%=trip.id%>"><span class="glyphicon glyphicon-remove"></span></a>
+                  </td>
+              </tr><!-- end of trip-->  
+          <% } %>
+         </tbody>             
+      </table><!-- end of table-->     
     </div>
 </div>
 
+<!-- modal to add and edit trips--> 
 <div id="modal-new-trip" class="modal fade" role="dialog">
   <div class="modal-dialog">
-    <!-- Modal content-->
+    <!-- modal content new / add trip--> 
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Neue Reise anlegen</h4>
-      </div>
+      </div>      
       <div class="modal-body">
-        
+        <!-- diffrent  forms for user input--> 
         <form>
           <div class="form-group">
             <label for="new-trip-id">ID</label>
             <input type="text" class="form-control" id="new-trip-id" disabled >
           </div>
-
           <div class="form-group">
             <label for="new-trip-name">Name</label>
             <input type="text" class="form-control" id="new-trip-name">
-          </div>
-
-                     
+          </div>                     
           <label for="new-trip-date">Datum</label>
           <div class="input-group padding-bottom-date-input">  
               <input type="text" class="form-control datepicker" id="new-trip-date" data-date-format="dd.mm.yyyy">
@@ -76,33 +78,28 @@
                 <span class="glyphicon glyphicon-th"></span>             
               </div>
           </div>
-
           <div class="form-group">  
            <div class="form-group">
               <label for="new-trip-type">Kategorie</label>
-              <select class="form-control" id="new-trip-type">
-                
+              <select class="form-control" id="new-trip-type">                
               </select>
             </div>
           </div>
-
           <div class="form-group">
            <label for="new-trip-count-travellers">Anzahl Reisende</label>
-            <input type="number" class="form-control" id="new-trip-count-travellers">
+            <input type="number" class="form-control" id="new-trip-count-travellers" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
           </div>
-
           <div class="form-group">
            <label for="new-trip-password">Passwort</label>
             <input type="text" class="form-control" id="new-trip-password">
           </div>
-        </form>
-
+        </form> <!--end of forms--> 
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default btn-modal-cancel" id="btn-modal-cancel-new-trip" data-dismiss="modal">Abbrechen</button>
         <button type="button" class="btn btn-default btn-modal-save-new-trip" id="btn-modal-save-new-trip" data-dismiss="modal">Speichern</button>
       </div>
-    </div>
-
+    </div> <!-- end of modal content--> 
   </div>
-</div>  
+</div> 
+

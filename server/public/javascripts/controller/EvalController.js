@@ -1,5 +1,6 @@
 FeedbackSystem.EvalController = (function() {
 	var that = {},
+	EvalView = null,
 	travelCategories = null,
 	edit_trip = false,
 	edit_user = false,
@@ -14,6 +15,7 @@ FeedbackSystem.EvalController = (function() {
 	
 	init = function() {				
 	 console.log("EvalController init");
+	 EvalView = FeedbackSystem.EvalView;
 	 getTravelCategories(function(){
 	 	getPageContent('/eval/trip');	 	
 	 });
@@ -27,9 +29,8 @@ FeedbackSystem.EvalController = (function() {
 		}	
 
 		if(url == '/eval/score'){
-			$('#dashboard-content').empty();
-			var loading_gif = '<div id="loading-gif" class="col-md-6 col-md-offset-6"><img src="../images/loading_content.gif" class="div-loading"></img></div>';
-			$('#dashboard-content').append(loading_gif);
+			EvalView.clearDashboard();
+			EvalView.addLoadingGif();			
 		}
 
 		$.get(url, function( data ){
@@ -43,14 +44,15 @@ FeedbackSystem.EvalController = (function() {
     					$('#table-trips > tbody  > tr').each(function(index, element) {
     						parseTravelType(element);
     						formatDate(element);    					
-    					});
-    				$(".btn-trip-active").bootstrapSwitch({size: 'mini',
-    											onColor: 'success',
-    											offColor: 'danger',
-    											onSwitchChange: function(){
-    												onChangeTripStatus(this);
-    											}});
-    				});	
+    					}); 
+
+    					$(".btn-trip-active").bootstrapSwitch({size: 'mini',
+    												onColor: 'success',
+    												offColor: 'danger',
+    												onSwitchChange: function(){
+    													onChangeTripStatus(this);
+    												}});
+    					});	
     					
 
     				$('#table-trips > tbody  > tr').each(function(index, element) {    			
@@ -84,29 +86,11 @@ FeedbackSystem.EvalController = (function() {
     					$('#table-users > tbody > tr').each(function(index, element) {
     						var name = $(element).find('td').eq(0).text();
     						var buttons = $(element).find('td').eq(2);    						
-    						if(name == user_name) {    				
+    						if(name == user_name) {
     							var password_field = $(element).find('td').eq(1);
-    							var eye_glyphicon = '<div class="glyphicon-eye"><span class="glyphicon glyphicon-eye-open"></span>';
-    							$(password_field).append(eye_glyphicon);
-
+    							EvalView.addEyeGlyphiconPassword(password_field);
     							$(buttons).find('a').removeClass('not-active').removeAttr('disabled');
-
-
-    							
-    							$(".glyphicon-eye").on('click', function(){
-    								var type = $(password_field).find('input').prop("type");
-    								if(type == 'password'){
-    									$(".glyphicon-eye").find('span').removeClass("glyphicon-eye-open").addClass("glyphicon-eye-close");
-    									$.post("/eval/password/", function( data ) {    									
-    										$(password_field).find('input').val(data.pw);
-    										$(password_field).find('input').prop("type", "text");					
-    									});
-    								} else {
-    									$(".glyphicon-eye").find('span').removeClass("glyphicon-eye-close").addClass("glyphicon-eye-open");
-    									$(password_field).find('input').val("1234567890");
-    									$(password_field).find('input').prop("type", "password");
-    								}
-    							});
+    							addPasswordListener(password_field);    							
     						}
     						
     					});
@@ -117,6 +101,27 @@ FeedbackSystem.EvalController = (function() {
     		}
 
     		
+    	});
+	},
+
+	onShowPassword = function(field){
+		var type = $(field).find('input').prop("type");
+    	if(type == 'password'){
+    		EvalView.closeEyeGlyph();    		
+    		$.post("/eval/password/", function( data ) {    									
+    			$(field).find('input').val(data.pw);
+    			$(field).find('input').prop("type", "text");					
+    		});
+    	} else {
+    		EvalView.openEyeGlyph();    		
+    		$(field).find('input').val("1234567890");
+    		$(field).find('input').prop("type", "password");
+    	}
+	},
+
+	addPasswordListener = function(field){
+		$(".glyphicon-eye").on('click', function(){
+    		onShowPassword(field);
     	});
 	},
 
@@ -155,9 +160,7 @@ FeedbackSystem.EvalController = (function() {
 
 		$('#dashboard-content').on('click', ".btn-modal-save-new-trip", function( e ){
 			onSaveNewTrip(e);						
-		});	
-
-		
+		});			
 
 		
 		//Buttons for question	
@@ -204,18 +207,12 @@ FeedbackSystem.EvalController = (function() {
 		});
 
 
-
-		$('#dashboard-content').on('click', ".btn-delete-answer", function( e ){			
-									
-		});
-
-
 		$('#dashboard-content').on('hidden.bs.modal', "#modal-detail-question", function( e ){			
 			onModalAnswerClose(e, this);						
 		});
 
 		$('#dashboard-content').on('click', ".btn-add-row-answer-option-detail", function( e ){			
-			onAddRowAnswerOptionDetail(e, this);						
+			onAddRowAnswerOptionDetail(e);						
 		});	
 
 		$('#dashboard-content').on('click','.btn-del-answer', function( e ){
@@ -273,9 +270,9 @@ FeedbackSystem.EvalController = (function() {
            onModalEditUser(this);
        	});
 
-       	$('#dashboard-content').on('click', '.tooltip-eval', function () {
+       	$('#dashboard-content').on("mouseover",'.tooltip-eval', function () {
        	   var tooltip = $(this).data('tooltip');
-           initTooltip(this, tooltip);
+           EvalView.initTooltip(this, tooltip);
            $(this).tooltip('show');
        	});      
 	},
@@ -286,25 +283,6 @@ FeedbackSystem.EvalController = (function() {
     		$('body').append(data);
 		});
 		return;
-	},
-
-	initTooltip = function(selector, tooltip){
-		var title = "";
-		switch(tooltip){
-			case('status'):{ title = 'Ein Fragebogen kann mittels des Status-Sliders für die jeweilige Reise aktiviert oder deaktiviert werden. Die einzelnen Fragen des Fragebogens können nur im deaktivierten Zustand bearbeitet werden.'; break;}
-			case('qtype'):{title = 'Es ist möglich den Fragebogen in verschiedenen Versionen beantworten zu lassen. In der Hybrid-Version werden abwechselnd Surveytainment- bzw. Standard-Fragebögen an den Nutzer ausgeliefert.'; break;}
-			case('question'):{title = '<b>Multiple-Choice:</b> Teilnehmer kann eine oder mehrere Antwortoptionen auswählen' +
-									   '\n<b>Bewertungsskala:</b> Antwortoptionen der Frage werden auf einer Skala von "sehr gut" bis "sehr schlecht" beantwortet' +
-									   '\n<b>Freitext:</b> Nutzer können Antworten in einem Freitextfeld beantworten'; break;}
-			default: {title = 'Kein Tooltip gefunden!'; break;}
-		}
-		$(selector).tooltip({
-					   animation: true,                       
-                       container: selector,
-                       placement: 'bottom',
-                       html: true,
-                       title: title 
-                        });  		
 	},
 
 	parseQuestionType = function(selector){
@@ -336,23 +314,20 @@ FeedbackSystem.EvalController = (function() {
 	},
 
 	checkNoActiveTrips = function(data){
-		if($(".panel-assignment").length == 0){
-			var text ="<div class='main-text font-large'>Keine aktiven Reisen gefunden!</div>";
-			$("#dashboard-content").append(text);
+		if($(".panel-assignment").length === 0){
+			EvalView.showNoInactiveTripMsg();			
 		} 
 	},
 
 	onDeleteUser = function(element){
 		var user_id = $(element).data('user-id');
 		var url =  '/eval/delete-user';
-
 		$.post(url, {id: user_id}, function( data ){
 			getPageContent('/eval/users');						
 		});
 	},
 
 	onModalEditUser = function(element){
-
 		var user_id = $(element).data('user-id');
 		var $row = $('#user-row-' + user_id);
 		var old_mail = $($row.children()[0]).text();
@@ -362,8 +337,7 @@ FeedbackSystem.EvalController = (function() {
 		
 		$('#new-user-id').val(user_id);
 		$('#new-user-email').val(old_mail);
-		$('#new-user-password').val(old_password);
-		
+		$('#new-user-password').val(old_password);		
 	},
 
 	onModalSaveNewUser = function(element){
@@ -374,16 +348,17 @@ FeedbackSystem.EvalController = (function() {
 		if (edit_user){
 			var url = '/eval/edit-user';		
 			$.post(url, {id: user_id, mail: new_mail, password: new_password}, function( data ){
+				$("#modal-new-users").hide('modal');
 				getPageContent('/eval/users');						
 			});
 		} else {			
 			var url = '/eval/save-new-user';
 			$.post(url, {mail: new_mail, password: new_password}, function( data ){
+				$("#modal-new-users").hide('modal');
 				getPageContent('/eval/users');						
 			});
 		}
 		edit_user = false;
-		$("#modal-new-users").hide('modal');
 	},
 
 	onModalUserShow = function(){
@@ -430,62 +405,58 @@ FeedbackSystem.EvalController = (function() {
             }).hide();
 	},
 
-	onSelectListItem = function(element){
-		 var $checkBox = $(element);
-            if (!$checkBox.hasClass('selected')) {
-                $checkBox.addClass('selected').closest('.well').find('ul li:not(.active)').addClass('active');
-                $checkBox.children('i').removeClass('glyphicon-unchecked').addClass('glyphicon-check');
-            } else {
-                $checkBox.removeClass('selected').closest('.well').find('ul li.active').removeClass('active');
-                $checkBox.children('i').removeClass('glyphicon-check').addClass('glyphicon-unchecked');
-            }
+	onSelectListItem = function(element){		 
+        if (!$(element).hasClass('selected')) {
+        	EvalView.checkListItem(element);           
+        } else {
+        	EvalView.uncheckListItem(element);
+            
+        }
 	},
 
 	onArrowLeftRightClick = function(element){
-		var $button = $(element), actives = '', url = '';
-				trip_id = $(element).data('trip-id');
-                if ($button.hasClass('move-left')) {                	
-                    actives = $('.list-right ul li.active');
-                    actives.appendTo($('.list-left ul.'+trip_id)); 
-                    url = '/eval/add-question-set'                   
-                    
-
-                } else if ($button.hasClass('move-right')) {
-
-                    actives = $('.list-left ul li.active');
-                    actives.appendTo($('.list-right ul.'+trip_id));
-                    url = '/eval/remove-question-set';
-				                      
-                }
-                
-                for (var i = 0; i<actives.length;i++){
-                    	var $item = $(actives[i]);                    	
-                    	var trip_id = $item.data('trip-id');
-                    	var question_id =  $item.data('question-id');
-                    	var question_version =  $item.data('question-version');
-                    	                    	
-				    	$.post(url, {trip_id: trip_id, question_id: question_id, question_version: question_version}, function( data ){
-							
-						});	
-                }
+		var actives = '', url = '';
+		trip_id = $(element).data('trip-id');
+        if ($(element).hasClass('move-left')) {                	
+            actives = $('.list-right ul li.active');
+            actives.appendTo($('.list-left ul.'+trip_id));
+            actives.addClass('trip-'+trip_id);
+            url = '/eval/add-question-set';                 
+              
+        } else if ($(element).hasClass('move-right')) {                	
+                actives = $('.list-left ul li.active');
+                var actives_count = actives.length;
+            	var count = $('li.trip-'+trip_id).length;
+            	if (count > actives_count){
+                	actives.appendTo($('.list-right ul.'+trip_id));
+                	actives.removeClass('trip-'+trip_id);
+                	url = '/eval/remove-question-set';
+    			}                  
+        }
+        
+        if(url){        	
+        	for (var i = 0; i<actives.length;i++){
+           		var $item = $(actives[i]);                    	
+           		var trip_id = $item.data('trip-id');
+           		var question_id =  $item.data('question-id');
+           		var question_version =  $item.data('question-version');           		    	                    	
+	    		$.post(url, {trip_id: trip_id, question_id: question_id, question_version: question_version}, function( data ){
+					
+				});
+				$(actives[i]).removeClass('active');	
+         	}
+       	}
 	},
 
 	onArrowUpDownClick = function(element){
 		
-		var $button = $(element), $actives = '', url = '';
-                if ($button.hasClass('move-up')) {  
-                	              	
-                    $actives = $('.list-left ul li.active');
-                    $before = $actives.first().prev();
-                    $actives.insertBefore($before);
-                  
-                } else if ($button.hasClass('move-down')) {
-                 	
-                   $actives = $('.list-left ul li.active'); 
-                   $next = $actives.last().next();                  
-                   $actives.insertAfter($next);                  
-				                      
-                }
+		var url = '';
+        if ($(element).hasClass('move-up')) {  
+           EvalView.moveListItemUp();
+        } else if ($(element).hasClass('move-down')) {
+           EvalView.moveListItemDown();                      
+        }
+
         var trip_id = $(element).data('trip-id');     
         var question_entries = $('.list-left ul li.trip-'+trip_id);
         
@@ -525,23 +496,21 @@ FeedbackSystem.EvalController = (function() {
 	onModalTripShow = function(){
 		$("#modal-new-trip").modal('show');
 		loadTravelCategoriesInModal();
-		initDatepickerNew();
+		EvalView.initDatePicker();
 	},
 
 	onModalEditQuestion = function(e, item){
-
-		var question_id = $(item).data('question-id');
-		
+		var question_id = $(item).data('question-id');		
 		var $row = $('#question-row-' + question_id);	
 		var old_question_name = $($row.children()[1]).text();
-		var old_type = $($row.children()[2]).text();
+		var old_type = $($row.children()[2]).text();		
+		var old_type_index = question_types.indexOf(old_type);		
 
 		$("#modal-edit-question").modal('show');
 
 		$('#edit-question-id').val(question_id);
 		$('#edit-question-text').val(old_question_name);
-		$('#edit-question-type').val(parseInt(old_type));		
-
+		$('#edit-question-type').val(old_type_index);
 	},
 
 	onModalEditAnswer = function(e, item){
@@ -564,8 +533,7 @@ FeedbackSystem.EvalController = (function() {
 		e.preventDefault();
 		var forms = $("#container-question-id-details").children('.form-inline');
 		var question_id = $('#container-question-id-details').data('question-id');		
-		var new_answer_options = [];
-		
+		var new_answer_options = [];		
 		
 		$.each(forms, function(index, element){
 			var answer_id = -1;
@@ -573,31 +541,29 @@ FeedbackSystem.EvalController = (function() {
 			var answer = {
 				text: new_text,
 				question_id: question_id			
-			}
+			};
 			var url = "";
 			
 			if ($(element).find("#detail-answer-text").data('answer-id')){
 				if($.inArray(new_text, old_answer_values) == -1){
 					answer_id = $(element).find("#detail-answer-text").data('answer-id');
-					url = '/eval/update-answer'
+					url = '/eval/update-answer';
 					$.post(url, {data: answer, id: answer_id, question_id: question_id}, function( data ){			
 						
 					});
 				}
-			} else {
-					
-					var answer_option = {
-	    				text: new_text,
-	    				question_id: question_id
-	    			} 
-	    			new_answer_options.push(answer_option);
-					
+			} else {					
+				var answer_option = {
+	    			text: new_text,
+	    			question_id: question_id
+	    		}; 
+	    		new_answer_options.push(answer_option);					
 			}
 		
 		});	
 		
 		if (new_answer_options.length > 0){			
-			url = '/eval/save-new-answer-options'
+			url = '/eval/save-new-answer-options';
 			$.post(url, {data: new_answer_options}, function( data ){
 				
 			});
@@ -619,9 +585,9 @@ FeedbackSystem.EvalController = (function() {
 		var question = {
 			text: new_text,
 			type: new_type
-		}
+		};
 		
-		var url = '/eval/update-question'
+		var url = '/eval/update-question';
 		$.post(url, {data: question, id: question_id}, function( data ){
 			getPageContent('/eval/questions');
 		});
@@ -629,122 +595,75 @@ FeedbackSystem.EvalController = (function() {
 		$("#modal-edit-question").hide('modal');
 	},
 
-	onEditTrip = function(e, item){
+	onEditTrip = function(e, item){		
+		var trip_id = $(item).data('trip-id');
+		var $row = $('#trip-row-' + trip_id);	
+		var old_trip_name = $($row.children()[0]).text();
+		var old_trip_date = $($row.children()[1]).text();
+		var old_trip_type = $($row.children()[2]).text();
+		var old_trip_count = $($row.children()[3]).text();
+		var old_trip_password = $($row.children()[4]).text();
 		
-			var trip_id = $(item).data('trip-id')
-			var $row = $('#trip-row-' + trip_id);	
-
-			var old_trip_name = $($row.children()[0]).text();
-			var old_trip_date = $($row.children()[1]).text();
-			var old_trip_type = $($row.children()[2]).text();
-			var old_trip_count = $($row.children()[3]).text();
-			var old_trip_password = $($row.children()[4]).text();
-			
-			$("#modal-new-trip").modal('show');
-			loadTravelCategoriesInModal();
-			initDatepickerEdit();
-			var result = travelCategories.filter(function( obj ) {				
-  				return obj.type == old_trip_type;
-			});					
-
-			$('#new-trip-id').val(trip_id);
-			$('#new-trip-name').val(old_trip_name);
-			$('#new-trip-date').val(old_trip_date);
-			$('#new-trip-type').val(result[0].id);			
-			$('#new-trip-count-travellers').val(parseInt(old_trip_count));
-			$('#new-trip-password').val(old_trip_password);
+		$("#modal-new-trip").modal('show');
+		loadTravelCategoriesInModal();
+		EvalView.initDatePicker();
+		var result = travelCategories.filter(function( obj ) {				
+ 				return obj.type == old_trip_type;
+		});					
+		$('#new-trip-id').val(trip_id);
+		$('#new-trip-name').val(old_trip_name);
+		$('#new-trip-date').val(old_trip_date);
+		$('#new-trip-type').val(result[0].id);			
+		$('#new-trip-count-travellers').val(parseInt(old_trip_count));
+		$('#new-trip-password').val(old_trip_password);
 
 	},
 
 	onSaveNewTrip = function(e){
-			var trip_id = $('#new-trip-id').val();
-			var new_name = $('#new-trip-name').val();
-			var new_date = convertToDate('#new-trip-date');			
-			var new_type = $('#new-trip-type').val();
-			var new_traveller_count = $('#new-trip-count-travellers').val();
-			var new_password = $('#new-trip-password').val();
-			
-			var new_trip = {
-				name: new_name,
-				date_start: new_date,
-				type: new_type,
-				count_travellers: new_traveller_count,
-				password: new_password
-			}
-			
-			var loading_gif = '<div class="col-md-6 col-md-offset-6"><img src="../images/loading_content.gif" class="div-loading"></img></div>';
-			$('#dashboard-content').append(loading_gif);
-
-			if(edit_trip){
-				var url = '/eval/update-trip'
-				$.post(url, {data: new_trip, id: trip_id}, function( data ){
-					getPageContent('/eval/trip');
-				});
-
-			} else {
-				var url = '/eval/save-new-trip'
-				$.post(url, {data: new_trip}, function( data ){
-					getPageContent('/eval/trip');
-
-				});
-			}
-			edit_trip = false;
+		var trip_id = $('#new-trip-id').val();
+		var new_name = $('#new-trip-name').val();
+		var new_date = convertToDate('#new-trip-date');			
+		var new_type = $('#new-trip-type').val();
+		var new_traveller_count = $('#new-trip-count-travellers').val();
+		var new_password = $('#new-trip-password').val();
+		var new_trip = {
+			name: new_name,
+			date_start: new_date,
+			type: new_type,
+			count_travellers: new_traveller_count,
+			password: new_password
+		};
+		
+		EvalView.addLoadingGif();
+		if(edit_trip){
+			var url = '/eval/update-trip';
+			$.post(url, {data: new_trip, id: trip_id}, function( data ){
+				getPageContent('/eval/trip');
+			});
+		} else {
+			var url = '/eval/save-new-trip';
+			$.post(url, {data: new_trip}, function( data ){
+				getPageContent('/eval/trip');
+			});
+		}
+		edit_trip = false;
 			$("#modal-new-trip").hide('modal');
 				
 	},
 
 	convertToDate = function (selector) {
-    	var from = $(selector).val().split(".");
-    	var jsDate = new Date(from[2], from[1] - 1, from[0]);    	
+    	var from = $(selector).val().split(".");    	
+    	var jsDate = new Date(from[2], from[1]-1, parseInt(from[0])+1); 
     	return jsDate.toISOString().slice(0, 19).replace('T', ' ');
 	},
 
-	initDatepickerNew = function(){		
-		var nowTemp = new Date();
-		var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
-		$('.datepicker').datepicker({
-			autoclose: true,
-			calendarWeeks: true,
-			format: 'dd.mm.yyyy',
-			language: 'de-DE',
-			todayHighlight: true
-		})		
-	},
-
-	initDatepickerEdit = function(){
-		$('.datepicker').datepicker()
-	},
-
-	onAddRowAnswerOption = function(e){		
-        var newRow = $("<tr>");
-        var cols = "";
-
-        			  
-        cols += '<td><input type="text" class="form-control" name="input-new-answer-option-id-' + answer_option_counter + '" disabled/></td>';
-        cols += '<td><input type="text" class="form-control input-new-answer-option-text" name="input-new-answer-option-text-' + answer_option_counter + '"/></td>';
-       
-
-        cols += '<td><input type="button" class="btn btn-md btn-danger btn-del-answer-row"  value="X"></td>';
-        newRow.append(cols);        
-        $(".table-answer-options").append(newRow);
+	onAddRowAnswerOption = function(e){	
+		EvalView.addRowAnswerOption(answer_option_counter);       
         answer_option_counter++;
-
 	},
 
-	onAddRowAnswerOptionDetail = function(e, item){
-		var form = $("#container-question-id-details").children('.form-inline').last();
-		var new_input = '<div class="form-inline margin-answer-detail"><input type="text" class="form-control custom-input-width new-input" id="detail-answer-text" value="Neue Antwortoptionen eingeben..."/>' +
-						'<input type="button" class="btn btn-md btn-danger btn-del-answer" value="X"/></div>';	
-
-		$(new_input).insertAfter(form);
-
-		$('.new-input').focus(function(){						
-		   $(this).data('value', $(this).attr('value'))
-		          .attr('value','');
-		}).blur(function(){
-		  $('.new-input').attr('value' , "Neue Antwortoptionen eingeben...");
-		});		
-
+	onAddRowAnswerOptionDetail = function(e){
+		EvalView.addRowAnswerOptionDetail();
 	},
 
 	onDeleteTrip = function(e, element){
@@ -758,49 +677,34 @@ FeedbackSystem.EvalController = (function() {
 		});
 	},
 
-	onNextNewQuestion = function(e){
-		var new_question_id = $('#new-question-id').val();
+	onNextNewQuestion = function(e){		
 		var new_text = $('#new-question-text').val();
-		var new_type = $('#new-question-type').val();
-		var new_question_answer_id = $('#new-question-answer-id').val();
-
+		var new_type = $('#new-question-type').val();		
 		new_question = {
 				text: new_text,
 				type: new_type,				
-		}
-		
-
-		$('#modal-content-question').remove();
-		$('#modal-content-answer').removeClass('hidden');
-		
-		
-		$('#modal-text-header').text('Antwortoptionen anlegen')
-		$('#new-question-text').text(new_text);	
-		
+		};
+		EvalView.modalRemoveQuestionContent();
+		EvalView.modalChangeTextAnswerHeader(new_text);	
 	},
 
 	onSaveNewQuestion = function(e){		
 		var new_answer_options = [];
 		var url = '/eval/save-new-question';
-		$.post(url, {data: new_question}, function( data ){	
-				
+		$.post(url, {data: new_question}, function( data ){					
 			var question_id = data.questionID;
-			$('.table-answer-options').find('.input-new-answer-option-text').each(function(i, obj) {
-    			
+			$('.table-answer-options').find('.input-new-answer-option-text').each(function(i, obj) {    			
     			var answer_option_text = $(obj).val();
     			var answer_option = {
     				text: answer_option_text,
     				question_id: question_id
-    			} 
-    			
+    			};     			
     			new_answer_options.push(answer_option);
 			});
-			var url = '/eval/save-new-answer-options'
+			var url = '/eval/save-new-answer-options';
 			$.post(url, {data: new_answer_options}, function( data ){
 				getPageContent('/eval/questions');
-			});
-
-			
+			});			
 		});
 		$("#modal-new-question").hide('modal');	
 	},
@@ -808,118 +712,101 @@ FeedbackSystem.EvalController = (function() {
 	onDeleteQuestion = function(e, element){
 		var question_id = $(element).data('question-id');		
 		var url = '/eval/delete-question';
-		$.post(url, {id: question_id}, function( data ){							
-			$('#question-row-'+ question_id).fadeOut().delay(800).queue(function(){
-				$(this).remove();
-			});
+		$.post(url, {id: question_id}, function( data ){
+			EvalView.removeQuestionRow(question_id, this);			
 		});
 	},
 
 	onDeleteAnswer = function(e, element){
-		
-
 		var answer_id = $(element).prev().data('answer-id');		
-		$(this).parent().remove();		
-		
 		var url = '/eval/delete-answer';
-		$.post(url, {id: answer_id}, function( data ){							
-	
-		});
+		var count = $("#container-question-id-details").children('.form-inline').length;
+		if(count > 1){
+			$.post(url, {id: answer_id}, function( data ){
+				EvalView.removeAnswerRow(element);				
+			});			
+		}							
 	},
 
 	onClickMenuItem = function(item){
-		$(".menu-active-main-color").removeClass("menu-active-main-color");
-    	$(item).addClass("menu-active-main-color");
-    	
+		EvalView.changeActiveStyleMenuItem(item);		    	
     	var url = /eval/ + $(item).data('url'); 
-    	getPageContent(url);
-    		
+    	getPageContent(url);    		
 	},
 
 	onLoadCharts = function(){
  	var url = '/eval/get-chart-data';
- 	var y = [];
+ 	$.post(url, function(result){
+		result.forEach(function(value){
+			var trip = value.trip;
+			var trip_id = trip.id;		
+			var q_type = trip.type_questionnaire;		
+			var count_questions = trip.questions.length;
+			displayQType(trip_id, q_type);
+			createDemografInfo(trip_id);
+			displayCommonInfo(trip_id, count_questions);
+			trip.questions.forEach(function(value){
+				var question = value;
+				var question_id = question.id;
+				var chart = $('#chart-'+trip_id+"-"+question_id);
+				var labels = [].concat.apply([], question.answers);		
+				var question_type = question.type;
+				var url = '/eval/get-question-score';			
+				var backgroundColor = new Array("#2ecc71",
+    										 	"#3498db",
+    										 	"#95a5a6",
+    										 	"#9b59b6",
+    										 	"#f1c40f",
+    										 	"#e74c3c",
+    										 	"#ab82ff",
+    										 	"#f1f181");
 
-	$.post(url, function(result){
+				$.post(url, {trip_id: trip_id, question_id: question_id}, function(answers){				
+					var length = answers.length;
+					if(length > 0){			
+						if(question_type === 0){
+							var text_labels = $.map(labels, function (label) {												               
+                	    	                                return label.text;                                                                                                  
+                	        	                        });			
+							var data = {
+								labels: text_labels,
+								datasets: [{
+									data: [],							
+									backgroundColor:backgroundColor
+								}]
+							};
+	
+						labels.forEach(function(label){					
+							var answer_id = label.answer_id;
+							var count = $.grep(answers, function (answer) {												               
+	                	                                    return answer.answer_id == answer_id;                                                                                                  
+	                	                                });		
+							data.datasets[0].data.push(count.length);
+						});									
+						createNewPieChart(chart, data);				
+						} else if(question_type == 1){	
+							labels.forEach(function(label){
+								var answer_id = label.answer_id;
+								var data = $.grep(answers, function (answer) {              
+	                	                                     return answer.answer_id == answer_id;                                                                                                  
+	                	                                  });						
+								createNewStarRating(chart, label, data, trip_id, question_id, label.id);						
+							});					
+						} else if(question_type == 3){									
+							createNewTextChart(chart, answers);
+						}
+					} else {
+						EvalView.hideNoResponseContainer(trip_id, question_id);					
+					}
 
-	result.forEach(function(value){
-		var trip = value.trip;
-		var trip_id = trip.id;		
-		var q_type = trip.type_questionnaire;		
-		var count_questions = trip.questions.length;
-
-		displayQType(trip_id, q_type);
-		createDemografInfo(trip_id);
-		displayCommonInfo(trip_id, count_questions);
-
-		trip.questions.forEach(function(value){
-			var question = value;
-			var question_id = question.id;
-			var chart = $('#chart-'+trip_id+"-"+question_id);
-			var labels = [].concat.apply([], question.answers);		
-			var question_type = question.type;
-			var url = '/eval/get-question-score';			
-			var backgroundColor = new Array("#2ecc71",
-    										 "#3498db",
-    										 "#95a5a6",
-    										 "#9b59b6",
-    										 "#f1c40f",
-    										 "#e74c3c",
-    										 "#ab82ff",
-    										 "#f1f181");
-
-			$.post(url, {trip_id: trip_id, question_id: question_id}, function(answers){		
-									
-				if(question_type == 0){
-				var text_labels = $.map(labels, function (label) {												               
-                                                    return label.text;                                                                                                  
-                                                });			
-				var data = {
-						labels: text_labels,
-						datasets: [{
-							data: [],							
-							backgroundColor:backgroundColor
-					}]
-				}
-
-				labels.forEach(function(label){					
-					var answer_id = label.answer_id;
-					var count = $.grep(answers, function (answer) {												               
-                                                    return answer.answer_id == answer_id;                                                                                                  
-                                                });		
-					data.datasets[0].data.push(count.length);
-				 });
-				createNewPieChart(chart, data);
-
-				} else if(question_type == 1){
-
-					labels.forEach(function(label){
-						var answer_id = label.answer_id;
-						var data = $.grep(answers, function (answer) {              
-                                                     return answer.answer_id == answer_id;                                                                                                  
-                                                  });						
-						createNewStarRating(chart, label, data, trip_id, question_id, label.id);						
-					});					
-				} else if(question_type == 3){									
-					createNewTextChart(chart, answers);
-				}
-				
-			});
+				});
 			
 		});
 
-	});
+		});
 	});	
 
 	},
-
-	setAll = function(a, v) {
-   	var i, n = a.length;
-    	for (i = 0; i < n; ++i) {
-    	    a[i] = v;
-    	}
-	},
-	
 
 	createNewTextChart = function(element, data){
 		var count = 0;		
@@ -942,15 +829,9 @@ FeedbackSystem.EvalController = (function() {
 	},
 
 	createNewStarRating = function(element, label, data, trip_id, question_id, index){			
-			var avg = calcAvgStarRating(data);
-			var tr = '<tr>';
+			var avg = calcAvgStarRating(data);			
 			var text = label.text;
-			var header = '<td><label for="rating-'+trip_id + "-"+question_id+ "-"+ index +'" class="control-label label-score-star-rating">'+ text +'</label></td>';
-			var rating = '<td ><input class="rating-loading" id="rating-'+trip_id + "-"+question_id+ "-"+ index +'" value="'+ avg +'"></input></td>';
-			var info = '<td class="td-inline"><p class="score-avg-info">'+ avg.toFixed(1) +' / </p><p class="score-avg-info-weight">5</p></td>'
-			tr = tr+header+rating+info+'</tr>';			
-			$(element).append(tr);		
-			$("#rating-"+trip_id+"-"+question_id+ "-"+ index).rating({displayOnly: true, size: 'sm', step: 0.5});
+			EvalView.createStarTR(element, avg, text, trip_id, question_id, index);			
 	},
 
 	createNewBarChart = function(element, data, options){
@@ -981,7 +862,7 @@ FeedbackSystem.EvalController = (function() {
     					            }}]
     					}
 						
-		}
+		};
 		createAgeChart(trip_id, backgroundColor, options);
 		createExpChart(trip_id, backgroundColor, options);
 	},
@@ -989,7 +870,7 @@ FeedbackSystem.EvalController = (function() {
 	createAgeChart = function(trip_id, color, options){
 		var chart = $('#age-dem-container-'+trip_id);
 		getAgeParticipants(trip_id, function(result){
-			var sum_data = [0, 0, 0, 0, 0, 0, 0]
+			var sum_data = [0, 0, 0, 0, 0, 0, 0];
 			$.each(result, function(index, object){
 				sum_data[object.age_group] = object.value;			
 				var data = {
@@ -1012,7 +893,7 @@ FeedbackSystem.EvalController = (function() {
 	createExpChart = function(trip_id, color, options){
 		var chart = $('#exp-dem-container-'+trip_id);
 		getExpParticipants(trip_id, function(result){
-			var sum_data = [0, 0, 0, 0, 0, 0, 0]
+			var sum_data = [0, 0, 0, 0, 0, 0, 0];
 			$.each(result, function(index, object){
 				sum_data[object.experience] = object.value;			
 				var data = {
@@ -1031,67 +912,34 @@ FeedbackSystem.EvalController = (function() {
 	},
 
 	calcAvgStarRating = function(array){
-		var sum = 0; 
-		for (var index in array){
-			var value = array[index].value;
-			sum += value;
-		}		
-		return sum/array.length;
+		if(array.length > 0){
+			var sum = 0; 
+			for (var index in array){
+				var value = array[index].value;
+				sum += value;
+			}		
+			return sum/array.length;			
+		}
+		return 0;
 	},
-
-	getColor = function(value, min, max) {	
-   	 	var hue=((max-(value-min))*120).toString(10);
-   	 	console.log(["hsl(",hue,",100%,50%)"].join(""))
-    	return ["hsl(",hue,",100%,50%)"].join("");
-	},
-
 
 	createNewPieChart = function(element, data){
-	var ctx = $(element);
-	var chart = new Chart(ctx, {type:'doughnut',
-								  data: data,
-								  options:
-								  { legend: {
-								   				display: false								  				
-								  			},
-								  	legendCallback: function(chart){								  						
-								  		                var text = []
-								  		                 text.push('<div class="legend-list">');
-               											 text.push('<ul">');               											
-               											 for (var i=0; i<chart.data.datasets[0].data.length; i++) {
-               											     text.push('<li>');               											                											    
-               											     text.push('<div class="legend-square" style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '">' + chart.data.datasets[0].data[i] + '</div>');
-               											     if (chart.data.labels[i]) {
-               											         text.push(chart.data.labels[i]);
-               											     }
-               											     text.push('</li>');
-               											 }
-               											 text.push('</ul>');
-               											 text.push('</div>');               											 
-               											 return text.join("");
-								  }
-
-								  	}
-								  	
-								  
-							});	
-	var legend = chart.generateLegend();	
-	$(legend).insertAfter($(element).parent());
-	},
-
-	createLegend = function(chart){
-		var text = [];
-        text.push('<ul>');
-        for (var i=0; i<chart.data.datasets[0].data.length; i++) {
-            text.push('<li>');
-            text.push('<span style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '">' + chart.data.datasets[0].data[i] + '</span>');
-            if (chart.data.labels[i]) {
-                text.push(chart.data.labels[i]);
-            }
-            text.push('</li>');
-        }
-        text.push('</ul>');
-        return text.join("");
+		var ctx = $(element);
+		var chart = new Chart(ctx, {type:'doughnut',
+									  data: data,
+									  options:
+									  { legend: {
+									   				display: false								  				
+									  			},
+									  	legendCallback: function(chart){								  												  						
+									  		                var text = EvalView.createCustomLegend(chart);	
+    	           											return text.join("");
+									  	}	
+	
+										}	  
+								});	
+		var legend = chart.generateLegend();	
+		$(legend).insertAfter($(element).parent());
 	},
 
 	displayQType = function(trip_id, q_type){	
@@ -1110,15 +958,15 @@ FeedbackSystem.EvalController = (function() {
 
 		getSumParticipants(trip_id, function(sum){			
 			$('#info-sum-participants-'+trip_id).text(sum);
-		})
+		});
 		
 		getSumParticipantsFinish(trip_id, function(sum){			
 			$('#info-sum-participants-finish-'+trip_id).text(sum);
-		})
+		});
 
 		getSumParticipantsCancel(trip_id, function(sum){			
 			$('#info-sum-participants-cancel-'+trip_id).text(sum);
-		})
+		});
 
 		getGenderParticipants(trip_id, function(data){		
 			$.each(data, function(index, object){
@@ -1131,12 +979,11 @@ FeedbackSystem.EvalController = (function() {
 				} else {
 					$('#info-sum-na-'+trip_id).text(value);
 				}
-			})
-		})
+			});
+		});
 	},
 
-	secondsToHms = function(seconds) {
-    	
+	secondsToHms = function(seconds) {    	
     	var h = Math.floor(seconds / 3600);
     	var m = Math.floor(seconds % 3600 / 60);
     	var s = Math.floor(seconds % 3600 % 60);
@@ -1193,13 +1040,14 @@ FeedbackSystem.EvalController = (function() {
 
 	getAgeParticipants = function(trip_id, callback){
 		var url = '/eval/get-age-participants';
-		$.post(url, {trip_id: trip_id}, function( data ){				
+		$.post(url, {trip_id: trip_id}, function( data ){					
 			callback(data);
 		});
 	},
+
 	getExpParticipants = function(trip_id, callback){
 		var url = '/eval/get-experience-participants';
-		$.post(url, {trip_id: trip_id}, function( data ){			
+		$.post(url, {trip_id: trip_id}, function( data ){					
 			callback(data);
 		});
 	},

@@ -1,16 +1,17 @@
-		<div id="container-question-id-details" data-question-id="<%=question_id%>"
-    <label>Antworttext</label> 
-    <% for (var index in answers) {%>
-    <% var answer = answers[index]; %>    
-		  <div class="form-group invis">
-              <label for="answer-id-<%=answer.id%>">ID</label>
-              <input type="text" class="form-control" id="answer-id-<%=answer.id%>" value="<%=answer.id%>" disabled/>
-       </div>
-       <div class="form-inline margin-answer-detail">                     
-              <input type="text" class="form-control custom-input-width" id="detail-answer-text" value="<%=answer.text%>" data-answer-id="<%=answer.id%>"/>
-              <input type="button" class="btn btn-md btn-danger btn-del-answer" value="X"/>
-        </div>
-
-		<% } %> 
-	 <input type="button" class="btn btn-default btn-block btn-add-row-answer-option-detail margin-top-answer-detail-btn" id="btn-add-row-answer-option-detail" value="Antwortoption hinzufügen" />
-  </div>
+<!-- container for question details-->
+<div id="container-question-id-details" data-question-id="<%=question_id%>">
+  <label>Antworttext</label> 
+  <% for (var index in answers) {%>
+    <% var answer = answers[index]; %>
+    <!-- form for user input-->    
+		<div class="form-group invis">
+      <label for="answer-id-<%=answer.id%>">ID</label>
+      <input type="text" class="form-control" id="answer-id-<%=answer.id%>" value="<%=answer.id%>" disabled/>
+    </div>
+    <div class="form-inline margin-answer-detail">                     
+      <input type="text" class="form-control custom-input-width" id="detail-answer-text" value="<%=answer.text%>" data-answer-id="<%=answer.id%>"/>
+      <input type="button" class="btn btn-md btn-danger btn-del-answer" value="X"/>
+    </div><!--end of form-->
+	<% } %> 
+	<input type="button" class="btn btn-default btn-block btn-add-row-answer-option-detail margin-top-answer-detail-btn" id="btn-add-row-answer-option-detail" value="Antwortoption hinzufügen" />
+</div><!-- end of container-->
